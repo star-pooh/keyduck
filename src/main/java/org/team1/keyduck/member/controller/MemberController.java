@@ -22,7 +22,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createMember(@AuthenticationPrincipal User user,
+    public ResponseEntity<ApiResponse<Void>> createMember(
         @RequestBody @Valid MemberCreateRequestDto requestDto) {
         memberService.createMember(requestDto);
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS),
