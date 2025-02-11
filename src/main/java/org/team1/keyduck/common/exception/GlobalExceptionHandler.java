@@ -11,11 +11,11 @@ import org.team1.keyduck.common.dto.ApiResponse;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(DataNotFoundException.class)
+    @ExceptionHandler({DataNotFoundException.class, DuplicateDateException.class})
     public ResponseEntity<ApiResponse> handleOwnerDataException(DataNotFoundException exception) {
         ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-                apiResponse.getMessage());
+            apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse> handleException(Exception exception) {
         ApiResponse apiResponse = ApiResponse.error(ErrorCode.INTERNAL_SERVER_ERROR);
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-                exception.getMessage());
+            exception.getMessage());
         return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
