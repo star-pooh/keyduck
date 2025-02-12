@@ -12,7 +12,6 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,7 +36,7 @@ public class JwtFilter implements Filter {
 
         String url = httpRequest.getRequestURI();
 
-        if (url.startsWith("/api/auth") || url.startsWith("/api/members")) {
+        if (url.startsWith("/api/auth")) {
             chain.doFilter(request, response);
             return;
         }
@@ -60,9 +59,11 @@ public class JwtFilter implements Filter {
                 return;
             }
 
+            Long userId = Long.parseLong(claims.getSubject());
             MemberRole memberRole = MemberRole.valueOf(claims.get("memberRole", String.class));
-            AuthMember authMember = new AuthMember(Long.parseLong(claims.getSubject()), "",
-                List.of(memberRole::name));
+
+            AuthMember authMember = new AuthMember(userId,
+                memberRole);
             SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(authMember, null,
                     authMember.getAuthorities()));
