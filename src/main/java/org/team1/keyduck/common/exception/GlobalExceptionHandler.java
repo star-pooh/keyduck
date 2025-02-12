@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
         ApiResponse apiResponse = ApiResponse.error(ErrorCode.DUPLICATE_EMAIL);
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
             apiResponse.getMessage());
-        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
     }
 
 
