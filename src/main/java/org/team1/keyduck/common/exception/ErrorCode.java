@@ -15,9 +15,7 @@ public enum ErrorCode {
     INVALID_ACCESS(HttpStatus.BAD_REQUEST, "ERR006", "잘못된 접근입니다."),
     INVALID_JSON_FORMAT(HttpStatus.BAD_REQUEST, "ERR007", "잘못된 JSON 형식입니다."),
     AUCTION_NOT_IN_PROGRESS(HttpStatus.BAD_REQUEST,"ERR008","진행 중이지 않은 경매입니다."),
-    INVALID_BIDDING_PRICE_UNIT(HttpStatus.BAD_REQUEST,"ERR009","입찰 금액이 최소 입찰 단위에 맞지 않습니다."),
-    BIDDING_PRICE_BELOW_CURRENT_PRICE(HttpStatus.BAD_REQUEST,"ERR010","입찰 금액이 현재가 보다 작습니다"),
-    BIDDING_PRICE_IS_NULL(HttpStatus.BAD_REQUEST,"ERR011","입찰 금액이 입력되지 않았습니다"),
+    INVALID_BIDDING_PRICE(HttpStatus.BAD_REQUEST,"ERR009","입찰 금액이 유효하지 않습니다."),
 
 
     //401  UNAUTHORIZED

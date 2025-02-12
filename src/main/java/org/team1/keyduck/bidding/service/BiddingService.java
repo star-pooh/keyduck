@@ -40,15 +40,15 @@ public class BiddingService {
         }
         //비딩 금액은 null일수 없음
         if(price==null){
-            throw new InvalidBiddingPriceException(ErrorCode.BIDDING_PRICE_IS_NULL);
+            throw new InvalidBiddingPriceException(ErrorCode.INVALID_BIDDING_PRICE);
         }
         //비딩 금액단위가 경매에 설정된 단위보다 작으면 안됨
         if (price % auction.getBiddingUnit() !=0){
-            throw new InvalidBiddingPriceException(ErrorCode.INVALID_BIDDING_PRICE_UNIT);
+            throw new InvalidBiddingPriceException(ErrorCode.INVALID_BIDDING_PRICE);
         }
         //비딩 금액이 현재가보다 낮으면 안됨
         if(price <=auction.getCurrentPrice()){
-            throw new InvalidBiddingPriceException(ErrorCode.BIDDING_PRICE_BELOW_CURRENT_PRICE);
+            throw new InvalidBiddingPriceException(ErrorCode.INVALID_BIDDING_PRICE);
         }
 
     }
