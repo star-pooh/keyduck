@@ -11,9 +11,17 @@ import org.team1.keyduck.common.dto.ApiResponse;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({DataNotFoundException.class, DuplicateDateException.class})
-    public ResponseEntity<ApiResponse> handleOwnerDataException(DataNotFoundException exception) {
+    @ExceptionHandler(DataNotFoundException.class)
+    public ResponseEntity<ApiResponse> handleDataNotFoundException(DataNotFoundException exception) {
         ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
+        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
+            apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DuplicateDataException.class)
+    public ResponseEntity<ApiResponse> handleDuplicateDataException(DuplicateDataException exception) {
+        ApiResponse apiResponse = ApiResponse.error(ErrorCode.DUPLICATE_EMAIL);
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
             apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
