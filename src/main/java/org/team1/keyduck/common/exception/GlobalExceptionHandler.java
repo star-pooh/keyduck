@@ -42,6 +42,24 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
+    @ExceptionHandler(AuctionNotInProgressException.class)
+    public ResponseEntity<ApiResponse> handleAuctionNotInProgressException(
+            AuctionNotInProgressException exception){
+        ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
+        log.error("{},{},{}",apiResponse.getCode(),exception.getStackTrace(),
+                apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+    }
+
+    @ExceptionHandler(InvalidBiddingPriceException.class)
+    public ResponseEntity<ApiResponse> handleInvalidBiddingPriceException(
+            InvalidBiddingPriceException exception){
+        ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
+        log.error("{},{},{}",apiResponse.getCode(),exception.getStackTrace(),
+                apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleException(Exception exception) {
         ApiResponse apiResponse = ApiResponse.error(ErrorCode.INTERNAL_SERVER_ERROR);
