@@ -13,8 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.team1.keyduck.common.exception.DataNotMatchException;
 import org.team1.keyduck.common.exception.ErrorCode;
-import org.team1.keyduck.common.exception.ServerException;
 import org.team1.keyduck.member.entity.MemberRole;
 
 @Slf4j(topic = "JwtUtil")
@@ -52,7 +52,7 @@ public class JwtUtil {
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(7);
         }
-        throw new ServerException(ErrorCode.UNAUTHORIZED_ACCESS);
+        throw new DataNotMatchException(ErrorCode.INVALID_TOKEN);
     }
 
     public Claims extractClaims(String token) {
