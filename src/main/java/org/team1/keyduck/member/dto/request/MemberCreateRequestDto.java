@@ -14,6 +14,7 @@ public class MemberCreateRequestDto {
     @NotNull(message = ValidationErrorMessage.NAME_IS_NOT_NULL)
     String name;
 
+    @NotNull(message = ValidationErrorMessage.EMAIL_IS_NOT_NULL)
     @Email(message = ValidationErrorMessage.EMAIL_IS_NOT_VALID)
     String email;
 
