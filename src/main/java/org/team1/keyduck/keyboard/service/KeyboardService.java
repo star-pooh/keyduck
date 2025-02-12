@@ -35,7 +35,7 @@ public class KeyboardService {
 
         keyboardRepository.save(keyboard);
 
-        return new KeyboardCreateResponseDto(keyboard.getId(), keyboard.getName(), keyboard.getDescription());
+        return KeyboardCreateResponseDto.createKeyboardResponseDto(keyboard);
     }
 
 }
