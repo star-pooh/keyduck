@@ -3,6 +3,7 @@ package org.team1.keyduck.common.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.team1.keyduck.common.dto.ApiResponse;
@@ -12,21 +13,34 @@ import org.team1.keyduck.common.dto.ApiResponse;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataNotFoundException.class)
-    public ResponseEntity<ApiResponse> handleDataNotFoundException(DataNotFoundException exception) {
+    public ResponseEntity<ApiResponse> handleDataNotFoundException(
+        DataNotFoundException exception) {
         ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
             apiResponse.getMessage());
-        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
     @ExceptionHandler(DuplicateDataException.class)
-    public ResponseEntity<ApiResponse> handleDuplicateDataException(DuplicateDataException exception) {
+    public ResponseEntity<ApiResponse> handleDuplicateDataException(
+        DuplicateDataException exception) {
         ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
             apiResponse.getMessage());
-        return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(
+        MethodArgumentNotValidException exception) {
+        CustomValidException customException = new CustomValidException(
+            exception.getParameter(), exception.getBindingResult(), ErrorCode.INVALID_INPUT_VALUE);
+        ApiResponse apiResponse = ApiResponse.error(customException.getErrorCode(),
+            customException.getErrorMessage());
+        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
+            apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleException(Exception exception) {
