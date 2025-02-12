@@ -13,7 +13,7 @@ public class CustomValidException extends MethodArgumentNotValidException {
     private final ErrorCode errorCode;
     private final String errorMessage;
 
-    public String getMessage(BindingResult bindingResult) {
+    public String getErrorMessage(BindingResult bindingResult) {
         StringBuilder message = new StringBuilder();
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
             message.append(fieldError.getDefaultMessage());
@@ -26,8 +26,9 @@ public class CustomValidException extends MethodArgumentNotValidException {
         BindingResult bindingResult, ErrorCode errorCode) {
         super(parameter, bindingResult);
         this.errorCode = errorCode;
-        errorMessage = getMessage(bindingResult);
+        this.errorMessage = getErrorMessage(bindingResult);
     }
+
 
 }
 

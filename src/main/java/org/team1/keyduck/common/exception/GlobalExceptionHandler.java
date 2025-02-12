@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse> handleCustomMethodArgumentNotValidException(
+    public ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(
         MethodArgumentNotValidException exception) {
         CustomValidException customException = new CustomValidException(
             exception.getParameter(), exception.getBindingResult(), ErrorCode.INVALID_INPUT_VALUE);
@@ -41,7 +41,6 @@ public class GlobalExceptionHandler {
             apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
-
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleException(Exception exception) {
