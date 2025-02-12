@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class ValidationErrorMessage {
 
-    public static final String NAME_IS_NOT_NULL = "이름은 비울 수 없습니다.";
+    public static final String NAME_IS_NOT_NULL = "이름은 필수 입력 값입니다.";
     public static final String EMAIL_IS_NOT_NULL = "이메일은 비울 수 없습니다.";
     public static final String EMAIL_IS_NOT_VALID = "이메일 형식이 맞지 않습니다.";
     public static final String PASSWORD_IS_NOT_AVAILABLE = "비밀번호 형식이 맞지 않습니다.";

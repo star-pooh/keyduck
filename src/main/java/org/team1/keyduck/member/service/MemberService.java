@@ -12,11 +12,11 @@ import org.team1.keyduck.member.repository.MemberRepository;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberRepository repository;
+    private final MemberRepository memberRepository;
 
     public void createMember(MemberCreateRequestDto requestDto) {
 
-        if (repository.existsByEmail(requestDto.getEmail())) {
+        if (memberRepository.existsByEmail(requestDto.getEmail())) {
             throw new DuplicateDataException(ErrorCode.DUPLICATE_EMAIL);
         }
 
@@ -24,6 +24,6 @@ public class MemberService {
             .memberRole(requestDto.getMemberRole()).email(requestDto.getEmail())
             .password(requestDto.getPassword()).build();
 
-        repository.save(member);
+        memberRepository.save(member);
     }
 }
