@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.team1.keyduck.common.dto.ApiResponse;
 import org.team1.keyduck.common.exception.SuccessCode;
 import org.team1.keyduck.keyboard.dto.request.KeyboardCreateRequestDto;
+import org.team1.keyduck.keyboard.dto.response.KeyboardCreateResponseDto;
 import org.team1.keyduck.keyboard.service.KeyboardService;
 
 @RestController
@@ -20,12 +21,14 @@ public class KeyboardController {
 
     // 키보드 생성 API
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createKeyboardAPI(
+    public ResponseEntity<ApiResponse<KeyboardCreateResponseDto>> createKeyboardAPI(
             @RequestBody @Valid KeyboardCreateRequestDto requestDto) {
 
-        keyboardService.createKeyboard(requestDto);
-        return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS),
+        KeyboardCreateResponseDto response = keyboardService.createKeyboard(requestDto);
+
+        return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS, response),
                 SuccessCode.CREATE_SUCCESS.getStatus());
     }
 
 }
+
