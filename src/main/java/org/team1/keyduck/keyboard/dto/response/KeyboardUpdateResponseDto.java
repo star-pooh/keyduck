@@ -10,12 +10,12 @@ public class KeyboardUpdateResponseDto {
 
     private String name;
 
-    private String keyboardDetails;
+    private String description;
 
     public static KeyboardUpdateResponseDto of(Keyboard keyboard) {
         return new KeyboardUpdateResponseDto(
                 keyboard.getName(),
-                keyboard.getKeyboardDetails()
+                keyboard.getDescription()
         );
     }
 

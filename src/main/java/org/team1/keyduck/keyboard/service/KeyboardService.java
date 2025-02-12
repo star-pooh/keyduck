@@ -41,7 +41,7 @@ public class KeyboardService {
 
         findKeyboard.updateName(requestDto.getName());
 
-        findKeyboard.updateDetails(requestDto.getKeyboardDetails());
+        findKeyboard.updateDescriptions(requestDto.getDescription());
 
         Keyboard saveKeyboard = keyboardRepository.save(findKeyboard);
 

@@ -26,16 +26,16 @@ public class Keyboard extends BaseTime {
     private String name;
 
     @Column
-    private String keyboardDetails;
+    private String description;
 
 //    private String imageUrl;
 // TODO 확인해주세요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     @Builder
-    public Keyboard(Member member, String name, String keyboardDetails) {
+    public Keyboard(Member member, String name, String description) {
         this.member = member;
         this.name = name;
-        this.keyboardDetails = keyboardDetails;
+        this.description = description;
     }
 
     public void updateName(String name) {
@@ -44,9 +44,9 @@ public class Keyboard extends BaseTime {
         }
     }
 
-    public void updateDetails(String keyboardDetails) {
-        if (keyboardDetails != null && !keyboardDetails.isEmpty()) {
-            this.keyboardDetails = keyboardDetails;
+    public void updateDescriptions(String description) {
+        if (description != null && !description.isEmpty()) {
+            this.description = description;
         }
     }
 }

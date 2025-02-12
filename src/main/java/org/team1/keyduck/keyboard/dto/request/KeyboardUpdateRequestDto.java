@@ -9,6 +9,6 @@ public class KeyboardUpdateRequestDto {
 
     private String name;
 
-    private String keyboardDetails;
+    private String description;
 
 }
