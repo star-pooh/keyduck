@@ -32,13 +32,17 @@ public class Keyboard extends BaseTime {
     @Column
     private String name;
 
+    @Column
+    private String description;
+
 //    private String imageUrl;
 // TODO 확인해주세요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     @Builder
-    public Keyboard(Member member, String name) {
+    public Keyboard(Member member, String name, String description) {
         this.member = member;
         this.name = name;
+        this.description = description;
     }
 
 }

@@ -1,10 +1,29 @@
 package org.team1.keyduck.keyboard.controller;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.team1.keyduck.keyboard.dto.request.KeyboardCreateRequestDto;
+import org.team1.keyduck.keyboard.dto.response.KeyboardCreateResponseDto;
+import org.team1.keyduck.keyboard.service.KeyboardService;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api/keyboards")
+@RequiredArgsConstructor
 public class KeyboardController {
+    private final KeyboardService keyboardService;
+
+    // 키보드 생성 API
+    @PostMapping
+    public ResponseEntity<KeyboardCreateResponseDto> createKeyboardAPI(
+            @RequestBody KeyboardCreateRequestDto requestDto) {
+
+        KeyboardCreateResponseDto ResponseDto = keyboardService.createKeyboard(requestDto);
+        return ResponseEntity.ok(ResponseDto);
+    }
 
 }
