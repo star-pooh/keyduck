@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
+import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.bidding.dto.request.BiddingRequestDto;
 import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 import org.team1.keyduck.bidding.entity.Bidding;
@@ -25,6 +26,7 @@ public class BiddingService {
 
     private final BiddingRepository biddingRepository;
     private final AuctionRepository auctionRepository;
+    private final MemberRepository memberRepository;
 
 
     //경매 찾기
@@ -40,25 +42,27 @@ public class BiddingService {
         }
         //비딩 금액은 null일수 없음
         if(price==null){
-            throw new InvalidBiddingPriceException(ErrorCode.INVALID_BIDDING_PRICE);
+            throw new InvalidBiddingPriceException(ErrorCode.BIDDING_PRICE_IS_NULL);
         }
         //비딩 금액단위가 경매에 설정된 단위보다 작으면 안됨
         if (price % auction.getBiddingUnit() !=0){
-            throw new InvalidBiddingPriceException(ErrorCode.INVALID_BIDDING_PRICE);
+            throw new InvalidBiddingPriceException(ErrorCode.INVALID_BIDDING_PRICE_UNIT);
         }
         //비딩 금액이 현재가보다 낮으면 안됨
         if(price <=auction.getCurrentPrice()){
-            throw new InvalidBiddingPriceException(ErrorCode.INVALID_BIDDING_PRICE);
+            throw new InvalidBiddingPriceException(ErrorCode.BIDDING_PRICE_BELOW_CURRENT_PRICE);
         }
 
     }
 
     //생성 매서드
     @Transactional
-    public Bidding createBidding(Long auctionId, Long price, Member member) {
+    public Bidding createBidding(Long auctionId, Long price, AuthMember authMember) {
         Auction auction = findAuctionById(auctionId);
         validateAuction(auction, price);
 
+        Member member = memberRepository.findById(authMember.getId())
+                .orElseThrow(()->new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
 
         Bidding bidding = Bidding.builder()
                         .auction(auction)

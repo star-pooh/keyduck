@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.bidding.dto.request.BiddingRequestDto;
 import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 import org.team1.keyduck.bidding.entity.Bidding;
@@ -28,10 +29,11 @@ public class BiddingController {
     @PostMapping("/{auctionId}")
     public ResponseEntity<ApiResponse<Bidding>> createBidding(@PathVariable("auctionId") Long auctionId,
             @RequestParam("price")Long price,
-            @AuthenticationPrincipal Member member) {
-        biddingService.createBidding(auctionId,price,member);
+            @AuthenticationPrincipal AuthMember authmember) {
+        biddingService.createBidding(auctionId,price, authmember);
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS),
                 SuccessCode.CREATE_SUCCESS.getStatus());
 
     }
+
 }
