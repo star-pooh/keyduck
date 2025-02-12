@@ -14,8 +14,8 @@ public enum ErrorCode {
     WRONG_CREDENTIALS(HttpStatus.BAD_REQUEST, "ERR005", "인증 정보가 올바르지 않습니다."),
     INVALID_ACCESS(HttpStatus.BAD_REQUEST, "ERR006", "잘못된 접근입니다."),
     INVALID_JSON_FORMAT(HttpStatus.BAD_REQUEST, "ERR007", "잘못된 JSON 형식입니다."),
-    AUCTION_NOT_IN_PROGRESS(HttpStatus.BAD_REQUEST,"ERR008","진행 중이지 않은 경매입니다."),
-    INVALID_BIDDING_PRICE(HttpStatus.BAD_REQUEST,"ERR009","입찰 금액이 유효하지 않습니다."),
+    INVALID_MEMBER_ROLE(HttpStatus.BAD_REQUEST, "ERR008", "잘못된 권한입니다."),
+    INVALID_TOKEN(HttpStatus.BAD_REQUEST, "ERR009", "잘못된 토큰입니다."),
 
 
     //401  UNAUTHORIZED
@@ -27,9 +27,8 @@ public enum ErrorCode {
     FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, "ERR201", "접근 권한이 없습니다."),
 
     // 404 NOT_FOUND
-    RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "ERR300", "요청한 리소스를 찾을 수 없습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "ERR301", "사용자를 찾을 수 없습니다."),
-    AUCTION_NOT_FOUND(HttpStatus.NOT_FOUND,"ERR302","경매를 찾을 수 없습니다."),
+    RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "ERR300", "요청한 리소스를 찾을 수 없습니다."),
 
     // 500 INTERNAL_SERVER_ERROR
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "ERR999", "서버 내부 오류가 발생했습니다.");
