@@ -2,6 +2,7 @@ package org.team1.keyduck.bidding.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
@@ -49,6 +50,7 @@ public class BiddingService {
     }
 
     //생성 매서드
+    @Transactional
     public Bidding createBidding(Long auctionId, Long price, Member member) {
         Auction auction = findAuctionById(auctionId);
         validateAuction(auction, price);
