@@ -28,8 +28,8 @@ public enum ErrorCode {
     FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, "ERR201", "접근 권한이 없습니다."),
 
     // 404 NOT_FOUND
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "ERR301", "사용자를 찾을 수 없습니다."),
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "ERR300", "요청한 리소스를 찾을 수 없습니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "ERR301", "사용자를 찾을 수 없습니다."),
     AUCTION_NOT_FOUND(HttpStatus.NOT_FOUND,"ERR302","경매를 찾을 수 없습니다."),
 
     // 500 INTERNAL_SERVER_ERROR

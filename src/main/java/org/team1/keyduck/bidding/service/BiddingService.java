@@ -24,22 +24,15 @@ public class BiddingService {
 
     private final BiddingRepository biddingRepository;
     private final AuctionRepository auctionRepository;
-    private final MemberRepository memberRepository;
 
 
     //경매 찾기
-    private Auction findAuctionById(Long auctionid) {
-        return auctionRepository.findById(auctionid).orElseThrow(()->new DataNotFoundException(ErrorCode.AUCTION_NOT_FOUND));
-    }
-
-    //멤버 찾기
-    private Member findMemberById(Long memberid) {
-        return memberRepository.findById(memberid).orElseThrow(()->new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
+    private Auction findAuctionById(Long auctionId) {
+        return auctionRepository.findById(auctionId).orElseThrow(()->new DataNotFoundException(ErrorCode.AUCTION_NOT_FOUND));
     }
 
     // 검증
-    private void validateAuction(Long auctionId, Long price) {
-        Auction auction = findAuctionById(auctionId);
+    private void validateAuction(Auction auction, Long price) {
         //경매가 진행 중이어야 가능
         if (!auction.getAuctionStatus().equals(AuctionStatus.IN_PROGRESS)){
             throw new AuctionNotInProgressException(ErrorCode.AUCTION_NOT_IN_PROGRESS);
@@ -56,19 +49,17 @@ public class BiddingService {
     }
 
     //생성 매서드
-    public Bidding createBidding(BiddingRequestDto biddingRequestDto) {
-        Auction auction = findAuctionById(biddingRequestDto.getAuctionId());
-        Member member = findMemberById(biddingRequestDto.getMemberId());
-
-        validateAuction(biddingRequestDto.getAuctionId(), biddingRequestDto.getPrice());
+    public Bidding createBidding(Long auctionId, Long price, Member member) {
+        Auction auction = findAuctionById(auctionId);
+        validateAuction(auction, price);
 
 
-        Bidding bidding = new Bidding(
-                auction,
-                member,
-                biddingRequestDto.getPrice()
+        Bidding bidding = Bidding.builder()
+                        .auction(auction)
+                        .member(member)
+                        .price(price)
+                        .build();
 
-        );
         return biddingRepository.save(bidding) ;
     }
 

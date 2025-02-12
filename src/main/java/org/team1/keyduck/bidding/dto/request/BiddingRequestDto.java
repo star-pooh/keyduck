@@ -9,10 +9,6 @@ import org.team1.keyduck.member.entity.Member;
 
 @Getter
 public class BiddingRequestDto {
-    private Long memberId;
-    private Long biddingId;
-    private Long auctionId;
-
     @NotNull(message = "입찰가는 비울 수 없습니다.")
     private Long price;
 
