@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateDataException.class)
     public ResponseEntity<ApiResponse> handleDuplicateDataException(DuplicateDataException exception) {
-        ApiResponse apiResponse = ApiResponse.error(ErrorCode.DUPLICATE_EMAIL);
+        ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
             apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
