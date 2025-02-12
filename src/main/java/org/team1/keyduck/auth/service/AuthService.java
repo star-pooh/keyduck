@@ -8,7 +8,9 @@ import org.team1.keyduck.auth.dto.response.SigninResponse;
 import org.team1.keyduck.common.config.JwtUtil;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataNotMatchException;
+import org.team1.keyduck.common.exception.DuplicateDataException;
 import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.member.dto.request.MemberCreateRequestDto;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
 
@@ -20,7 +22,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public SigninResponse signin(SigninRequest signinRequest) {
+    public SigninResponse login(SigninRequest signinRequest) {
         Member member = memberRepository.findByEmail(signinRequest.getEmail())
             .orElseThrow(() -> new DataNotFoundException(ErrorCode.LOGIN_FAILED));
 
@@ -31,5 +33,19 @@ public class AuthService {
         String bearerToken = jwtUtil.createToken(member.getId(), member.getMemberRole());
 
         return new SigninResponse(bearerToken);
+    }
+
+    public void joinMember(MemberCreateRequestDto requestDto) {
+
+        if (memberRepository.existsByEmail(requestDto.getEmail())) {
+            throw new DuplicateDataException(ErrorCode.DUPLICATE_EMAIL);
+        }
+        String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
+
+        Member member = Member.builder().name(requestDto.getName())
+            .memberRole(requestDto.getMemberRole()).email(requestDto.getEmail())
+            .password(encodedPassword).build();
+
+        memberRepository.save(member);
     }
 }
