@@ -1,10 +1,11 @@
 package org.team1.keyduck.auth.entity;
 
 import java.util.Collection;
-import java.util.InputMismatchException;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.team1.keyduck.common.exception.DataNotMatchException;
+import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.member.entity.MemberRole;
 
 @Getter
@@ -19,6 +20,6 @@ public class AuthMember extends User {
         return this.getAuthorities().stream()
             .map(authority -> MemberRole.valueOf(authority.getAuthority()))
             .findFirst()
-            .orElseThrow(() -> new InputMismatchException("유효하지 않은 권한입니다."));
+            .orElseThrow(() -> new DataNotMatchException(ErrorCode.INVALID_MEMBER_ROLE));
     }
 }

@@ -14,6 +14,7 @@ public enum ErrorCode {
     WRONG_CREDENTIALS(HttpStatus.BAD_REQUEST, "ERR005", "인증 정보가 올바르지 않습니다."),
     INVALID_ACCESS(HttpStatus.BAD_REQUEST, "ERR006", "잘못된 접근입니다."),
     INVALID_JSON_FORMAT(HttpStatus.BAD_REQUEST, "ERR007", "잘못된 JSON 형식입니다."),
+    INVALID_MEMBER_ROLE(HttpStatus.BAD_REQUEST, "ERR008", "잘못된 권한입니다."),
 
 
     //401  UNAUTHORIZED
