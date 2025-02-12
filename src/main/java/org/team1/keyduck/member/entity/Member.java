@@ -1,6 +1,9 @@
 package org.team1.keyduck.member.entity;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -33,19 +36,32 @@ public class Member extends BaseTime {
     @Column(nullable = false)
     private String password;
 
-    @Column(columnDefinition = "TINYINT(1)")
+    @Column(columnDefinition = "TINYINT(1)", nullable = false)
     @ColumnDefault("false")
-    private Boolean isDeleted;
+    private boolean isDeleted;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private MemberRole memberRole;
 
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "city", column = @Column(name = "city", nullable = false)),
+        @AttributeOverride(name = "state", column = @Column(name = "state", nullable = false)),
+        @AttributeOverride(name = "street", column = @Column(name = "street", nullable = false)),
+        @AttributeOverride(name = "detailAddress1", column = @Column(name = "detail_address1")),
+        @AttributeOverride(name = "detailAddress2", column = @Column(name = "detail_address2"))
+
+    })
+    private Address address;
+
     @Builder
-    public Member(String name, String email, String password, MemberRole memberRole) {
+    public Member(String name, String email, String password, MemberRole memberRole,
+        Address address) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.memberRole = memberRole;
+        this.address = address;
     }
 }

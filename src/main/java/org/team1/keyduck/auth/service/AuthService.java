@@ -43,6 +43,7 @@ public class AuthService {
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
 
         Member member = Member.builder().name(requestDto.getName())
+            .address(requestDto.getAddress())
             .memberRole(requestDto.getMemberRole()).email(requestDto.getEmail())
             .password(encodedPassword).build();
 
