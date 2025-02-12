@@ -27,4 +27,12 @@ public class GlobalExceptionHandler {
                 exception.getMessage());
         return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(DataMismatchException.class)
+    public ResponseEntity<ApiResponse> handleDataMismatchException(DataMismatchException exception) {
+        ApiResponse apiResponse = ApiResponse.error(ErrorCode.FORBIDDEN_ACCESS);
+        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
+                apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, HttpStatus.FORBIDDEN);
+    }
 }

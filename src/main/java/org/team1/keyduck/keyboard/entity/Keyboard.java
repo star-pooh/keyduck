@@ -37,4 +37,16 @@ public class Keyboard extends BaseTime {
         this.name = name;
         this.keyboardDetails = keyboardDetails;
     }
+
+    public void updateName(String name) {
+        if (name != null && !name.isEmpty()) {
+            this.name = name;
+        }
+    }
+
+    public void updateDetails(String keyboardDetails) {
+        if (keyboardDetails != null && !keyboardDetails.isEmpty()) {
+            this.keyboardDetails = keyboardDetails;
+        }
+    }
 }
