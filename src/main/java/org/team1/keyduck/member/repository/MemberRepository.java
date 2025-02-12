@@ -5,4 +5,5 @@ import org.team1.keyduck.member.entity.Member;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
+    boolean existsByEmail(String email);
 }

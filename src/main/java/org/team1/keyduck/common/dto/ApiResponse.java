@@ -22,16 +22,22 @@ public class ApiResponse<T> {
 
     public static <T> ApiResponse<T> success(SuccessCode successCode, T data) {
         return new ApiResponse<>(successCode.getStatus(), successCode.getCode(),
-                successCode.getMessage(), data);
+            successCode.getMessage(), data);
     }
 
     public static <T> ApiResponse<T> success(SuccessCode successCode) {
         return new ApiResponse<>(successCode.getStatus(), successCode.getCode(),
-                successCode.getMessage(), null);
+            successCode.getMessage(), null);
     }
 
     public static <T> ApiResponse<T> error(ErrorCode errorCode) {
         return new ApiResponse<>(errorCode.getStatus(), errorCode.getCode(), errorCode.getMessage(),
-                null);
+            null);
     }
+
+    public static <T> ApiResponse<T> error(ErrorCode errorCode, String errorMessage) {
+        return new ApiResponse<>(errorCode.getStatus(), errorCode.getCode(), errorMessage,
+            null);
+    }
+
 }
