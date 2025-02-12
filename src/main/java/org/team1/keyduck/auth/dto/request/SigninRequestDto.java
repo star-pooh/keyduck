@@ -11,7 +11,7 @@ import org.team1.keyduck.common.util.ValidationErrorMessage;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SigninRequest {
+public class SigninRequestDto {
 
     @NotBlank(message = ValidationErrorMessage.EMAIL_IS_NOT_NULL)
     @Email(message = ValidationErrorMessage.EMAIL_IS_NOT_VALID)

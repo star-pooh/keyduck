@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.team1.keyduck.auth.dto.request.MemberCreateRequestDto;
-import org.team1.keyduck.auth.dto.request.SigninRequest;
-import org.team1.keyduck.auth.dto.response.SigninResponse;
+import org.team1.keyduck.auth.dto.request.SigninRequestDto;
+import org.team1.keyduck.auth.dto.response.SigninResponseDto;
 import org.team1.keyduck.auth.service.AuthService;
 import org.team1.keyduck.common.dto.ApiResponse;
 import org.team1.keyduck.common.exception.SuccessCode;
@@ -23,9 +23,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public SigninResponse login(@Valid @RequestBody SigninRequest signinRequest) {
-        return authService.login(signinRequest);
-    }
+    public ResponseEntity<ApiResponse<SigninResponseDto>> signin(
+        @Valid @RequestBody SigninRequestDto signinRequestDto) {
+        return new ResponseEntity<>(
+            ApiResponse.success(SuccessCode.LOGIN_SUCCESS, authService.signin(signinRequestDto)),
+            SuccessCode.LOGIN_SUCCESS.getStatus());
+        }
 
     @PostMapping("/join")
     public ResponseEntity<ApiResponse<Void>> joinMember(

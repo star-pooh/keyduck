@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.team1.keyduck.auth.dto.request.MemberCreateRequestDto;
-import org.team1.keyduck.auth.dto.request.SigninRequest;
-import org.team1.keyduck.auth.dto.response.SigninResponse;
+import org.team1.keyduck.auth.dto.request.SigninRequestDto;
+import org.team1.keyduck.auth.dto.response.SigninResponseDto;
 import org.team1.keyduck.common.config.JwtUtil;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataNotMatchException;
@@ -22,7 +22,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public SigninResponse login(SigninRequest signinRequest) {
+    public SigninResponseDto login(SigninRequestDto signinRequest) {
         Member member = memberRepository.findByEmail(signinRequest.getEmail())
             .orElseThrow(() -> new DataNotFoundException(ErrorCode.LOGIN_FAILED));
 
@@ -32,7 +32,7 @@ public class AuthService {
 
         String bearerToken = jwtUtil.createToken(member.getId(), member.getMemberRole());
 
-        return new SigninResponse(bearerToken);
+        return new SigninResponseDto(bearerToken);
     }
 
     public void joinMember(MemberCreateRequestDto requestDto) {
