@@ -1,4 +1,4 @@
-package org.team1.keyduck.member.dto.request;
+package org.team1.keyduck.auth.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
