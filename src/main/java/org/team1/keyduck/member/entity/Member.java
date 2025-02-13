@@ -11,11 +11,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.util.regex.Pattern;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.team1.keyduck.common.entity.BaseTime;
+import org.team1.keyduck.common.exception.DataNotMatchException;
+import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.member.dto.request.MemberUpdateRequestDto;
 
 @Entity
@@ -71,7 +74,15 @@ public class Member extends BaseTime {
             this.name = requestDto.getName();
         }
         if (requestDto.getEmail() != null) {
+            Pattern pattern = Pattern.compile("^[a-zA-Z0-9_+&*-]+(?:\\." +
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$");
+            if (!(pattern.matcher(requestDto.getEmail()).matches())) {
+                throw new DataNotMatchException(ErrorCode.INVALID_INPUT_VALUE);
+            }
             this.email = requestDto.getEmail();
+
         }
         if (requestDto.getAddress() != null) {
             this.address = requestDto.getAddress();
