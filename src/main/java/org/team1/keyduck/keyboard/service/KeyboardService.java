@@ -22,7 +22,7 @@ public class KeyboardService {
 
     public List<KeyboardReadResponseDto> findKeyboardBySellerIdService(Long sellerId) {
 
-        List<Keyboard> keyboards = keyboardRepository.findAllBySellerId(sellerId);
+        List<Keyboard> keyboards = keyboardRepository.findAllByMemberId(sellerId);
 
         return keyboards.stream()
                 .map(KeyboardReadResponseDto::of)

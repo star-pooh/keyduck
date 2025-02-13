@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface KeyboardRepository extends JpaRepository<Keyboard, Long> {
 
-    List<Keyboard> findAllBySellerId(Long sellerId);
+    List<Keyboard> findAllByMemberId(Long sellerId);
 }

@@ -12,13 +12,13 @@ public class KeyboardReadResponseDto {
 
     private String name;
 
-    private String keyboardDetails;
+    private String description;
 
     public static KeyboardReadResponseDto of(Keyboard keyboard) {
         return new KeyboardReadResponseDto(
                 keyboard.getId(),
                 keyboard.getName(),
-                keyboard.getKeyboardDetails()
+                keyboard.getDescription()
         );
     }
 }
