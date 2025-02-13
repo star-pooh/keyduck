@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.common.dto.ApiResponse;
 import org.team1.keyduck.common.exception.SuccessCode;
+import org.team1.keyduck.member.dto.request.MemberUpdatePasswordRequestDto;
 import org.team1.keyduck.member.dto.request.MemberUpdateRequestDto;
 import org.team1.keyduck.member.dto.response.MemberUpdateResponseDto;
 import org.team1.keyduck.member.service.MemberService;
@@ -23,12 +24,19 @@ public class MemberController {
 
     @PatchMapping
     public ResponseEntity<ApiResponse<MemberUpdateResponseDto>> updateMember(
-        @AuthenticationPrincipal
-        AuthMember authMember, @RequestBody MemberUpdateRequestDto requestDto) {
+        @AuthenticationPrincipal AuthMember authMember,
+        @RequestBody MemberUpdateRequestDto requestDto) {
         ApiResponse<MemberUpdateResponseDto> response = ApiResponse.success(
             SuccessCode.UPDATE_SUCCESS, memberService.updateMember(requestDto, authMember.getId()));
         return new ResponseEntity<>(response, response.getStatus());
     }
 
-
+    @PatchMapping("/update/password")
+    public ResponseEntity<ApiResponse<Void>> updatePassword(
+        @AuthenticationPrincipal AuthMember authMember,
+        @RequestBody MemberUpdatePasswordRequestDto requestDto) {
+        memberService.updatePassword(requestDto, authMember.getId());
+        return new ResponseEntity<>(ApiResponse.success(SuccessCode.UPDATE_SUCCESS),
+            SuccessCode.UPDATE_SUCCESS.getStatus());
+    }
 }
