@@ -21,4 +21,4 @@ jobs:
           LANGUAGE: Korean
           MODEL: gpt-4o-mini
           PROMPT:
-          IGNORE_PATTERNS: /node_modules,*.md # Regex pattern to ignore files, separated by comma
+          IGNORE_PATTERNS: /node_modules,*.md,*Dto.java,*Repository.java,*Controller.java,*Code.java,*Exception*.java # Regex pattern to ignore files, separated by comma
