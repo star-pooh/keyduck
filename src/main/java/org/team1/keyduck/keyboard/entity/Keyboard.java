@@ -26,19 +26,23 @@ public class Keyboard extends BaseTime {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Column
+    @Column(nullable = false)
     private String name;
+
+    @Column
+    private String description;
 
 //    private String imageUrl;
 // TODO 확인해주세요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     @Builder
-    public Keyboard(Member member, String name) {
+    public Keyboard(Member member, String name, String description) {
         this.member = member;
         this.name = name;
+        this.description = description;
     }
 
 }
