@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.member.entity.Member;
 
@@ -65,9 +66,9 @@ public class Auction {
 
     @Builder
     public Auction(Keyboard keyboard, Member member, String title, Long startPrice,
-        Long immediatePurchasePrice,
-        Long currentPrice, int biddingUnit, LocalDateTime biddingStartDate,
-        LocalDateTime biddingEndDate, AuctionStatus auctionStatus) {
+            Long immediatePurchasePrice,
+            Long currentPrice, int biddingUnit, LocalDateTime biddingStartDate,
+            LocalDateTime biddingEndDate, AuctionStatus auctionStatus) {
         this.keyboard = keyboard;
         this.member = member;
         this.title = title;
@@ -78,6 +79,28 @@ public class Auction {
         this.biddingStartDate = biddingStartDate;
         this.biddingEndDate = biddingEndDate;
         this.auctionStatus = auctionStatus;
+    }
+
+    public void updateAuction(AuctionUpdateRequestDto requestDto) {
+
+        if (requestDto.getTitle() != null && !requestDto.getTitle().isEmpty()) {
+            this.title = requestDto.getTitle();
+        }
+        if (requestDto.getStartPrice() != null) {
+            this.startPrice = requestDto.getStartPrice();
+        }
+        if (requestDto.getImmediatePurchasePrice() != null) {
+            this.immediatePurchasePrice = requestDto.getImmediatePurchasePrice();
+        }
+        if (requestDto.getBiddingUnit() != 0) {
+            this.biddingUnit = requestDto.getBiddingUnit();
+        }
+        if (requestDto.getBiddingStartDate() != null) {
+            this.biddingStartDate = requestDto.getBiddingStartDate();
+        }
+        if (requestDto.getBiddingEndDate() != null) {
+            this.biddingEndDate = requestDto.getBiddingEndDate();
+        }
     }
 }
 
