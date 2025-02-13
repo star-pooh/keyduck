@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.team1.keyduck.common.entity.BaseTime;
+import org.team1.keyduck.member.dto.request.MemberUpdateRequestDto;
 
 @Entity
 @Getter
@@ -63,5 +64,17 @@ public class Member extends BaseTime {
         this.password = password;
         this.memberRole = memberRole;
         this.address = address;
+    }
+
+    public void updateUser(MemberUpdateRequestDto requestDto) {
+        if (requestDto.getName() != null) {
+            this.name = requestDto.getName();
+        }
+        if (requestDto.getEmail() != null) {
+            this.email = requestDto.getEmail();
+        }
+        if (requestDto.getAddress() != null) {
+            this.address = requestDto.getAddress();
+        }
     }
 }
