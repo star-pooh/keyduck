@@ -73,10 +73,8 @@ public class Member extends BaseTime {
             this.name = requestDto.getName();
         }
         if (requestDto.getEmail() != null) {
-            Pattern pattern = Pattern.compile("^[a-zA-Z0-9_+&*-]+(?:\\." +
-                "[a-zA-Z0-9_+&*-]+)*@" +
-                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
-                "A-Z]{2,7}$");
+            Pattern pattern = Pattern.compile(
+                "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
             if (!(pattern.matcher(requestDto.getEmail()).matches())) {
                 throw new DataNotMatchException(ErrorCode.INVALID_INPUT_VALUE);
             }
