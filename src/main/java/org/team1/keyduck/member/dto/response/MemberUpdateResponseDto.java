@@ -1,25 +1,31 @@
 package org.team1.keyduck.member.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.team1.keyduck.member.entity.Address;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 
 @Getter
-@AllArgsConstructor
 public class MemberUpdateResponseDto {
 
-    private Long id;
+    private final Long id;
 
-    private String name;
+    private final String name;
 
-    private String email;
+    private final String email;
 
-    private MemberRole memberRole;
+    private final MemberRole memberRole;
 
-    private Address address;
+    private final Address address;
 
+    private MemberUpdateResponseDto(Long id, String name, String email, MemberRole memberRole,
+        Address address) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.memberRole = memberRole;
+        this.address = address;
+    }
 
     public static MemberUpdateResponseDto of(Member member) {
         return new MemberUpdateResponseDto(member.getId(), member.getName(), member.getEmail(),
