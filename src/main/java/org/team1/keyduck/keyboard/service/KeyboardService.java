@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.common.exception.DataNotFoundException;
+import org.team1.keyduck.common.exception.DuplicateDataException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.keyboard.dto.response.KeyboardDeleteResponseDto;
 import org.team1.keyduck.keyboard.entity.Keyboard;
@@ -22,6 +23,11 @@ public class KeyboardService {
 
         Keyboard keyboard = keyboardRepository.findById(keyboardId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        // 이미 삭제된 게시글 예외 처리
+        if (keyboard.isDeleted()) {
+            throw new DuplicateDataException(ErrorCode.DUPLICATE_DELETED);
+        }
 
         keyboard.softDelete();
         keyboardRepository.save(keyboard);
