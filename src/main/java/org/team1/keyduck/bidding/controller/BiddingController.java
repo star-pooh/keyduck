@@ -1,9 +1,11 @@
 package org.team1.keyduck.bidding.controller;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,16 +26,19 @@ import org.team1.keyduck.member.entity.Member;
 @RequestMapping("/api/biddings")
 public class BiddingController {
 
-    private BiddingService biddingService;
-
+    private final BiddingService biddingService;
+    //생성
     @PostMapping("/{auctionId}")
-    public ResponseEntity<ApiResponse<Bidding>> createBidding(@PathVariable("auctionId") Long auctionId,
+    public ResponseEntity<ApiResponse<Void>> createBidding(@PathVariable("auctionId") Long auctionId,
             @RequestParam("price")Long price,
-            @AuthenticationPrincipal AuthMember authmember) {
-        biddingService.createBidding(auctionId,price, authmember);
+            @AuthenticationPrincipal AuthMember authMember) {
+        biddingService.createBidding(auctionId,price, authMember);
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS),
                 SuccessCode.CREATE_SUCCESS.getStatus());
 
     }
+    //조회(경매별 입찰내역)
+
+
 
 }

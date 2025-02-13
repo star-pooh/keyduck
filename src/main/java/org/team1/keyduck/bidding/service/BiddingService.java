@@ -45,7 +45,7 @@ public class BiddingService {
             throw new BiddingNotAvailableException(ErrorCode.AUCTION_NOT_IN_PROGRESS);
         }
         //비딩 횟수가 열번째 미만이어야함
-        long biddingCount = biddingRepository.countByMemberIdAndAuctionId(authMember.getId(), auction.getId());
+        long biddingCount = biddingRepository.countByMember_IdAndAuction_Id(authMember.getId(), auction.getId());
         if(biddingCount >=10){
             throw new BiddingNotAvailableException(ErrorCode.MAX_BIDDING_COUNT_EXCEEDED);
         }
@@ -73,12 +73,13 @@ public class BiddingService {
 
     //생성 매서드
     @Transactional
-    public Bidding createBidding(Long auctionId, Long price, AuthMember authMember) {
+    public void createBidding(Long auctionId, Long price, AuthMember authMember) {
         Auction auction = findAuctionById(auctionId);
         validateAuction(auction, price, authMember);
 
         Member member = memberRepository.findById(authMember.getId())
                 .orElseThrow(()->new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
+
 
         Bidding bidding = Bidding.builder()
                         .auction(auction)
@@ -86,7 +87,7 @@ public class BiddingService {
                         .price(price)
                         .build();
 
-        return biddingRepository.save(bidding) ;
+        biddingRepository.save(bidding);
     }
 
 }
