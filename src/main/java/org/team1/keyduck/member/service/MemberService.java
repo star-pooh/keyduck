@@ -9,6 +9,7 @@ import org.team1.keyduck.common.exception.DataNotMatchException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.member.dto.request.MemberUpdatePasswordRequestDto;
 import org.team1.keyduck.member.dto.request.MemberUpdateRequestDto;
+import org.team1.keyduck.member.dto.response.MemberReadResponseDto;
 import org.team1.keyduck.member.dto.response.MemberUpdateResponseDto;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
@@ -52,5 +53,12 @@ public class MemberService {
             ErrorCode.RESOURCE_NOT_FOUND));
 
         member.deleteMember();
+    }
+
+    public MemberReadResponseDto getMember(Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
+            ErrorCode.RESOURCE_NOT_FOUND));
+
+        return MemberReadResponseDto.of(member);
     }
 }
