@@ -27,5 +27,6 @@ public class MemberCreateRequestDto {
     @NotNull(message = ValidationErrorMessage.MEMBER_ROLE_IS_NOT_NULL)
     MemberRole memberRole;
 
+    @NotNull(message = ValidationErrorMessage.ADDRESS_IS_NOT_NULL)
     Address address;
 }

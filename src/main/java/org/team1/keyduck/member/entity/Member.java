@@ -50,12 +50,11 @@ public class Member extends BaseTime {
 
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name = "city", column = @Column(name = "city", nullable = false)),
-        @AttributeOverride(name = "state", column = @Column(name = "state", nullable = false)),
-        @AttributeOverride(name = "street", column = @Column(name = "street", nullable = false)),
-        @AttributeOverride(name = "detailAddress1", column = @Column(name = "detail_address1")),
-        @AttributeOverride(name = "detailAddress2", column = @Column(name = "detail_address2"))
-
+        @AttributeOverride(name = "city", column = @Column(nullable = false)),
+        @AttributeOverride(name = "state", column = @Column(nullable = false)),
+        @AttributeOverride(name = "street", column = @Column(nullable = false)),
+        @AttributeOverride(name = "detailAddress1", column = @Column),
+        @AttributeOverride(name = "detailAddress2", column = @Column)
     })
     private Address address;
 
