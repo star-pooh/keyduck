@@ -22,7 +22,7 @@ public class MemberService {
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
             ErrorCode.RESOURCE_NOT_FOUND));
 
-        member.updateUser(requestDto);
+        member.updateMember(requestDto);
 
         return MemberUpdateResponseDto.of(member);
     }

@@ -68,7 +68,7 @@ public class Member extends BaseTime {
         this.address = address;
     }
 
-    public void updateUser(MemberUpdateRequestDto requestDto) {
+    public void updateMember(MemberUpdateRequestDto requestDto) {
         if (requestDto.getName() != null) {
             this.name = requestDto.getName();
         }
