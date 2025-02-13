@@ -3,11 +3,8 @@ package org.team1.keyduck.keyboard.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.team1.keyduck.auth.entity.AuthMember;
 import org.springframework.web.bind.annotation.*;
+import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.common.dto.ApiResponse;
 import org.team1.keyduck.common.exception.SuccessCode;
 import org.team1.keyduck.keyboard.dto.request.KeyboardUpdateRequestDto;
@@ -45,8 +42,9 @@ public class KeyboardController {
             @PathVariable Long keyboardId,
             @RequestBody KeyboardUpdateRequestDto requestDto
     ) {
-        //Todo 추후 시큐리티 로직에 따라 변동될 수 있음
-        Long sellerId = (Long) authentication.getDetails();
+        AuthMember authMember = (AuthMember) authentication.getPrincipal();
+
+        Long sellerId = authMember.getId();
 
         KeyboardUpdateResponseDto keyboardUpdateResponseDto = keyboardService.keyboardModificationService(sellerId, keyboardId, requestDto);
 
