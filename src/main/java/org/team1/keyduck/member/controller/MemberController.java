@@ -1,5 +1,6 @@
 package org.team1.keyduck.member.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,7 +35,7 @@ public class MemberController {
     @PatchMapping("/update/password")
     public ResponseEntity<ApiResponse<Void>> updatePassword(
         @AuthenticationPrincipal AuthMember authMember,
-        @RequestBody MemberUpdatePasswordRequestDto requestDto) {
+        @Valid @RequestBody MemberUpdatePasswordRequestDto requestDto) {
         memberService.updatePassword(requestDto, authMember.getId());
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.UPDATE_SUCCESS),
             SuccessCode.UPDATE_SUCCESS.getStatus());
