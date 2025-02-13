@@ -26,7 +26,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<SigninResponseDto>> signin(
         @Valid @RequestBody SigninRequestDto signinRequestDto) {
         return new ResponseEntity<>(
-            ApiResponse.success(SuccessCode.LOGIN_SUCCESS, authService.signin(signinRequestDto)),
+            ApiResponse.success(SuccessCode.LOGIN_SUCCESS, authService.login(signinRequestDto)),
             SuccessCode.LOGIN_SUCCESS.getStatus());
         }
 

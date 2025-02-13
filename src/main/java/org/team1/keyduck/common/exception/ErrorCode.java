@@ -17,9 +17,11 @@ public enum ErrorCode {
     INVALID_MEMBER_ROLE(HttpStatus.BAD_REQUEST, "ERR008", "잘못된 권한입니다."),
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "ERR009", "잘못된 토큰입니다."),
     AUCTION_NOT_IN_PROGRESS(HttpStatus.BAD_REQUEST,"ERR010","진행 중이지 않은 경매입니다."),
-    INVALID_BIDDING_PRICE_UNIT(HttpStatus.BAD_REQUEST,"ERR011","입찰 금액이 최소 입찰 단위에 맞지 않습니다."),
-    BIDDING_PRICE_BELOW_CURRENT_PRICE(HttpStatus.BAD_REQUEST,"ERR012","입찰 금액이 현재가 보다 작습니다"),
-    BIDDING_PRICE_IS_NULL(HttpStatus.BAD_REQUEST,"ERR013","입찰 금액이 입력되지 않았습니다"),
+    INVALID_BIDDING_PRICE_UNIT(HttpStatus.BAD_REQUEST,"ERR011","입찰 금액이 입찰 단위에 맞지 않습니다."),
+    BIDDING_PRICE_BELOW_CURRENT_PRICE(HttpStatus.BAD_REQUEST,"ERR012","입찰 금액이 현재가보다 커야합니다."),
+    BIDDING_PRICE_IS_NULL(HttpStatus.BAD_REQUEST,"ERR013","입찰 금액이 입력되지 않았습니다."),
+    BIDDING_PRICE_EXCEEDS_MAX_LIMIT(HttpStatus.BAD_REQUEST,"ERR014","입찰 금액은 상한가보다 작아야합니다."),
+    MAX_BIDDING_COUNT_EXCEEDED(HttpStatus.BAD_REQUEST,"ERR015","입찰 가능 횟수가 초과되었습니다."),
 
 
     //401  UNAUTHORIZED

@@ -21,7 +21,7 @@ import org.team1.keyduck.member.entity.Member;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auctions")
+@RequestMapping("/api/biddings")
 public class BiddingController {
 
     private BiddingService biddingService;

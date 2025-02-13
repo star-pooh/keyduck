@@ -42,9 +42,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
-    @ExceptionHandler(AuctionNotInProgressException.class)
-    public ResponseEntity<ApiResponse> handleAuctionNotInProgressException(
-            AuctionNotInProgressException exception){
+    @ExceptionHandler(BiddingNotAvailableException.class)
+    public ResponseEntity<ApiResponse> handleBiddingNotAvailableException(
+            BiddingNotAvailableException exception){
         ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
         log.error("{},{},{}",apiResponse.getCode(),exception.getStackTrace(),
                 apiResponse.getMessage());
