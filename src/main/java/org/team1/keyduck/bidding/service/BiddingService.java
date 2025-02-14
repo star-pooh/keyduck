@@ -1,7 +1,6 @@
 package org.team1.keyduck.bidding.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,14 +98,7 @@ public class BiddingService {
     public List<BiddingResponseDto> getBiddingByAuction(Long auctionId) {
         List<Bidding> biddings = biddingRepository.findByAuctionIdOrderByPriceDesc(auctionId);
 
-        return biddings.stream()
-                .map(bidding -> new BiddingResponseDto(
-                        bidding.getAuction().getTitle(),  // auctionTitle
-                        bidding.getMember().getName(),    // memberName
-                        bidding.getPrice(),               // biddingPrice
-                        bidding.getCreatedAt()            // biddingTime
-                ))
-                .collect(Collectors.toList());
+        return biddings.stream().map(BiddingResponseDto::of).toList();
 
     }
 }
