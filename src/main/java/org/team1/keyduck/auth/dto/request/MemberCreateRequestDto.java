@@ -1,11 +1,11 @@
 package org.team1.keyduck.auth.dto.request;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import org.team1.keyduck.common.util.ValidationErrorMessage;
+import org.team1.keyduck.member.entity.Address;
 import org.team1.keyduck.member.entity.MemberRole;
 
 
@@ -16,7 +16,7 @@ public class MemberCreateRequestDto {
     String name;
 
     @NotBlank(message = ValidationErrorMessage.EMAIL_IS_NOT_NULL)
-    @Email(message = ValidationErrorMessage.EMAIL_IS_NOT_VALID)
+    @Pattern(regexp = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$", message = ValidationErrorMessage.EMAIL_IS_NOT_VALID)
     String email;
 
     @NotBlank(message = ValidationErrorMessage.PASSWORD_IS_NOT_NULL)
@@ -25,4 +25,7 @@ public class MemberCreateRequestDto {
 
     @NotNull(message = ValidationErrorMessage.MEMBER_ROLE_IS_NOT_NULL)
     MemberRole memberRole;
+
+    @NotNull(message = ValidationErrorMessage.ADDRESS_IS_NOT_NULL)
+    Address address;
 }
