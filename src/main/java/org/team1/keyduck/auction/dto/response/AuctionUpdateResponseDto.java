@@ -44,8 +44,8 @@ public class AuctionUpdateResponseDto {
                 auction.getStartPrice(),
                 auction.getImmediatePurchasePrice(),
                 auction.getBiddingUnit(),
-                auction.getBiddingStartDate(),
-                auction.getBiddingEndDate()
+                auction.getAuctionStartDate(),
+                auction.getAuctionEndDate()
         );
     }
 }

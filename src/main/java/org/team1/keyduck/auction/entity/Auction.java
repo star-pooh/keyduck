@@ -87,8 +87,8 @@ public class Auction {
         this.startPrice = requestDto.getStartPrice();
         this.immediatePurchasePrice = requestDto.getImmediatePurchasePrice();
         this.biddingUnit = requestDto.getBiddingUnit();
-        this.biddingStartDate = requestDto.getAuctionStartDate();
-        this.biddingEndDate = requestDto.getAuctionEndDate();
+        this.auctionStartDate = requestDto.getAuctionStartDate();
+        this.auctionEndDate = requestDto.getAuctionEndDate();
     }
 }
 
