@@ -55,6 +55,7 @@ public class MemberService {
         member.deleteMember();
     }
 
+    @Transactional(readOnly = true)
     public MemberReadResponseDto getMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
             ErrorCode.USER_NOT_FOUND));

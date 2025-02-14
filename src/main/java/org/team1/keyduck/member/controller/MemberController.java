@@ -54,8 +54,7 @@ public class MemberController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<MemberReadResponseDto>> getMember(
-        @AuthenticationPrincipal AuthMember authMember
-    ) {
+        @AuthenticationPrincipal AuthMember authMember) {
         ApiResponse<MemberReadResponseDto> response = ApiResponse.success(
             SuccessCode.READ_SUCCESS, memberService.getMember(authMember.getId())
         );
