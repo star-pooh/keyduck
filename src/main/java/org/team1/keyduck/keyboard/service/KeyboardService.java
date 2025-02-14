@@ -21,10 +21,9 @@ public class KeyboardService {
 
     // 키보드 생성
     @Transactional
-    public KeyboardCreateResponseDto createKeyboard(KeyboardCreateRequestDto requestDto) {
-        // 저장한 유저아이디 가져오기(추후 토큰 적용)
+    public KeyboardCreateResponseDto createKeyboard(Long memberId, KeyboardCreateRequestDto requestDto) {
 
-        Member member = memberRepository.findById(requestDto.getMemberId())
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
 
         Keyboard keyboard = Keyboard.builder()
@@ -32,8 +31,6 @@ public class KeyboardService {
                 .name(requestDto.getName())
                 .description(requestDto.getDescription())
                 .build();
-
-        keyboardRepository.save(keyboard);
 
         return KeyboardCreateResponseDto.of(keyboard);
     }
