@@ -25,7 +25,7 @@ public class MemberService {
     public MemberUpdateResponseDto updateMember(MemberUpdateRequestDto requestDto, Long id) {
 
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
-            ErrorCode.RESOURCE_NOT_FOUND));
+            ErrorCode.USER_NOT_FOUND));
 
         member.updateMember(requestDto);
 
@@ -36,7 +36,7 @@ public class MemberService {
     public void updatePassword(MemberUpdatePasswordRequestDto requestDto, Long id) {
 
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
-            ErrorCode.RESOURCE_NOT_FOUND));
+            ErrorCode.USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(requestDto.getBeforePassword(), member.getPassword())) {
             throw new DataNotMatchException(ErrorCode.INVALID_INPUT_VALUE);
@@ -50,7 +50,7 @@ public class MemberService {
     @Transactional
     public void deleteMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
-            ErrorCode.RESOURCE_NOT_FOUND));
+            ErrorCode.USER_NOT_FOUND));
 
         member.deleteMember();
     }
