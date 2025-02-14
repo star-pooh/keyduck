@@ -57,7 +57,7 @@ public class MemberService {
 
     public MemberReadResponseDto getMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
-            ErrorCode.RESOURCE_NOT_FOUND));
+            ErrorCode.USER_NOT_FOUND));
 
         return MemberReadResponseDto.of(member);
     }
