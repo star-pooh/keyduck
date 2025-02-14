@@ -10,14 +10,14 @@ public class BiddingResponseDto {
     private String auctionTitle;
     private String memberName;
     private Long biddingPrice;
-    private LocalDateTime biddingTime;
+    private LocalDateTime createdAt;
 
     public BiddingResponseDto(String auctionTitle, String memberName, Long biddingPrice,
-            LocalDateTime biddingTime) {
+            LocalDateTime createdAt) {
         this.auctionTitle = auctionTitle;
         this.memberName = memberName;
         this.biddingPrice = biddingPrice;
-        this.biddingTime = biddingTime;
+        this.createdAt = createdAt;
     }
 
     public static BiddingResponseDto of(Bidding bidding) {

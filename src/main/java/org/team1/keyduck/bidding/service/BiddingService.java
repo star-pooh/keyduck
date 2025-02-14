@@ -107,13 +107,6 @@ public class BiddingService {
         List<Bidding> biddingList = biddingRepository.findByMember_IdAndAuction_Id(memberId,
                 auctionId);
 
-        return biddingList.stream()
-                .map(bidding -> new BiddingResponseDto(
-                        bidding.getAuction().getTitle(),  // auctionTitle
-                        bidding.getMember().getName(),    // memberName
-                        bidding.getPrice(),               // biddingPrice
-                        bidding.getCreatedAt()            // biddingTime
-                ))
-                .collect(Collectors.toList());
+        return biddingList.stream().map(BiddingResponseDto::of).toList();
     }
 }
