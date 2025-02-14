@@ -35,7 +35,7 @@ public class MemberController {
         return new ResponseEntity<>(response, response.getStatus());
     }
 
-    @PatchMapping("/update/password")
+    @PatchMapping("/password")
     public ResponseEntity<ApiResponse<Void>> updatePassword(
         @AuthenticationPrincipal AuthMember authMember,
         @Valid @RequestBody MemberUpdatePasswordRequestDto requestDto) {
@@ -46,8 +46,7 @@ public class MemberController {
 
     @DeleteMapping
     public ResponseEntity<ApiResponse<Void>> deleteMember(
-        @AuthenticationPrincipal AuthMember authMember
-    ) {
+        @AuthenticationPrincipal AuthMember authMember) {
         memberService.deleteMember(authMember.getId());
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.DELETE_SUCCESS),
             SuccessCode.DELETE_SUCCESS.getStatus());
