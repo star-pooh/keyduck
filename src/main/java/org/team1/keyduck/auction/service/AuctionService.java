@@ -38,8 +38,8 @@ public class AuctionService {
                 .immediatePurchasePrice(requestDto.getImmediatePurchasePrice())
                 .currentPrice(requestDto.getStartPrice())
                 .biddingUnit(requestDto.getBiddingUnit())
-                .biddingStartDate(requestDto.getAuctionStartDate())
-                .biddingEndDate(requestDto.getAuctionEndDate())
+                .auctionStartDate(requestDto.getAuctionStartDate())
+                .auctionEndDate(requestDto.getAuctionEndDate())
                 .auctionStatus(AuctionStatus.NOT_STARTED)
                 .build();
 
