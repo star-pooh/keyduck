@@ -17,7 +17,6 @@ import org.team1.keyduck.common.dto.ApiResponse;
 import org.team1.keyduck.common.exception.SuccessCode;
 
 @RestController
-@RequestMapping
 @RequiredArgsConstructor
 @RequestMapping("/api/biddings")
 public class BiddingController {
