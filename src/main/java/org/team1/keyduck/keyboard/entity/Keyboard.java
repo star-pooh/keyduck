@@ -26,10 +26,10 @@ public class Keyboard extends BaseTime {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
     @Column

@@ -85,4 +85,12 @@ public class Member extends BaseTime {
             this.address = requestDto.getAddress();
         }
     }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void deleteMember() {
+        this.isDeleted = true;
+    }
 }
