@@ -102,5 +102,10 @@ public class Auction {
             this.biddingEndDate = requestDto.getBiddingEndDate();
         }
     }
+
+    public void updateCurrentPrice(Long price) {
+        this.currentPrice = price;
+    }
+
 }
 

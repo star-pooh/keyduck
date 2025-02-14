@@ -76,6 +76,9 @@ public class BiddingService {
                 .build();
 
         biddingRepository.save(bidding);
+
+        //현재가 엽데이트
+        auction.updateCurrentPrice(price);
     }
 
 
