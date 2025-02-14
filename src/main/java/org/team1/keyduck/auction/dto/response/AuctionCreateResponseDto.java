@@ -22,10 +22,10 @@ public class AuctionCreateResponseDto {
     private int biddingUnit;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime biddingStartDate;
+    private LocalDateTime auctionStartTime;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime biddingEndDate;
+    private LocalDateTime auctionEndTime;
 
     private AuctionStatus auctionStatus;
 
@@ -36,8 +36,8 @@ public class AuctionCreateResponseDto {
                 auction.getStartPrice(),
                 auction.getImmediatePurchasePrice(),
                 auction.getBiddingUnit(),
-                auction.getBiddingStartDate(),
-                auction.getBiddingEndDate(),
+                auction.getAuctionStartDate(),
+                auction.getAuctionEndDate(),
                 auction.getAuctionStatus()
         );
     }

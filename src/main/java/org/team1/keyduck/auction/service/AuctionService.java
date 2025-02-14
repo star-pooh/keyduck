@@ -43,8 +43,8 @@ public class AuctionService {
                 .startPrice(requestDto.getStartPrice())
                 .immediatePurchasePrice(requestDto.getImmediatePurchasePrice())
                 .biddingUnit(requestDto.getBiddingUnit())
-                .biddingStartDate(requestDto.getBiddingStartDate())
-                .biddingEndDate(requestDto.getBiddingEndDate())
+                .auctionStartDate(requestDto.getBiddingStartDate())
+                .auctionEndDate(requestDto.getBiddingEndDate())
                 .build();
 
         Auction saveAuction = auctionRepository.save(auction);
