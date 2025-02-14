@@ -26,6 +26,10 @@ public class AuthService {
         Member member = memberRepository.findByEmail(signinRequest.getEmail())
             .orElseThrow(() -> new DataNotFoundException(ErrorCode.LOGIN_FAILED));
 
+        if (member.isDeleted()) {
+            throw new DataNotFoundException(ErrorCode.LOGIN_FAILED);
+        }
+
         if (!passwordEncoder.matches(signinRequest.getPassword(), member.getPassword())) {
             throw new DataNotMatchException(ErrorCode.LOGIN_FAILED);
         }
