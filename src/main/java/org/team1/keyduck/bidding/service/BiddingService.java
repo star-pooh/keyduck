@@ -31,7 +31,6 @@ public class BiddingService {
 
     //비딩참여가 가능한 상태인지 검증
     private void validateBiddingAvailability(Auction auction, AuthMember authMember) {
-
         //경매가 진행 중이어야 가능
         if (!auction.getAuctionStatus().equals(AuctionStatus.IN_PROGRESS)) {
             throw new BiddingNotAvailableException(ErrorCode.AUCTION_NOT_IN_PROGRESS);
@@ -73,6 +72,9 @@ public class BiddingService {
 
         Member member = memberRepository.findById(authMember.getId())
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        validateBiddingAvailability(auction, authMember);
+        validateBiddingPrice(price, auction);
 
         Bidding bidding = Bidding.builder()
                 .auction(auction)
