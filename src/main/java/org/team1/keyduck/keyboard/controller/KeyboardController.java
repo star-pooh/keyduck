@@ -26,6 +26,7 @@ import org.team1.keyduck.keyboard.service.KeyboardService;
 @RequestMapping("/api/keyboards")
 @RequiredArgsConstructor
 public class KeyboardController {
+
     private final KeyboardService keyboardService;
 
     // 키보드 생성 API
@@ -34,7 +35,8 @@ public class KeyboardController {
             @AuthenticationPrincipal AuthMember authMember,
             @RequestBody @Valid KeyboardCreateRequestDto requestDto) {
 
-        KeyboardCreateResponseDto response = keyboardService.createKeyboard(authMember.getId(), requestDto);
+        KeyboardCreateResponseDto response = keyboardService.createKeyboard(authMember.getId(),
+                requestDto);
 
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS, response),
                 SuccessCode.CREATE_SUCCESS.getStatus());
@@ -42,9 +44,8 @@ public class KeyboardController {
 
     @GetMapping("/mine")
     public ResponseEntity<ApiResponse<List<KeyboardReadResponseDto>>> findKeyboardBySellerId(
-            @AuthenticationPrincipal AuthMember authMember
-    ) {
-        List<KeyboardReadResponseDto> keyboardReadResponseDto = keyboardService.findKeyboardBySellerIdService(
+            @AuthenticationPrincipal AuthMember authMember) {
+        List<KeyboardReadResponseDto> keyboardReadResponseDto = keyboardService.findKeyboardBySellerId(
                 authMember.getId());
 
         ApiResponse<List<KeyboardReadResponseDto>> response = ApiResponse.success(
@@ -57,9 +58,8 @@ public class KeyboardController {
     public ResponseEntity<ApiResponse<KeyboardUpdateResponseDto>> keyboardModification(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable Long keyboardId,
-            @RequestBody KeyboardUpdateRequestDto requestDto
-    ) {
-        KeyboardUpdateResponseDto keyboardUpdateResponseDto = keyboardService.keyboardModificationService(
+            @Valid @RequestBody KeyboardUpdateRequestDto requestDto) {
+        KeyboardUpdateResponseDto keyboardUpdateResponseDto = keyboardService.keyboardModification(
                 authMember.getId(), keyboardId, requestDto);
 
         ApiResponse<KeyboardUpdateResponseDto> response = ApiResponse.success(

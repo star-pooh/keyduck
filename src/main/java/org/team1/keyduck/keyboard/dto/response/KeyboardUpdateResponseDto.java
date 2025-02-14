@@ -1,16 +1,19 @@
 package org.team1.keyduck.keyboard.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 
 @Getter
-@AllArgsConstructor
 public class KeyboardUpdateResponseDto {
 
-    private String name;
+    private final String name;
 
-    private String description;
+    private final String description;
+
+    private KeyboardUpdateResponseDto(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
 
     public static KeyboardUpdateResponseDto of(Keyboard keyboard) {
         return new KeyboardUpdateResponseDto(
@@ -18,5 +21,4 @@ public class KeyboardUpdateResponseDto {
                 keyboard.getDescription()
         );
     }
-
 }

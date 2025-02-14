@@ -26,7 +26,8 @@ public class KeyboardService {
 
     // 키보드 생성
     @Transactional
-    public KeyboardCreateResponseDto createKeyboard(Long memberId, KeyboardCreateRequestDto requestDto) {
+    public KeyboardCreateResponseDto createKeyboard(Long memberId,
+            KeyboardCreateRequestDto requestDto) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
@@ -41,7 +42,7 @@ public class KeyboardService {
     }
 
     @Transactional(readOnly = true)
-    public List<KeyboardReadResponseDto> findKeyboardBySellerIdService(Long sellerId) {
+    public List<KeyboardReadResponseDto> findKeyboardBySellerId(Long sellerId) {
 
         List<Keyboard> keyboards = keyboardRepository.findAllByMemberId(sellerId);
 
@@ -51,7 +52,7 @@ public class KeyboardService {
     }
 
     @Transactional
-    public KeyboardUpdateResponseDto keyboardModificationService(Long sellerId, Long keyboardId,
+    public KeyboardUpdateResponseDto keyboardModification(Long sellerId, Long keyboardId,
             KeyboardUpdateRequestDto requestDto) {
 
         Keyboard findKeyboard = keyboardRepository.findById(keyboardId)
@@ -61,13 +62,8 @@ public class KeyboardService {
             throw new DataMismatchException(ErrorCode.FORBIDDEN_ACCESS);
         }
 
-        findKeyboard.updateName(requestDto.getName());
+        findKeyboard.updateKeyboard(requestDto);
 
-        findKeyboard.updateDescriptions(requestDto.getDescription());
-
-        Keyboard saveKeyboard = keyboardRepository.save(findKeyboard);
-
-        return KeyboardUpdateResponseDto.of(saveKeyboard);
+        return KeyboardUpdateResponseDto.of(findKeyboard);
     }
-
 }
