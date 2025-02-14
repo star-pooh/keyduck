@@ -26,6 +26,10 @@ public class AuthService {
         Member member = memberRepository.findByEmail(signinRequest.getEmail())
             .orElseThrow(() -> new DataNotFoundException(ErrorCode.LOGIN_FAILED));
 
+        if (member.isDeleted()) {
+            throw new DataNotFoundException(ErrorCode.LOGIN_FAILED);
+        }
+
         if (!passwordEncoder.matches(signinRequest.getPassword(), member.getPassword())) {
             throw new DataNotMatchException(ErrorCode.LOGIN_FAILED);
         }
@@ -43,6 +47,7 @@ public class AuthService {
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
 
         Member member = Member.builder().name(requestDto.getName())
+            .address(requestDto.getAddress())
             .memberRole(requestDto.getMemberRole()).email(requestDto.getEmail())
             .password(encodedPassword).build();
 
