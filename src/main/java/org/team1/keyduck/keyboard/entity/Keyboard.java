@@ -49,7 +49,7 @@ public class Keyboard extends BaseTime {
         this.isDeleted = false;
     }
 
-    public void softDelete() {
+    public void deleteKeyboard() {
         this.isDeleted = true;
     }
 
