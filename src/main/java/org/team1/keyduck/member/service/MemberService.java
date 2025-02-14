@@ -49,7 +49,7 @@ public class MemberService {
     @Transactional
     public void deleteMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
-            ErrorCode.RESOURCE_NOT_FOUND));
+            ErrorCode.USER_NOT_FOUND));
 
         member.deleteMember();
     }
