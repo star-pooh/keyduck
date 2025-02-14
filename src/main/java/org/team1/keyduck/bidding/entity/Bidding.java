@@ -49,9 +49,8 @@ public class Bidding {
     private LocalDateTime createdAt;
 
 
-
     @Builder
-    public Bidding(Auction auction, Member member, Long price, int participationCount) {
+    public Bidding(Auction auction, Member member, Long price) {
         this.auction = auction;
         this.member = member;
         this.price = price;
