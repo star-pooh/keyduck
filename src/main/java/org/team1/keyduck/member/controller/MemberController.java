@@ -44,8 +44,7 @@ public class MemberController {
 
     @DeleteMapping
     public ResponseEntity<ApiResponse<Void>> deleteMember(
-        @AuthenticationPrincipal AuthMember authMember
-    ) {
+        @AuthenticationPrincipal AuthMember authMember) {
         memberService.deleteMember(authMember.getId());
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.DELETE_SUCCESS),
             SuccessCode.DELETE_SUCCESS.getStatus());
