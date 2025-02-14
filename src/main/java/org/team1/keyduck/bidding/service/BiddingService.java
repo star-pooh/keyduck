@@ -1,19 +1,24 @@
 package org.team1.keyduck.bidding.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.auth.entity.AuthMember;
+import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 import org.team1.keyduck.bidding.entity.Bidding;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
+import org.team1.keyduck.common.dto.ApiResponse;
 import org.team1.keyduck.common.exception.BiddingNotAvailableException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.InvalidBiddingPriceException;
+import org.team1.keyduck.common.exception.SuccessCode;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
 
@@ -78,7 +83,8 @@ public class BiddingService {
 
     //생성 매서드
     @Transactional
-    public void createBidding(Long auctionId, Long price, AuthMember authMember) {
+    public ResponseEntity<ApiResponse> createBidding(Long auctionId, Long price,
+            AuthMember authMember) {
         Auction auction = findAuctionById(auctionId);
         validateAuction(auction, price, authMember);
 
@@ -92,11 +98,28 @@ public class BiddingService {
                 .build();
 
         biddingRepository.save(bidding);
+
+        auction.updateCurrentPrice(price);
+
+        BiddingResponseDto responseDto = BiddingResponseDto.of(bidding);
+
+        return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS),
+                SuccessCode.CREATE_SUCCESS.getStatus());
     }
+
 
     // 경매별 입찰 내역 조회
-    public List<Bidding> getBiddingByAuction(Long auctionId) {
-        return biddingRepository.findByAuctionIdOrderByPriceDesc(auctionId);
-    }
+    public List<BiddingResponseDto> getBiddingByAuction(Long auctionId) {
+        List<Bidding> biddings = biddingRepository.findByAuctionIdOrderByPriceDesc(auctionId);
 
+        return biddings.stream()
+                .map(bidding -> new BiddingResponseDto(
+                        bidding.getAuction().getTitle(),  // auctionTitle
+                        bidding.getMember().getName(),    // memberName
+                        bidding.getPrice(),               // biddingPrice
+                        bidding.getCreatedAt()            // biddingTime
+                ))
+                .collect(Collectors.toList());
+
+    }
 }

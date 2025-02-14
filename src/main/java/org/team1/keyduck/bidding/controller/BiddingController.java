@@ -2,7 +2,6 @@ package org.team1.keyduck.bidding.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.team1.keyduck.auth.entity.AuthMember;
-import org.team1.keyduck.bidding.entity.Bidding;
+import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 import org.team1.keyduck.bidding.service.BiddingService;
 import org.team1.keyduck.common.dto.ApiResponse;
 import org.team1.keyduck.common.exception.SuccessCode;
@@ -38,10 +37,13 @@ public class BiddingController {
 
     //조회(경매별 입찰내역)
     @GetMapping("/{auctionId}")
-    public ResponseEntity<ApiResponse<List<Bidding>>> getBiddingList(@PathVariable Long auctionId) {
-        List<Bidding> biddingList = biddingService.getBiddingByAuction(auctionId);
-        return new ResponseEntity<>(ApiResponse.success(SuccessCode.READ_SUCCESS, biddingList),
-                HttpStatus.OK);
+    public ResponseEntity<ApiResponse<List<BiddingResponseDto>>> getBiddingList(
+            @PathVariable Long auctionId) {
+        List<BiddingResponseDto> biddingResponseDtos = biddingService.getBiddingByAuction(
+                auctionId);
+        return new ResponseEntity<>(
+                ApiResponse.success(SuccessCode.READ_SUCCESS, biddingResponseDtos),
+                SuccessCode.READ_SUCCESS.getStatus());
     }
 
 
