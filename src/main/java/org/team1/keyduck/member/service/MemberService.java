@@ -45,4 +45,12 @@ public class MemberService {
 
         member.updatePassword(encodedModifyPassword);
     }
+
+    @Transactional
+    public void deleteMember(Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
+            ErrorCode.USER_NOT_FOUND));
+
+        member.deleteMember();
+    }
 }

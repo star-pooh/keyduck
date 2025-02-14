@@ -89,4 +89,8 @@ public class Member extends BaseTime {
     public void updatePassword(String password) {
         this.password = password;
     }
+
+    public void deleteMember() {
+        this.isDeleted = true;
+    }
 }
