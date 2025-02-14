@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.keyboard.dto.request.KeyboardCreateRequestDto;
 import org.team1.keyduck.keyboard.dto.response.KeyboardCreateResponseDto;
 import org.team1.keyduck.keyboard.entity.Keyboard;
@@ -66,6 +68,26 @@ class KeyboardServiceTest {
         assertEquals(result.getName(), name);
         assertEquals(result.getDescription(), description);
 
+    }
+
+    @Test
+    @DisplayName("키보드 생성 메서드(실패 케이스) - 유저가 존재하지 않는 경우")
+    void createKeyboard_fail() {
+
+        // give
+        Long memberId = 1L;
+        String name = "키보드";
+        String description = "키보드입니다.";
+
+        when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
+
+        KeyboardCreateRequestDto requestDto = new KeyboardCreateRequestDto(memberId, name, description);
+        // when
+
+        // then
+        Assertions.assertThrows(DataNotFoundException.class, () -> {
+            KeyboardCreateResponseDto result = keyboardService.createKeyboard(requestDto);
+        });
 
 
     }
