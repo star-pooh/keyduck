@@ -65,9 +65,9 @@ public class Auction {
 
     @Builder
     public Auction(Keyboard keyboard, Member member, String title, Long startPrice,
-        Long immediatePurchasePrice,
-        Long currentPrice, int biddingUnit, LocalDateTime biddingStartDate,
-        LocalDateTime biddingEndDate, AuctionStatus auctionStatus) {
+            Long immediatePurchasePrice,
+            Long currentPrice, int biddingUnit, LocalDateTime biddingStartDate,
+            LocalDateTime biddingEndDate, AuctionStatus auctionStatus) {
         this.keyboard = keyboard;
         this.member = member;
         this.title = title;
