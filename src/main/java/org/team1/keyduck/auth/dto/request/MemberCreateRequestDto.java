@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import org.team1.keyduck.common.util.ValidationErrorMessage;
+import org.team1.keyduck.member.entity.Address;
 import org.team1.keyduck.member.entity.MemberRole;
 
 
@@ -25,4 +26,7 @@ public class MemberCreateRequestDto {
 
     @NotNull(message = ValidationErrorMessage.MEMBER_ROLE_IS_NOT_NULL)
     MemberRole memberRole;
+
+    @NotNull(message = ValidationErrorMessage.ADDRESS_IS_NOT_NULL)
+    Address address;
 }
