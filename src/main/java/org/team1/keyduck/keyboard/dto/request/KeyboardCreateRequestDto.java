@@ -7,9 +7,6 @@ import lombok.Getter;
 @Getter
 public class KeyboardCreateRequestDto {
 
-    @NotNull(message = "회원 Id값을 입력해주세요.")
-    private Long memberId;
-
     @NotBlank(message = "상품 이름을 입력해주세요.")
     private String name;
 
