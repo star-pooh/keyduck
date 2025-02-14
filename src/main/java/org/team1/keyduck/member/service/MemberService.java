@@ -2,9 +2,11 @@ package org.team1.keyduck.member.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.team1.keyduck.common.exception.DuplicateDataException;
+import org.springframework.transaction.annotation.Transactional;
+import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
-import org.team1.keyduck.member.dto.request.MemberCreateRequestDto;
+import org.team1.keyduck.member.dto.request.MemberUpdateRequestDto;
+import org.team1.keyduck.member.dto.response.MemberUpdateResponseDto;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
 
@@ -14,16 +16,14 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public void createMember(MemberCreateRequestDto requestDto) {
+    @Transactional
+    public MemberUpdateResponseDto updateMember(MemberUpdateRequestDto requestDto, Long id) {
 
-        if (memberRepository.existsByEmail(requestDto.getEmail())) {
-            throw new DuplicateDataException(ErrorCode.DUPLICATE_EMAIL);
-        }
+        Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
+            ErrorCode.USER_NOT_FOUND));
 
-        Member member = Member.builder().name(requestDto.getName())
-            .memberRole(requestDto.getMemberRole()).email(requestDto.getEmail())
-            .password(requestDto.getPassword()).build();
+        member.updateMember(requestDto);
 
-        memberRepository.save(member);
+        return MemberUpdateResponseDto.of(member);
     }
 }

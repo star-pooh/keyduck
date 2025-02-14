@@ -1,15 +1,17 @@
 package org.team1.keyduck.member.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.common.dto.ApiResponse;
 import org.team1.keyduck.common.exception.SuccessCode;
-import org.team1.keyduck.member.dto.request.MemberCreateRequestDto;
+import org.team1.keyduck.member.dto.request.MemberUpdateRequestDto;
+import org.team1.keyduck.member.dto.response.MemberUpdateResponseDto;
 import org.team1.keyduck.member.service.MemberService;
 
 @RestController
@@ -19,12 +21,13 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createMember(
-        @RequestBody @Valid MemberCreateRequestDto requestDto) {
-        memberService.createMember(requestDto);
-        return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS),
-            SuccessCode.CREATE_SUCCESS.getStatus());
+    @PatchMapping
+    public ResponseEntity<ApiResponse<MemberUpdateResponseDto>> updateMember(
+        @AuthenticationPrincipal
+        AuthMember authMember, @RequestBody MemberUpdateRequestDto requestDto) {
+        ApiResponse<MemberUpdateResponseDto> response = ApiResponse.success(
+            SuccessCode.UPDATE_SUCCESS, memberService.updateMember(requestDto, authMember.getId()));
+        return new ResponseEntity<>(response, response.getStatus());
     }
 
 
