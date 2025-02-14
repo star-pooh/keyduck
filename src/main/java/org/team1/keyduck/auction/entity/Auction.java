@@ -65,7 +65,8 @@ public class Auction {
     private AuctionStatus auctionStatus;
 
     @Builder
-    public Auction(Keyboard keyboard, Member member, String title, Long startPrice,
+    public Auction(
+            Keyboard keyboard, Member member, String title, Long startPrice,
             Long immediatePurchasePrice,
             Long currentPrice, int biddingUnit, LocalDateTime biddingStartDate,
             LocalDateTime biddingEndDate, AuctionStatus auctionStatus) {
@@ -83,24 +84,12 @@ public class Auction {
 
     public void updateAuction(AuctionUpdateRequestDto requestDto) {
 
-        if (requestDto.getTitle() != null && !requestDto.getTitle().isEmpty()) {
-            this.title = requestDto.getTitle();
-        }
-        if (requestDto.getStartPrice() != null) {
-            this.startPrice = requestDto.getStartPrice();
-        }
-        if (requestDto.getImmediatePurchasePrice() != null) {
-            this.immediatePurchasePrice = requestDto.getImmediatePurchasePrice();
-        }
-        if (requestDto.getBiddingUnit() != 0) {
-            this.biddingUnit = requestDto.getBiddingUnit();
-        }
-        if (requestDto.getBiddingStartDate() != null) {
-            this.biddingStartDate = requestDto.getBiddingStartDate();
-        }
-        if (requestDto.getBiddingEndDate() != null) {
-            this.biddingEndDate = requestDto.getBiddingEndDate();
-        }
+        this.title = requestDto.getTitle();
+        this.startPrice = requestDto.getStartPrice();
+        this.immediatePurchasePrice = requestDto.getImmediatePurchasePrice();
+        this.biddingUnit = requestDto.getBiddingUnit();
+        this.biddingStartDate = requestDto.getAuctionStartDate();
+        this.biddingEndDate = requestDto.getAuctionEndDate();
     }
 }
 

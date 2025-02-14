@@ -25,10 +25,10 @@ public class AuctionUpdateRequestDto {
 
     @NotNull(message = "경매 시작일은 필수 입력 값입니다.")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime biddingStartDate;
+    private LocalDateTime auctionStartDate;
 
     @Future
     @NotNull(message = "경매 종료일은 필수 입력 값입니다.")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime biddingEndDate;
+    private LocalDateTime auctionEndDate;
 }

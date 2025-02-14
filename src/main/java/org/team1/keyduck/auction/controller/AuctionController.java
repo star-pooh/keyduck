@@ -27,10 +27,8 @@ public class AuctionController {
     public ResponseEntity<ApiResponse<AuctionUpdateResponseDto>> auctionModification(
             @AuthenticationPrincipal AuthMember authMember,
             @PathVariable Long auctionId,
-            @Valid
-            @RequestBody AuctionUpdateRequestDto requestDto
-    ) {
-        AuctionUpdateResponseDto responseDto = auctionService.auctionModificationService(
+            @Valid @RequestBody AuctionUpdateRequestDto requestDto) {
+        AuctionUpdateResponseDto responseDto = auctionService.auctionModification(
                 authMember.getId(), auctionId, requestDto);
 
         ApiResponse<AuctionUpdateResponseDto> response = ApiResponse.success(
