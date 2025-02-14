@@ -37,7 +37,7 @@ class MemberServiceTest {
 
 
     @Test
-    void 멤버_업데이트_성공() {
+    void 성공_케이스_멤버_업데이트() {
         //given
         Long initMemberId = 1L;
         Address address = new Address("서울시", "강남구", "테헤란로", "상세주소", "상세주소");
@@ -58,32 +58,28 @@ class MemberServiceTest {
         MemberUpdateResponseDto actualMember = memberService.updateMember(requestDto, initMemberId);
 
         //then
-        assertThat(actualMember)
-            .usingRecursiveComparison()
-            .ignoringFields("id")
-            .ignoringFields("createdAt")
-            .ignoringFields("modifiedAt")
-            .ignoringFields("password")
+        assertThat(actualMember).usingRecursiveComparison().ignoringFields("id")
+            .ignoringFields("createdAt").ignoringFields("modifiedAt").ignoringFields("password")
             .isEqualTo(expectMember);
 
     }
 
     @Test
-    void 멤버_업데이트_이메일_형식_안맞음() {
+    void 실패_케이스_멤버_업데이트_이메일_형식_불일치() {
 
+        //given
         Long initMemberId = 1L;
         Address address = new Address("서울시", "강남구", "테헤란로", "상세주소", "상세주소");
         Member beforeMember = new Member("gege", "gege@naver.com", "1234", MemberRole.CUSTOMER,
             address);
-        Member expectedMember = new Member("hehe", "heehee@naver.com", "5678", MemberRole.CUSTOMER,
+        Member expectedMember = new Member("hehe", "heer.com", "5678", MemberRole.CUSTOMER,
             address);
 
-        //given
         MemberUpdateRequestDto requestDto = mock(MemberUpdateRequestDto.class);
 
         when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(beforeMember));
         when(requestDto.getName()).thenReturn(expectedMember.getName());
-        when(requestDto.getEmail()).thenReturn("dasdwaqdasfasdasd");
+        when(requestDto.getEmail()).thenReturn(expectedMember.getEmail());
 
         //when&then
         assertThrows(DataNotMatchException.class, () -> {
@@ -93,7 +89,8 @@ class MemberServiceTest {
     }
 
     @Test
-    void 비밀번호_업데이트_성공() {
+    void 성공_케이스_비밀번호_업데이트() {
+        //given
         Long initMemberId = 1L;
         Address address = new Address("서울시", "강남구", "테헤란로", "상세주소", "상세주소");
         Member beforeMember = new Member("gege", "gege@naver.com", "1234", MemberRole.CUSTOMER,
@@ -101,24 +98,25 @@ class MemberServiceTest {
         Member expectedMember = new Member("hehe", "heehee@naver.com", "5678", MemberRole.CUSTOMER,
             address);
 
-        //given
         MemberUpdatePasswordRequestDto requestDto = mock(MemberUpdatePasswordRequestDto.class);
 
         when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(beforeMember));
-        when(requestDto.getBeforePassword()).thenReturn("1234");
+        when(requestDto.getBeforePassword()).thenReturn(beforeMember.getPassword());
         when(passwordEncoder.matches(any(String.class), any(String.class))).thenReturn(true);
         when(requestDto.getModifyPassword()).thenReturn(expectedMember.getPassword());
         when(passwordEncoder.encode(any(String.class))).thenReturn(expectedMember.getPassword());
 
+        //when
         memberService.updatePassword(requestDto, initMemberId);
 
+        //then
         assertThat(beforeMember.getPassword()).isEqualTo(expectedMember.getPassword());
 
     }
 
     @Test
-    void 기존_비밀번호_불일치() {
-
+    void 실패_케이스_비밀번호_수정_기존_비밀번호_불일치() {
+        //given
         Long initMemberId = 1L;
         Address address = new Address("서울시", "강남구", "테헤란로", "상세주소", "상세주소");
         Member beforeMember = new Member("gege", "gege@naver.com", "1234", MemberRole.CUSTOMER,
@@ -126,9 +124,11 @@ class MemberServiceTest {
         Member expectedMember = new Member("hehe", "heehee@naver.com", "5678", MemberRole.CUSTOMER,
             address);
         MemberUpdatePasswordRequestDto requestDto = mock(MemberUpdatePasswordRequestDto.class);
+
         when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(beforeMember));
         when(requestDto.getBeforePassword()).thenReturn(expectedMember.getPassword());
 
+        //when&then
         assertThrows(DataNotMatchException.class, () -> {
             memberService.updatePassword(requestDto, initMemberId);
         });
@@ -137,19 +137,20 @@ class MemberServiceTest {
 
 
     @Test
-    void 멤버_조회() {
+    void 성공_케이스_멤버_조회() {
+        //given
         Long initMemberId = 1L;
         Address address = new Address("서울시", "강남구", "테헤란로", "상세주소", "상세주소");
-        Member member = new Member("gege", "gege@naver.com", "1234", MemberRole.CUSTOMER,
-            address);
+        Member member = new Member("gege", "gege@naver.com", "1234", MemberRole.CUSTOMER, address);
+        MemberReadResponseDto expectMember = MemberReadResponseDto.of(member);
+
         when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
 
-        MemberReadResponseDto expectMember = MemberReadResponseDto.of(member);
+        //when
         MemberReadResponseDto actualMember = memberService.getMember(initMemberId);
 
-        assertThat(actualMember)
-            .usingRecursiveComparison()
-            .ignoringFields("id")
+        //then
+        assertThat(actualMember).usingRecursiveComparison().ignoringFields("id")
             .isEqualTo(expectMember);
     }
 
