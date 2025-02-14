@@ -54,10 +54,10 @@ public class Auction {
     private int biddingUnit;
 
     @Column(nullable = false)
-    private LocalDateTime biddingStartDate;
+    private LocalDateTime auctionStartDate;
 
     @Column(nullable = false)
-    private LocalDateTime biddingEndDate;
+    private LocalDateTime auctionEndDate;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -66,8 +66,8 @@ public class Auction {
     @Builder
     public Auction(Keyboard keyboard, Member member, String title, Long startPrice,
             Long immediatePurchasePrice,
-            Long currentPrice, int biddingUnit, LocalDateTime biddingStartDate,
-            LocalDateTime biddingEndDate, AuctionStatus auctionStatus) {
+            Long currentPrice, int biddingUnit, LocalDateTime auctionStartDate,
+            LocalDateTime auctionEndDate, AuctionStatus auctionStatus) {
         this.keyboard = keyboard;
         this.member = member;
         this.title = title;
@@ -75,8 +75,8 @@ public class Auction {
         this.immediatePurchasePrice = immediatePurchasePrice;
         this.currentPrice = currentPrice;
         this.biddingUnit = biddingUnit;
-        this.biddingStartDate = biddingStartDate;
-        this.biddingEndDate = biddingEndDate;
+        this.auctionStartDate = auctionStartDate;
+        this.auctionEndDate = auctionEndDate;
         this.auctionStatus = auctionStatus;
     }
 }
