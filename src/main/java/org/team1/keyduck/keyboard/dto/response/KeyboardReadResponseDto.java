@@ -1,18 +1,22 @@
 package org.team1.keyduck.keyboard.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 
 @Getter
-@AllArgsConstructor
 public class KeyboardReadResponseDto {
 
-    private Long id;
+    private final Long id;
 
-    private String name;
+    private final String name;
 
-    private String description;
+    private final String description;
+
+    private KeyboardReadResponseDto(Long id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
 
     public static KeyboardReadResponseDto of(Keyboard keyboard) {
         return new KeyboardReadResponseDto(

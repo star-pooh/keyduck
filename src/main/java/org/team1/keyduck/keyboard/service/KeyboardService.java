@@ -23,7 +23,8 @@ public class KeyboardService {
 
     // 키보드 생성
     @Transactional
-    public KeyboardCreateResponseDto createKeyboard(Long memberId, KeyboardCreateRequestDto requestDto) {
+    public KeyboardCreateResponseDto createKeyboard(Long memberId,
+            KeyboardCreateRequestDto requestDto) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
@@ -38,7 +39,7 @@ public class KeyboardService {
     }
 
     @Transactional(readOnly = true)
-    public List<KeyboardReadResponseDto> findKeyboardBySellerIdService(Long sellerId) {
+    public List<KeyboardReadResponseDto> findKeyboardBySellerId(Long sellerId) {
 
         List<Keyboard> keyboards = keyboardRepository.findAllByMemberId(sellerId);
 
