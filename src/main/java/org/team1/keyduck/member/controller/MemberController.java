@@ -32,7 +32,7 @@ public class MemberController {
         return new ResponseEntity<>(response, response.getStatus());
     }
 
-    @PatchMapping("/update/password")
+    @PatchMapping("/password")
     public ResponseEntity<ApiResponse<Void>> updatePassword(
         @AuthenticationPrincipal AuthMember authMember,
         @Valid @RequestBody MemberUpdatePasswordRequestDto requestDto) {
