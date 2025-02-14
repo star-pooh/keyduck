@@ -27,7 +27,7 @@ public class BiddingController {
     @PostMapping("/{auctionId}")
     public ResponseEntity<ApiResponse<Void>> createBidding(
             @PathVariable("auctionId") Long auctionId,
-            @RequestParam("price") Long price,
+            @RequestParam(value = "price", required = true) Long price,
             @AuthenticationPrincipal AuthMember authMember) {
         biddingService.createBidding(auctionId, price, authMember);
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS),
