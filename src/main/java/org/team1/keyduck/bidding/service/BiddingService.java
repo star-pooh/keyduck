@@ -29,11 +29,6 @@ public class BiddingService {
     private final AuctionRepository auctionRepository;
     private final MemberRepository memberRepository;
 
-    private void validateAuction(Auction auction, Long price, AuthMember authMember) {
-        validateBiddingAvailability(auction, authMember);
-        validateBiddingPrice(price, auction);
-    }
-
     //비딩참여가 가능한 상태인지 검증
     private void validateBiddingAvailability(Auction auction, AuthMember authMember) {
 
@@ -73,9 +68,6 @@ public class BiddingService {
     //생성 매서드
     @Transactional
     public void createBidding(Long auctionId, Long price, AuthMember authMember) {
-        Auction auction = findAuctionById(auctionId);
-        validateAuction(auction, price, authMember);
-
         Auction auction = auctionRepository.findById(auctionId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.AUCTION_NOT_FOUND));
 
@@ -91,7 +83,7 @@ public class BiddingService {
         biddingRepository.save(bidding);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     // 경매별 입찰 내역 조회
     public List<BiddingResponseDto> getBiddingByAuction(Long auctionId) {
         List<Bidding> biddings = biddingRepository.findByAuction_IdOrderByPriceDesc(auctionId);
@@ -108,7 +100,7 @@ public class BiddingService {
     }
 
     //특정 유저의 경매별 입찰 내역 조회
-    @Transactional
+    @Transactional(readOnly = true)
     public List<BiddingResponseDto> getBiddingByMemberAndAuction(Long auctionId, Long memberId) {
         List<Bidding> biddingList = biddingRepository.findByMember_IdAndAuction_Id(memberId,
                 auctionId);
