@@ -32,13 +32,14 @@ public class AuctionService {
 
         Auction auction = Auction.builder()
                 .keyboard(findKeyboard)
+                .member(findKeyboard.getMember())
                 .title(requestDto.getTitle())
                 .startPrice(requestDto.getStartPrice())
                 .immediatePurchasePrice(requestDto.getImmediatePurchasePrice())
                 .currentPrice(requestDto.getStartPrice())
                 .biddingUnit(requestDto.getBiddingUnit())
-                .biddingStartDate(requestDto.getBiddingStartDate())
-                .biddingEndDate(requestDto.getBiddingEndDate())
+                .biddingStartDate(requestDto.getAuctionStartDate())
+                .biddingEndDate(requestDto.getAuctionEndDate())
                 .auctionStatus(AuctionStatus.NOT_STARTED)
                 .build();
 

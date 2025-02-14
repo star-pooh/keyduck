@@ -21,25 +21,26 @@ public class AuctionCreateResponseDto {
     private final int biddingUnit;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private final LocalDateTime biddingStartDate;
+    private final LocalDateTime auctionStartDate;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private final LocalDateTime biddingEndDate;
+    private final LocalDateTime auctionEndDate;
 
     private AuctionCreateResponseDto(Long keyboardId, String title, Long startPrice,
             Long immediatePurchasePrice, Long currentPrice, int biddingUnit,
-            LocalDateTime biddingStartDate,
-            LocalDateTime biddingEndDate) {
+            LocalDateTime auctionStartDate,
+            LocalDateTime auctionEndDate) {
         this.keyboardId = keyboardId;
         this.title = title;
         this.startPrice = startPrice;
         this.immediatePurchasePrice = immediatePurchasePrice;
         this.currentPrice = currentPrice;
         this.biddingUnit = biddingUnit;
-        this.biddingStartDate = biddingStartDate;
-        this.biddingEndDate = biddingEndDate;
+        this.auctionStartDate = auctionStartDate;
+        this.auctionEndDate = auctionEndDate;
     }
 
+    //todo 추후 엔티티명 수정시 정적팩토리 메서드 내부 필드명 수정 예정
     public static AuctionCreateResponseDto of(Auction auction) {
         return new AuctionCreateResponseDto(
                 auction.getKeyboard().getId(),

@@ -30,11 +30,11 @@ public class AuctionCreateRequestDto {
 
     @NotNull(message = "경매 시작일은 필수 입력 값입니다.")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime biddingStartDate;
+    private LocalDateTime auctionStartDate;
 
     @NotNull(message = "경매 종료일은 필수 입력 값입니다.")
     @Future
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime biddingEndDate;
+    private LocalDateTime auctionEndDate;
 
 }

@@ -24,8 +24,7 @@ public class AuctionController {
     @PostMapping
     public ResponseEntity<ApiResponse<AuctionCreateResponseDto>> createAuction(
             @AuthenticationPrincipal AuthMember authMember,
-            @RequestBody AuctionCreateRequestDto requestDto
-    ) {
+            @RequestBody AuctionCreateRequestDto requestDto) {
 
         AuctionCreateResponseDto responseDto = auctionService.createAuctionService(
                 authMember.getId(), requestDto);
