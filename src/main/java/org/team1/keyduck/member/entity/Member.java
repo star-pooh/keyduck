@@ -69,7 +69,7 @@ public class Member extends BaseTime {
     }
 
     public void updateMember(MemberUpdateRequestDto requestDto) {
-        if (requestDto.getName() != null) {
+        if (requestDto.getName() != null && !requestDto.getName().isEmpty()) {
             this.name = requestDto.getName();
         }
         if (requestDto.getEmail() != null) {
