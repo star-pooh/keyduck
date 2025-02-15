@@ -12,7 +12,7 @@ public class BiddingResponseDto {
     private Long biddingPrice;
     private LocalDateTime createdAt;
 
-    public BiddingResponseDto(String auctionTitle, String memberName, Long biddingPrice,
+    private BiddingResponseDto(String auctionTitle, String memberName, Long biddingPrice,
             LocalDateTime createdAt) {
         this.auctionTitle = auctionTitle;
         this.memberName = memberName;
