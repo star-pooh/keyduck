@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.member.entity.Member;
 
@@ -78,6 +79,16 @@ public class Auction {
         this.auctionStartDate = auctionStartDate;
         this.auctionEndDate = auctionEndDate;
         this.auctionStatus = auctionStatus;
+    }
+
+    public void updateAuction(AuctionUpdateRequestDto requestDto) {
+
+        this.title = requestDto.getTitle();
+        this.startPrice = requestDto.getStartPrice();
+        this.immediatePurchasePrice = requestDto.getImmediatePurchasePrice();
+        this.biddingUnit = requestDto.getBiddingUnit();
+        this.auctionStartDate = requestDto.getAuctionStartDate();
+        this.auctionEndDate = requestDto.getAuctionEndDate();
     }
 }
 

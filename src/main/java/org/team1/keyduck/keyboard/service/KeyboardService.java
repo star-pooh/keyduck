@@ -10,7 +10,6 @@ import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.keyboard.dto.request.KeyboardCreateRequestDto;
 import org.team1.keyduck.keyboard.dto.request.KeyboardUpdateRequestDto;
 import org.team1.keyduck.keyboard.dto.response.KeyboardCreateResponseDto;
-import org.team1.keyduck.keyboard.dto.response.KeyboardReadResponseDto;
 import org.team1.keyduck.keyboard.dto.response.KeyboardUpdateResponseDto;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.keyboard.repository.KeyboardRepository;
@@ -66,4 +65,5 @@ public class KeyboardService {
 
         return KeyboardUpdateResponseDto.of(findKeyboard);
     }
+
 }
