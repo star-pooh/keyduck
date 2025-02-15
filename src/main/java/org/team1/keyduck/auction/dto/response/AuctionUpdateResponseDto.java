@@ -19,22 +19,22 @@ public class AuctionUpdateResponseDto {
     private final int biddingUnit;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private final LocalDateTime biddingStartDate;
+    private final LocalDateTime auctionStartDate;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private final LocalDateTime biddingEndDate;
+    private final LocalDateTime auctionEndDate;
 
     private AuctionUpdateResponseDto(
             Long keyboardId, String title, Long startPrice,
             Long immediatePurchasePrice, int biddingUnit,
-            LocalDateTime biddingStartDate, LocalDateTime biddingEndDate) {
+            LocalDateTime auctionStartDate, LocalDateTime auctionEndDate) {
         this.keyboardId = keyboardId;
         this.title = title;
         this.startPrice = startPrice;
         this.immediatePurchasePrice = immediatePurchasePrice;
         this.biddingUnit = biddingUnit;
-        this.biddingStartDate = biddingStartDate;
-        this.biddingEndDate = biddingEndDate;
+        this.auctionStartDate = auctionStartDate;
+        this.auctionEndDate = auctionEndDate;
     }
 
     public static AuctionUpdateResponseDto of(Auction auction) {
@@ -44,8 +44,8 @@ public class AuctionUpdateResponseDto {
                 auction.getStartPrice(),
                 auction.getImmediatePurchasePrice(),
                 auction.getBiddingUnit(),
-                auction.getBiddingStartDate(),
-                auction.getBiddingEndDate()
+                auction.getAuctionStartDate(),
+                auction.getAuctionEndDate()
         );
     }
 }

@@ -55,10 +55,10 @@ public class Auction {
     private int biddingUnit;
 
     @Column(nullable = false)
-    private LocalDateTime biddingStartDate;
+    private LocalDateTime auctionStartDate;
 
     @Column(nullable = false)
-    private LocalDateTime biddingEndDate;
+    private LocalDateTime auctionEndDate;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -67,8 +67,8 @@ public class Auction {
     @Builder
     public Auction(Keyboard keyboard, Member member, String title, Long startPrice,
             Long immediatePurchasePrice,
-            Long currentPrice, int biddingUnit, LocalDateTime biddingStartDate,
-            LocalDateTime biddingEndDate, AuctionStatus auctionStatus) {
+            Long currentPrice, int biddingUnit, LocalDateTime auctionStartDate,
+            LocalDateTime auctionEndDate, AuctionStatus auctionStatus) {
         this.keyboard = keyboard;
         this.member = member;
         this.title = title;
@@ -76,31 +76,19 @@ public class Auction {
         this.immediatePurchasePrice = immediatePurchasePrice;
         this.currentPrice = currentPrice;
         this.biddingUnit = biddingUnit;
-        this.biddingStartDate = biddingStartDate;
-        this.biddingEndDate = biddingEndDate;
+        this.auctionStartDate = auctionStartDate;
+        this.auctionEndDate = auctionEndDate;
         this.auctionStatus = auctionStatus;
     }
 
     public void updateAuction(AuctionUpdateRequestDto requestDto) {
 
-        if (requestDto.getTitle() != null && !requestDto.getTitle().isEmpty()) {
-            this.title = requestDto.getTitle();
-        }
-        if (requestDto.getStartPrice() != null) {
-            this.startPrice = requestDto.getStartPrice();
-        }
-        if (requestDto.getImmediatePurchasePrice() != null) {
-            this.immediatePurchasePrice = requestDto.getImmediatePurchasePrice();
-        }
-        if (requestDto.getBiddingUnit() != 0) {
-            this.biddingUnit = requestDto.getBiddingUnit();
-        }
-        if (requestDto.getBiddingStartDate() != null) {
-            this.biddingStartDate = requestDto.getBiddingStartDate();
-        }
-        if (requestDto.getBiddingEndDate() != null) {
-            this.biddingEndDate = requestDto.getBiddingEndDate();
-        }
+        this.title = requestDto.getTitle();
+        this.startPrice = requestDto.getStartPrice();
+        this.immediatePurchasePrice = requestDto.getImmediatePurchasePrice();
+        this.biddingUnit = requestDto.getBiddingUnit();
+        this.auctionStartDate = requestDto.getAuctionStartDate();
+        this.auctionEndDate = requestDto.getAuctionEndDate();
     }
 
     public void updateCurrentPrice(Long price) {
