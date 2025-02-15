@@ -39,6 +39,7 @@ public class KeyboardService {
                 .description(requestDto.getDescription())
                 .build();
 
+        keyboardRepository.save(keyboard);
         return KeyboardCreateResponseDto.of(keyboard);
     }
 
