@@ -8,7 +8,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @Getter
-public class CustomValidException extends MethodArgumentNotValidException {
+public class RequestBodyValidException extends MethodArgumentNotValidException {
 
     private final ErrorCode errorCode;
     private final String errorMessage;
@@ -22,13 +22,12 @@ public class CustomValidException extends MethodArgumentNotValidException {
         return message.toString();
     }
 
-    public CustomValidException(MethodParameter parameter,
+    public RequestBodyValidException(MethodParameter parameter,
         BindingResult bindingResult, ErrorCode errorCode) {
         super(parameter, bindingResult);
         this.errorCode = errorCode;
         this.errorMessage = getErrorMessage(bindingResult);
     }
-
 
 }
 
