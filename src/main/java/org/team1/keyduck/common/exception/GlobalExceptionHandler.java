@@ -52,6 +52,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
+
     @ExceptionHandler(InvalidBiddingPriceException.class)
     public ResponseEntity<ApiResponse> handleInvalidBiddingPriceException(
             InvalidBiddingPriceException exception) {

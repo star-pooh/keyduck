@@ -58,6 +58,10 @@ public class BiddingService {
     }
 
     private void validateBiddingPrice(Long price, Auction auction) {
+        //비딩 금액은 null일수 없음
+        if(price==null){
+            throw new InvalidBiddingPriceException(ErrorCode.BIDDING_PRICE_IS_NULL);
+        }
         //비딩 금액단위가 경매에 설정된 단위보다 작으면 안됨
         if (price % auction.getBiddingUnit() != 0) {
             throw new InvalidBiddingPriceException(ErrorCode.INVALID_BIDDING_PRICE_UNIT);
@@ -75,13 +79,15 @@ public class BiddingService {
 
     //생성 매서드
     @Transactional
-    public void createBidding(Long auctionId, Long price,
-            AuthMember authMember) {
-        Auction auction = findAuctionById(auctionId);
-        validateAuction(auction, price, authMember);
+    public void createBidding(Long auctionId, Long price, AuthMember authMember) {
+        Auction auction = auctionRepository.findById(auctionId)
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.AUCTION_NOT_FOUND));
 
         Member member = memberRepository.findById(authMember.getId())
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        validateBiddingAvailability(auction, authMember);
+        validateBiddingPrice(price, auction);
 
         Bidding bidding = Bidding.builder()
                 .auction(auction)
@@ -90,8 +96,11 @@ public class BiddingService {
                 .build();
 
         biddingRepository.save(bidding);
+
+        //현재가 엽데이트
         auction.updateCurrentPrice(price);
     }
+
 
 
     // 경매별 입찰 내역 조회

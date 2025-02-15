@@ -94,5 +94,6 @@ public class Auction {
     public void updateCurrentPrice(Long price) {
         this.currentPrice = price;
     }
+
 }
 
