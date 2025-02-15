@@ -63,11 +63,12 @@ public class BiddingService {
     public void createBidding(Long auctionId, Long price, AuthMember authMember) {
         Auction auction = auctionRepository.findById(auctionId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.AUCTION_NOT_FOUND));
-        validateBiddingAvailability(auction, authMember);
-        validateBiddingPrice(price, auction);
 
         Member member = memberRepository.findById(authMember.getId())
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        validateBiddingAvailability(auction, authMember);
+        validateBiddingPrice(price, auction);
 
         Bidding bidding = Bidding.builder()
                 .auction(auction)
