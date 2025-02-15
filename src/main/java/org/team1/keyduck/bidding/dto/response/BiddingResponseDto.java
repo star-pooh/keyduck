@@ -1,8 +1,10 @@
 package org.team1.keyduck.bidding.dto.response;
 
 import java.time.LocalDateTime;
+import lombok.Getter;
 import org.team1.keyduck.bidding.entity.Bidding;
 
+@Getter
 public class BiddingResponseDto {
 
     private String auctionTitle;
