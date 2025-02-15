@@ -44,5 +44,4 @@ public class Keyboard extends BaseTime {
         this.name = name;
         this.description = description;
     }
-
 }
