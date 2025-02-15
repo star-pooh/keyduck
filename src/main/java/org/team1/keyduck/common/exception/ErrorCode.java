@@ -16,11 +16,12 @@ public enum ErrorCode {
     INVALID_JSON_FORMAT(HttpStatus.BAD_REQUEST, "ERR007", "잘못된 JSON 형식입니다."),
     INVALID_MEMBER_ROLE(HttpStatus.BAD_REQUEST, "ERR008", "잘못된 권한입니다."),
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "ERR009", "잘못된 토큰입니다."),
-    AUCTION_NOT_IN_PROGRESS(HttpStatus.BAD_REQUEST, "ERR010", "진행중인 경매가 아닙니다."),
-    MAX_BIDDING_COUNT_EXCEEDED(HttpStatus.BAD_REQUEST, "ERR011", "입찰은 10번까지만 가능합니다."),
-    INVALID_BIDDING_PRICE_UNIT(HttpStatus.BAD_REQUEST, "ERR012", "입찰 금액이 단위에 맞지 않습니다."),
-    BIDDING_PRICE_BELOW_CURRENT_PRICE(HttpStatus.BAD_REQUEST, "ERR013", "입찰 금액이 현재가보다 작습니다."),
-    BIDDING_PRICE_EXCEEDS_MAX_LIMIT(HttpStatus.BAD_REQUEST, "ERR014", "입찰 금액이 최대 가능 금액보다 큽니다."),
+    DUPLICATE_DELETED(HttpStatus.BAD_REQUEST, "ERR010", "이미 삭제된 키보드입니다."),
+    AUCTION_NOT_IN_PROGRESS(HttpStatus.BAD_REQUEST, "ERR011", "진행중인 경매가 아닙니다."),
+    MAX_BIDDING_COUNT_EXCEEDED(HttpStatus.BAD_REQUEST, "ERR012", "입찰은 10번까지만 가능합니다."),
+    INVALID_BIDDING_PRICE_UNIT(HttpStatus.BAD_REQUEST, "ERR013", "입찰 금액이 단위에 맞지 않습니다."),
+    BIDDING_PRICE_BELOW_CURRENT_PRICE(HttpStatus.BAD_REQUEST, "ERR014", "입찰 금액이 현재가보다 작습니다."),
+    BIDDING_PRICE_EXCEEDS_MAX_LIMIT(HttpStatus.BAD_REQUEST, "ERR015", "입찰 금액이 최대 가능 금액보다 큽니다."),
 
     //401  UNAUTHORIZED
     UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "ERR101", "인증이 필요한 접근입니다."),
