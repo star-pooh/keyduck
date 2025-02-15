@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.team1.keyduck.common.dto.ApiResponse;
+import org.team1.keyduck.payment.exception.InvalidPaymentAmountException;
 
 @Slf4j
 @RestControllerAdvice
@@ -52,12 +53,20 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
-
     @ExceptionHandler(InvalidBiddingPriceException.class)
     public ResponseEntity<ApiResponse> handleInvalidBiddingPriceException(
             InvalidBiddingPriceException exception) {
         ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
         log.error("{},{},{}", apiResponse.getCode(), exception.getStackTrace(),
+                apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+    }
+
+    @ExceptionHandler(InvalidPaymentAmountException.class)
+    public ResponseEntity<ApiResponse> handleInvalidPaymentAmountException(
+            InvalidPaymentAmountException exception) {
+        ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
+        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
                 apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
