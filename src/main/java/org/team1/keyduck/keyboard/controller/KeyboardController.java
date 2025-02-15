@@ -1,9 +1,11 @@
 package org.team1.keyduck.keyboard.controller;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +18,7 @@ import org.team1.keyduck.common.exception.SuccessCode;
 import org.team1.keyduck.keyboard.dto.request.KeyboardCreateRequestDto;
 import org.team1.keyduck.keyboard.dto.request.KeyboardUpdateRequestDto;
 import org.team1.keyduck.keyboard.dto.response.KeyboardCreateResponseDto;
+import org.team1.keyduck.keyboard.dto.response.KeyboardReadResponseDto;
 import org.team1.keyduck.keyboard.dto.response.KeyboardUpdateResponseDto;
 import org.team1.keyduck.keyboard.service.KeyboardService;
 
