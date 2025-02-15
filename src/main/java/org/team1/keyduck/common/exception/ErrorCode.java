@@ -16,6 +16,7 @@ public enum ErrorCode {
     INVALID_JSON_FORMAT(HttpStatus.BAD_REQUEST, "ERR007", "잘못된 JSON 형식입니다."),
     INVALID_MEMBER_ROLE(HttpStatus.BAD_REQUEST, "ERR008", "잘못된 권한입니다."),
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "ERR009", "잘못된 토큰입니다."),
+    DUPLICATE_DELETED(HttpStatus.BAD_REQUEST, "ERR010", "이미 삭제된 키보드입니다."),
 
 
     //401  UNAUTHORIZED
