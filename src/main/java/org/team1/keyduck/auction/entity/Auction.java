@@ -90,5 +90,9 @@ public class Auction {
         this.auctionStartDate = requestDto.getAuctionStartDate();
         this.auctionEndDate = requestDto.getAuctionEndDate();
     }
+
+    public void updateCurrentPrice(Long price) {
+        this.currentPrice = price;
+    }
 }
 
