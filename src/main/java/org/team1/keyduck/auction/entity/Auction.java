@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.member.entity.Member;
 
@@ -54,10 +55,10 @@ public class Auction {
     private int biddingUnit;
 
     @Column(nullable = false)
-    private LocalDateTime biddingStartDate;
+    private LocalDateTime auctionStartDate;
 
     @Column(nullable = false)
-    private LocalDateTime biddingEndDate;
+    private LocalDateTime auctionEndDate;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -65,9 +66,9 @@ public class Auction {
 
     @Builder
     public Auction(Keyboard keyboard, Member member, String title, Long startPrice,
-        Long immediatePurchasePrice,
-        Long currentPrice, int biddingUnit, LocalDateTime biddingStartDate,
-        LocalDateTime biddingEndDate, AuctionStatus auctionStatus) {
+            Long immediatePurchasePrice,
+            Long currentPrice, int biddingUnit, LocalDateTime auctionStartDate,
+            LocalDateTime auctionEndDate, AuctionStatus auctionStatus) {
         this.keyboard = keyboard;
         this.member = member;
         this.title = title;
@@ -75,9 +76,19 @@ public class Auction {
         this.immediatePurchasePrice = immediatePurchasePrice;
         this.currentPrice = currentPrice;
         this.biddingUnit = biddingUnit;
-        this.biddingStartDate = biddingStartDate;
-        this.biddingEndDate = biddingEndDate;
+        this.auctionStartDate = auctionStartDate;
+        this.auctionEndDate = auctionEndDate;
         this.auctionStatus = auctionStatus;
+    }
+
+    public void updateAuction(AuctionUpdateRequestDto requestDto) {
+
+        this.title = requestDto.getTitle();
+        this.startPrice = requestDto.getStartPrice();
+        this.immediatePurchasePrice = requestDto.getImmediatePurchasePrice();
+        this.biddingUnit = requestDto.getBiddingUnit();
+        this.auctionStartDate = requestDto.getAuctionStartDate();
+        this.auctionEndDate = requestDto.getAuctionEndDate();
     }
 }
 
