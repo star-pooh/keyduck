@@ -1,7 +1,12 @@
 package org.team1.keyduck.bidding.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.entity.Auction;
@@ -9,6 +14,7 @@ import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
+import org.team1.keyduck.bidding.dto.response.SuccessBiddingResponseDto;
 import org.team1.keyduck.bidding.entity.Bidding;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
 import org.team1.keyduck.common.exception.BiddingNotAvailableException;
@@ -36,7 +42,7 @@ public class BiddingService {
         }
         //비딩 횟수가 열번째 미만이어야함
         long biddingCount = biddingRepository.countByMember_IdAndAuction_Id(authMember.getId(),
-                auction.getId());
+            auction.getId());
         if (biddingCount >= 10) {
             throw new BiddingNotAvailableException(ErrorCode.MAX_BIDDING_COUNT_EXCEEDED);
         }
@@ -53,7 +59,7 @@ public class BiddingService {
             throw new InvalidBiddingPriceException(ErrorCode.BIDDING_PRICE_BELOW_CURRENT_PRICE);
         }
         //비딩금액이 최대 입찰 호가 보다 높으면 안됨
-        long maxPrice = auction.getCurrentPrice() + (auction.getBiddingUnit() * 10);
+        long maxPrice = auction.getCurrentPrice() + (auction.getBiddingUnit() * 10L);
         if (price > maxPrice) {
             throw new InvalidBiddingPriceException(ErrorCode.BIDDING_PRICE_EXCEEDS_MAX_LIMIT);
         }
@@ -63,19 +69,15 @@ public class BiddingService {
     @Transactional
     public void createBidding(Long auctionId, Long price, AuthMember authMember) {
         Auction auction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.AUCTION_NOT_FOUND));
+            .orElseThrow(() -> new DataNotFoundException(ErrorCode.AUCTION_NOT_FOUND));
 
         Member member = memberRepository.findById(authMember.getId())
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
+            .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
 
         validateBiddingAvailability(auction, authMember);
         validateBiddingPrice(price, auction);
 
-        Bidding bidding = Bidding.builder()
-                .auction(auction)
-                .member(member)
-                .price(price)
-                .build();
+        Bidding bidding = Bidding.builder().auction(auction).member(member).price(price).build();
 
         biddingRepository.save(bidding);
         //현재가 엽데이트
@@ -89,5 +91,28 @@ public class BiddingService {
 
         return biddings.stream().map(BiddingResponseDto::of).toList();
 
+    }
+
+    @Transactional(readOnly = true)
+    public Page<SuccessBiddingResponseDto> getSuccessBidding(Long memberId, int page) {
+        Pageable pageable = PageRequest.of(page - 1, 10);
+
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        List<Long> auctionIds = auctionRepository.findAllByMember_IdAndAuctionStatus(member,
+            AuctionStatus.CLOSED);
+
+        if (auctionIds.isEmpty()) {
+            throw new DataNotFoundException(ErrorCode.AUCTION_NOT_FOUND);
+        }
+
+        List<Bidding> successBiddings = biddingRepository.findSuccessBiddingByAuctionIds(auctionIds,
+            pageable);
+
+        List<SuccessBiddingResponseDto> biddingResponseList = successBiddings.stream()
+            .map(SuccessBiddingResponseDto::of).collect(Collectors.toList());
+
+        return new PageImpl<>(biddingResponseList, pageable, biddingResponseList.size());
     }
 }
