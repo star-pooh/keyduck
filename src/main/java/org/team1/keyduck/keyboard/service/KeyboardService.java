@@ -87,6 +87,4 @@ public class KeyboardService {
 
         return KeyboardUpdateResponseDto.of(findKeyboard);
     }
-
-
 }

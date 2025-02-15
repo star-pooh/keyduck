@@ -53,6 +53,7 @@ public class Keyboard extends BaseTime {
     public void deleteKeyboard() {
         this.isDeleted = true;
     }
+
     public void updateKeyboard(KeyboardUpdateRequestDto requestDto) {
         this.name = requestDto.getName();
         this.description = requestDto.getDescription();
