@@ -14,31 +14,51 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<ApiResponse> handleDataNotFoundException(
-        DataNotFoundException exception) {
+            DataNotFoundException exception) {
         ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-            apiResponse.getMessage());
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
     @ExceptionHandler(DuplicateDataException.class)
     public ResponseEntity<ApiResponse> handleDuplicateDataException(
-        DuplicateDataException exception) {
+            DuplicateDataException exception) {
         ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-            apiResponse.getMessage());
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(
-        MethodArgumentNotValidException exception) {
+            MethodArgumentNotValidException exception) {
         CustomValidException customException = new CustomValidException(
-            exception.getParameter(), exception.getBindingResult(), ErrorCode.INVALID_INPUT_VALUE);
+                exception.getParameter(), exception.getBindingResult(),
+                ErrorCode.INVALID_INPUT_VALUE);
         ApiResponse apiResponse = ApiResponse.error(customException.getErrorCode(),
-            customException.getErrorMessage());
+                customException.getErrorMessage());
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-            apiResponse.getMessage());
+                apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+    }
+
+    @ExceptionHandler(BiddingNotAvailableException.class)
+    public ResponseEntity<ApiResponse> handleBiddingNotAvailableException(
+            BiddingNotAvailableException exception) {
+        ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
+        log.error("{},{},{}", apiResponse.getCode(), exception.getStackTrace(),
+                apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+    }
+
+
+    @ExceptionHandler(InvalidBiddingPriceException.class)
+    public ResponseEntity<ApiResponse> handleInvalidBiddingPriceException(
+            InvalidBiddingPriceException exception) {
+        ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
+        log.error("{},{},{}", apiResponse.getCode(), exception.getStackTrace(),
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
@@ -46,12 +66,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse> handleException(Exception exception) {
         ApiResponse apiResponse = ApiResponse.error(ErrorCode.INTERNAL_SERVER_ERROR);
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-            exception.getMessage());
+                exception.getMessage());
         return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(DataMismatchException.class)
-    public ResponseEntity<ApiResponse> handleDataMismatchException(DataMismatchException exception) {
+    public ResponseEntity<ApiResponse> handleDataMismatchException(
+            DataMismatchException exception) {
         ApiResponse apiResponse = ApiResponse.error(ErrorCode.FORBIDDEN_ACCESS);
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
                 apiResponse.getMessage());
