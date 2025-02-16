@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.team1.keyduck.auth.dto.request.MemberCreateRequestDto;
 import org.team1.keyduck.common.exception.DuplicateDataException;
+import org.team1.keyduck.member.entity.Address;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
@@ -35,7 +36,9 @@ class AuthServiceTest {
 
         //given
         MemberCreateRequestDto requestDto = mock(MemberCreateRequestDto.class);
-        Member expectedMember = new Member("hehe", "heehee@naver.com", "1234", MemberRole.CUSTOMER);
+        Address address = new Address("서울시", "강남구", "테헤란로", "상세주소", "상세주소");
+        Member expectedMember = new Member("hehe", "heehee@naver.com", "1234", MemberRole.CUSTOMER,
+            address);
 
         when(requestDto.getEmail()).thenReturn(expectedMember.getEmail());
         when(memberRepository.existsByEmail(any(String.class))).thenReturn(false);
