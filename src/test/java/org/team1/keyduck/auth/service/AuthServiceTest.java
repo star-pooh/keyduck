@@ -14,10 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.team1.keyduck.auth.dto.request.MemberCreateRequestDto;
 import org.team1.keyduck.common.exception.DuplicateDataException;
-import org.team1.keyduck.member.entity.Address;
 import org.team1.keyduck.member.entity.Member;
-import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
+import org.team1.keyduck.testdata.TestData;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -36,15 +35,13 @@ class AuthServiceTest {
 
         //given
         MemberCreateRequestDto requestDto = mock(MemberCreateRequestDto.class);
-        Address address = new Address("서울시", "강남구", "테헤란로", "상세주소", "상세주소");
-        Member expectedMember = new Member("hehe", "heehee@naver.com", "1234", MemberRole.CUSTOMER,
-            address);
+        Member expectedMember = TestData.TEST_MEMBER1;
 
         when(requestDto.getEmail()).thenReturn(expectedMember.getEmail());
         when(memberRepository.existsByEmail(any(String.class))).thenReturn(false);
 
         when(requestDto.getPassword()).thenReturn(expectedMember.getPassword());
-        when(passwordEncoder.encode(any(String.class))).thenReturn("5678");
+        when(passwordEncoder.encode(any(String.class))).thenReturn(expectedMember.getPassword());
 
         when(requestDto.getName()).thenReturn(expectedMember.getName());
         when(requestDto.getMemberRole()).thenReturn(expectedMember.getMemberRole());
@@ -72,7 +69,7 @@ class AuthServiceTest {
         //given
         MemberCreateRequestDto requestDto = mock(MemberCreateRequestDto.class);
 
-        when(requestDto.getEmail()).thenReturn("heehee@naver.com");
+        when(requestDto.getEmail()).thenReturn(TestData.TEST_EMAIL1);
         when(memberRepository.existsByEmail(any(String.class))).thenReturn(true);
 
         //when&then
