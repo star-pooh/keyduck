@@ -116,7 +116,7 @@ public class AuctionService {
             PaymentDeposit paymentDeposit = paymentDepositRepository.findByMember_Id(
                             bidding.getMember().getId())
                     .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
-            paymentDeposit.refundPrice(bidding.getPrice());
+            paymentDeposit.updatePaymentDeposit(bidding.getPrice());
         }
 
         findAuction.updateAuctionStatus(AuctionStatus.CLOSED);
