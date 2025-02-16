@@ -15,6 +15,7 @@ import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.InvalidBiddingPriceException;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
+import org.team1.keyduck.payment.service.PaymentDepositService;
 
 
 @Service
@@ -25,6 +26,7 @@ public class BiddingService {
     private final BiddingRepository biddingRepository;
     private final AuctionRepository auctionRepository;
     private final MemberRepository memberRepository;
+    private final PaymentDepositService paymentDepositService;
 
     //비딩참여가 가능한 상태인지 검증
     private void validateBiddingAvailability(Auction auction, AuthMember authMember) {
@@ -69,6 +71,12 @@ public class BiddingService {
 
         validateBiddingAvailability(auction, authMember);
         validateBiddingPrice(price, auction);
+
+        //내가 입찰한 내역중 최고 입찰 내역
+        Bidding myGreatBidding = biddingRepository.findByMember_IdAndAuction_Id(member.getId(),
+                auctionId);
+
+        paymentDepositService.payBiddingPrice(member.getId(), price, myGreatBidding.getPrice());
 
         Bidding bidding = Bidding.builder()
                 .auction(auction)

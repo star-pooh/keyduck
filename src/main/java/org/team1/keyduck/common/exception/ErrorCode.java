@@ -23,7 +23,7 @@ public enum ErrorCode {
     BIDDING_PRICE_BELOW_CURRENT_PRICE(HttpStatus.BAD_REQUEST, "ERR014", "입찰 금액이 현재가보다 작습니다."),
     BIDDING_PRICE_EXCEEDS_MAX_LIMIT(HttpStatus.BAD_REQUEST, "ERR015", "입찰 금액이 최대 가능 금액보다 큽니다."),
     INVALID_PAYMENT_AMOUNT(HttpStatus.BAD_REQUEST, "ERR016", "결제 금액이 올바르지 않습니다."),
-
+    INSUFFICIENT_PAYMENT_AMOUNT(HttpStatus.BAD_REQUEST, "ERR016", "결제 금액이 부족합니다."),
 
     //401  UNAUTHORIZED
     UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "ERR101", "인증이 필요한 접근입니다."),

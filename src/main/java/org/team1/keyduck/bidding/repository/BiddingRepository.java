@@ -19,4 +19,8 @@ public interface BiddingRepository extends JpaRepository<Bidding, Long> {
     @Query("SELECT b FROM Bidding b WHERE b.price = "
             + "(SELECT MAX(b.price) FROM Bidding b WHERE b.auction.id = :auctionId)")
     Bidding findByMaxPriceAuctionId(Long auctionId);
+
+    @Query("SELECT b FROM Bidding b WHERE b.price ="
+            + "(SELECT MAX(b.price) FROM Bidding b WHERE b.auction.id = :auctionId AND b.member.id = :memberId)")
+    Bidding findByMember_IdAndAuction_Id(Long memberId, Long auctionId);
 }

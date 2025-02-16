@@ -44,4 +44,8 @@ public class PaymentDeposit extends BaseTime {
     public void refundPrice(Long biddingPrice) {
         this.depositAmount += biddingPrice;
     }
+
+    public void deductedPrice(Long newBiddingPrice) {
+        this.depositAmount -= newBiddingPrice;
+    }
 }
