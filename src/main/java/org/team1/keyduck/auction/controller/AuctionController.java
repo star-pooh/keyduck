@@ -28,29 +28,39 @@ public class AuctionController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<AuctionCreateResponseDto>> createAuction(
-            @AuthenticationPrincipal AuthMember authMember,
-            @RequestBody AuctionCreateRequestDto requestDto) {
+        @AuthenticationPrincipal AuthMember authMember,
+        @RequestBody AuctionCreateRequestDto requestDto) {
 
         AuctionCreateResponseDto responseDto = auctionService.createAuctionService(
-                authMember.getId(), requestDto);
+            authMember.getId(), requestDto);
 
         ApiResponse<AuctionCreateResponseDto> response = ApiResponse.success(
-                SuccessCode.CREATE_SUCCESS, responseDto);
+            SuccessCode.CREATE_SUCCESS, responseDto);
 
         return new ResponseEntity<>(response, response.getStatus());
     }
 
     @PatchMapping("/{auctionId}")
     public ResponseEntity<ApiResponse<AuctionUpdateResponseDto>> auctionModification(
-            @AuthenticationPrincipal AuthMember authMember,
-            @PathVariable Long auctionId,
-            @Valid @RequestBody AuctionUpdateRequestDto requestDto) {
+        @AuthenticationPrincipal AuthMember authMember,
+        @PathVariable Long auctionId,
+        @Valid @RequestBody AuctionUpdateRequestDto requestDto) {
         AuctionUpdateResponseDto responseDto = auctionService.auctionModification(
-                authMember.getId(), auctionId, requestDto);
+            authMember.getId(), auctionId, requestDto);
 
         ApiResponse<AuctionUpdateResponseDto> response = ApiResponse.success(
-                SuccessCode.UPDATE_SUCCESS, responseDto);
+            SuccessCode.UPDATE_SUCCESS, responseDto);
 
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    @PatchMapping("/{auctionId}/open")
+    public ResponseEntity<ApiResponse<Void>> openAuction(
+        @AuthenticationPrincipal AuthMember authMember,
+        @PathVariable Long auctionId
+    ) {
+        auctionService.openAuction(authMember.getId(), auctionId);
+        ApiResponse<Void> response = ApiResponse.success(SuccessCode.UPDATE_SUCCESS);
         return new ResponseEntity<>(response, response.getStatus());
     }
 
