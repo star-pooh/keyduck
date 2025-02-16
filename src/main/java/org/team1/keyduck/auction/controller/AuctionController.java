@@ -64,4 +64,14 @@ public class AuctionController {
         return new ResponseEntity<>(response, response.getStatus());
     }
 
+    @PatchMapping("/{auctionId}/close")
+    public ResponseEntity<ApiResponse<Void>> closeAuction(
+        @AuthenticationPrincipal AuthMember authMember,
+        @PathVariable Long auctionId
+    ) {
+        auctionService.closeAuction(authMember.getId(), auctionId);
+        ApiResponse<Void> response = ApiResponse.success(SuccessCode.UPDATE_SUCCESS);
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
 }

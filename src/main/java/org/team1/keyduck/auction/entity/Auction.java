@@ -98,5 +98,9 @@ public class Auction {
     public void updateAuctionStatus(AuctionStatus auctionStatus) {
         this.auctionStatus = auctionStatus;
     }
+
+    public void updateSuccessBiddingMember(Member member) {
+        this.member = member;
+    }
 }
 
