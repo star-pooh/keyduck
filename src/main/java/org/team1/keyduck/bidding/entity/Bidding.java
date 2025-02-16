@@ -48,11 +48,13 @@ public class Bidding {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
+
     @Builder
     public Bidding(Auction auction, Member member, Long price) {
         this.auction = auction;
         this.member = member;
         this.price = price;
+
     }
 
 }

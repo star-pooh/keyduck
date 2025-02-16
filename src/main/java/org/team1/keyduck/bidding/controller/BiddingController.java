@@ -1,10 +1,36 @@
 package org.team1.keyduck.bidding.controller;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.team1.keyduck.auth.entity.AuthMember;
+import org.team1.keyduck.bidding.service.BiddingService;
+import org.team1.keyduck.common.dto.ApiResponse;
+import org.team1.keyduck.common.exception.SuccessCode;
 
 @RestController
-@RequestMapping
+@RequiredArgsConstructor
+@RequestMapping("/api/biddings")
 public class BiddingController {
+
+    private final BiddingService biddingService;
+
+    //생성
+    @PostMapping("/{auctionId}")
+    public ResponseEntity<ApiResponse<Void>> createBidding(
+            @PathVariable("auctionId") Long auctionId,
+            @RequestParam(value = "price", required = true) Long price,
+            @AuthenticationPrincipal AuthMember authMember) {
+        biddingService.createBidding(auctionId, price, authMember);
+        return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS),
+                SuccessCode.CREATE_SUCCESS.getStatus());
+
+    }
+
 
 }
