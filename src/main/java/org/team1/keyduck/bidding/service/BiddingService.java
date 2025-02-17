@@ -21,6 +21,7 @@ import org.team1.keyduck.common.exception.BiddingNotAvailableException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.InvalidBiddingPriceException;
+import org.team1.keyduck.common.util.GlobalConstants;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
 
@@ -96,7 +97,7 @@ public class BiddingService {
 
     @Transactional(readOnly = true)
     public Page<SuccessBiddingResponseDto> getSuccessBidding(Long memberId, int page) {
-        Pageable pageable = PageRequest.of(page - 1, 10);
+        Pageable pageable = PageRequest.of(page - 1, GlobalConstants.BIDDING_PAGE_SIZE);
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
