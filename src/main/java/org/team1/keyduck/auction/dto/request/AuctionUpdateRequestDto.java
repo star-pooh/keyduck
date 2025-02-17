@@ -23,11 +23,12 @@ public class AuctionUpdateRequestDto {
     @NotNull(message = "입찰 단위는 필수 입력 값입니다.")
     private int biddingUnit;
 
+    @Future(message = "경매 시작일은 현재보다 이전일 수 없습니다.")
     @NotNull(message = "경매 시작일은 필수 입력 값입니다.")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime auctionStartDate;
 
-    @Future
+    @Future(message = "경매 종료일은 현재보다 이전일 수 없습니다.")
     @NotNull(message = "경매 종료일은 필수 입력 값입니다.")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime auctionEndDate;
