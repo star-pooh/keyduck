@@ -109,7 +109,7 @@ public class AuctionService {
     }
 
     @Transactional
-    public void openAuction(Long id, Long auctionId) {
+    public void openAuction(Long memberId, Long auctionId) {
         Auction findAuction = auctionRepository.findById(auctionId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.AUCTION_NOT_FOUND));
 
@@ -117,7 +117,7 @@ public class AuctionService {
             throw new DataNotFoundException(ErrorCode.FORBIDDEN_ACCESS);
         }
 
-        if (!findAuction.getKeyboard().getMember().getId().equals(id)) {
+        if (!findAuction.getKeyboard().getMember().getId().equals(memberId)) {
             throw new DataNotMatchException(ErrorCode.FORBIDDEN_ACCESS);
         }
 

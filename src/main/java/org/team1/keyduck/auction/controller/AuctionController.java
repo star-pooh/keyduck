@@ -82,8 +82,7 @@ public class AuctionController {
     @PatchMapping("/{auctionId}/open")
     public ResponseEntity<ApiResponse<Void>> openAuction(
             @AuthenticationPrincipal AuthMember authMember,
-            @PathVariable Long auctionId
-    ) {
+            @PathVariable Long auctionId) {
         auctionService.openAuction(authMember.getId(), auctionId);
         ApiResponse<Void> response = ApiResponse.success(SuccessCode.UPDATE_SUCCESS);
         return new ResponseEntity<>(response, response.getStatus());
