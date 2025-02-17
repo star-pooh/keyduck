@@ -29,19 +29,19 @@ public class JwtFilter implements Filter {
 
     @Override
     public void doFilter(
-        ServletRequest request, ServletResponse response, FilterChain chain)
-        throws IOException, ServletException {
+            ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         String url = httpRequest.getRequestURI();
 
-        if (url.startsWith("/api/auth")) {
+        if (url.startsWith("/api/auth") || url.endsWith(".html") || url.startsWith("style")) {
             chain.doFilter(request, response);
             return;
         }
 
-        String bearerJwt = httpRequest.getHeader("Authorization");
+        String bearerJwt = jwtUtil.getToken(httpRequest);
 
         if (bearerJwt == null) {
             // 토큰이 없는 경우 400을 반환합니다.
@@ -63,10 +63,10 @@ public class JwtFilter implements Filter {
             MemberRole memberRole = MemberRole.valueOf(claims.get("memberRole", String.class));
 
             AuthMember authMember = new AuthMember(userId,
-                memberRole);
+                    memberRole);
             SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(authMember, null,
-                    authMember.getAuthorities()));
+                    new UsernamePasswordAuthenticationToken(authMember, null,
+                            authMember.getAuthorities()));
 
             chain.doFilter(request, response);
         } catch (SecurityException | MalformedJwtException e) {
