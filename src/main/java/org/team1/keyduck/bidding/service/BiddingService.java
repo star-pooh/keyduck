@@ -1,7 +1,12 @@
 package org.team1.keyduck.bidding.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.entity.Auction;
@@ -9,12 +14,14 @@ import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
+import org.team1.keyduck.bidding.dto.response.SuccessBiddingResponseDto;
 import org.team1.keyduck.bidding.entity.Bidding;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
 import org.team1.keyduck.common.exception.BiddingNotAvailableException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.InvalidBiddingPriceException;
+import org.team1.keyduck.common.util.GlobalConstants;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
 
@@ -53,7 +60,7 @@ public class BiddingService {
             throw new InvalidBiddingPriceException(ErrorCode.BIDDING_PRICE_BELOW_CURRENT_PRICE);
         }
         //비딩금액이 최대 입찰 호가 보다 높으면 안됨
-        long maxPrice = auction.getCurrentPrice() + (auction.getBiddingUnit() * 10);
+        long maxPrice = auction.getCurrentPrice() + (auction.getBiddingUnit() * 10L);
         if (price > maxPrice) {
             throw new InvalidBiddingPriceException(ErrorCode.BIDDING_PRICE_EXCEEDS_MAX_LIMIT);
         }
@@ -71,11 +78,7 @@ public class BiddingService {
         validateBiddingAvailability(auction, authMember);
         validateBiddingPrice(price, auction);
 
-        Bidding bidding = Bidding.builder()
-                .auction(auction)
-                .member(member)
-                .price(price)
-                .build();
+        Bidding bidding = Bidding.builder().auction(auction).member(member).price(price).build();
 
         biddingRepository.save(bidding);
         //현재가 엽데이트
@@ -84,10 +87,28 @@ public class BiddingService {
 
 
     // 경매별 입찰 내역 조회
+    @Transactional(readOnly = true)
     public List<BiddingResponseDto> getBiddingByAuction(Long auctionId) {
         List<Bidding> biddings = biddingRepository.findByAuctionIdOrderByPriceDesc(auctionId);
 
         return biddings.stream().map(BiddingResponseDto::of).toList();
 
+    }
+
+    @Transactional(readOnly = true)
+    public Page<SuccessBiddingResponseDto> getSuccessBidding(Long memberId, int page) {
+        Pageable pageable = PageRequest.of(page - 1, GlobalConstants.BIDDING_PAGE_SIZE);
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        List<Auction> auctions = auctionRepository.findAllByMember_IdAndAuctionStatus(
+                member.getId(),
+                AuctionStatus.CLOSED);
+
+        List<SuccessBiddingResponseDto> biddingResponseList = auctions.stream()
+                .map(SuccessBiddingResponseDto::of).collect(Collectors.toList());
+
+        return new PageImpl<>(biddingResponseList, pageable, biddingResponseList.size());
     }
 }
