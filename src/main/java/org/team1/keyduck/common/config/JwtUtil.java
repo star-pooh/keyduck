@@ -6,6 +6,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -39,16 +41,21 @@ public class JwtUtil {
         Date date = new Date();
 
         return BEARER_PREFIX +
-            Jwts.builder()
-                .setSubject(String.valueOf(memberId))
-                .claim("memberRole", memberRole)
-                .setExpiration(new Date(date.getTime() + TOKEN_TIME))
-                .setIssuedAt(date) // 발급일
-                .signWith(key, signatureAlgorithm) // 암호화 알고리즘
-                .compact();
+                Jwts.builder()
+                        .setSubject(String.valueOf(memberId))
+                        .claim("memberRole", memberRole)
+                        .setExpiration(new Date(date.getTime() + TOKEN_TIME))
+                        .setIssuedAt(date) // 발급일
+                        .signWith(key, signatureAlgorithm) // 암호화 알고리즘
+                        .compact();
     }
 
     public String substringToken(String tokenValue) {
+        if (tokenValue.contains("+")) {
+            tokenValue = URLDecoder.decode(tokenValue, StandardCharsets.UTF_8);
+            return tokenValue.substring(7);
+        }
+
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(7);
         }
@@ -57,9 +64,9 @@ public class JwtUtil {
 
     public Claims extractClaims(String token) {
         return Jwts.parserBuilder()
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJws(token)
-            .getBody();
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

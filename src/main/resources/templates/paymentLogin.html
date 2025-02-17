@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <link rel="icon" href="https://static.toss.im/icons/png/4x/icon-toss-logo.png"/>
+  <link rel="stylesheet" type="text/css" href="/style.css"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>결제용 로그인 창</title>
+</head>
+
+<body>
+<div class="wrapper">
+  <form id="paymentForm">
+    <label for="email">이메일:</label>
+    <input type="text" id="email" name="email" required/>
+    <br/>
+
+    <label for="password">비밀번호:</label>
+    <input type="password" id="password" name="password" required/>
+    <br/>
+
+    <label for="amount">결제 금액:</label>
+    <input type="number" id="amount" name="amount" required/>
+    <br/>
+
+    <button type="submit">결제하기</button>
+  </form>
+</div>
+</body>
+
+<script>
+  const form = document.getElementById("paymentForm");
+
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+      return parts.pop().split(";").shift();
+    }
+    return null;
+  }
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault(); // 기본 폼 제출 방지
+
+    const requestData = {
+      email: document.getElementById("email").value,
+      password: document.getElementById("password").value,
+      amount: document.getElementById("amount").value
+    };
+
+    const authCookie = getCookie("Authorization");
+
+    fetch("/api/auth/payment", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": authCookie
+      },
+      body: JSON.stringify(requestData),
+      credentials: "include"
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("로그인 실패");
+      }
+      return response.json();  // 서버에서 받은 JSON 응답 처리
+    })
+    .then(data => {
+      window.location.href = `/api/payment/checkout?amount=${data.data.amount}`;
+    })
+  });
+</script>
+</html>

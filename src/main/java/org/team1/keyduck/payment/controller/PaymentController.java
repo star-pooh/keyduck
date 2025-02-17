@@ -25,7 +25,7 @@ public class PaymentController {
     private final TempPaymentService tempPaymentService;
     private final PaymentProcessService paymentProcessService;
 
-    @GetMapping
+    @GetMapping("/checkout")
     public String callPaymentSystem(
             @AuthenticationPrincipal AuthMember authMember,
             Model model, @RequestParam Long amount) {
