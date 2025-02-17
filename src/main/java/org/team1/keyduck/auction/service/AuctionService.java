@@ -78,7 +78,7 @@ public class AuctionService {
             throw new RuntimeException("진행중 이거나 종료된 경매는 수정할 수 없습니다.");
         }
 
-        if (!findAuction.getMember().getId().equals(sellerId)) {
+        if (!findAuction.getKeyboard().getMember().getId().equals(sellerId)) {
             throw new DataNotMatchException(ErrorCode.FORBIDDEN_ACCESS);
         }
         findAuction.updateAuction(requestDto);
