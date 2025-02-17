@@ -49,6 +49,7 @@ public class SecurityConfig {
                         .hasRole("CUSTOMER")
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                         .permitAll()
+                        .requestMatchers("/payment_login.html").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();
