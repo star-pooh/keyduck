@@ -81,11 +81,10 @@ public class BiddingService {
         validateBiddingAvailability(auction, authMember);
         validateBiddingPrice(price, auction);
 
-        //내가 입찰한 내역중 최고 입찰 내역
-        Bidding myGreatBidding = biddingRepository.findByMember_IdAndAuction_Id(member.getId(),
+        Long myGreatBidding = biddingRepository.findByMember_IdAndAuction_Id(member.getId(),
                 auctionId);
 
-        paymentDepositService.payBiddingPrice(member.getId(), price, myGreatBidding.getPrice());
+        paymentDepositService.payBiddingPrice(member.getId(), price, myGreatBidding);
 
         Bidding bidding = Bidding.builder()
                 .auction(auction)
