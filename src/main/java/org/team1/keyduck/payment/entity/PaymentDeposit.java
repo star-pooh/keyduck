@@ -40,4 +40,5 @@ public class PaymentDeposit extends BaseTime {
     public void updatePaymentDeposit(Long amount) {
         this.depositAmount += amount;
     }
+
 }

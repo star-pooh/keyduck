@@ -14,12 +14,17 @@ import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
+import org.team1.keyduck.bidding.entity.Bidding;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataNotMatchException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.keyboard.repository.KeyboardRepository;
+import org.team1.keyduck.member.entity.Member;
+import org.team1.keyduck.member.repository.MemberRepository;
+import org.team1.keyduck.payment.entity.PaymentDeposit;
+import org.team1.keyduck.payment.repository.PaymentDepositRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +33,8 @@ public class AuctionService {
     private final AuctionRepository auctionRepository;
     private final KeyboardRepository keyboardRepository;
     private final BiddingRepository biddingRepository;
+    private final PaymentDepositRepository paymentDepositRepository;
+    private final MemberRepository memberRepository;
 
     public AuctionCreateResponseDto createAuctionService(Long sellerId,
             AuctionCreateRequestDto requestDto) {
@@ -122,5 +129,34 @@ public class AuctionService {
         }
 
         findAuction.updateAuctionStatus(AuctionStatus.IN_PROGRESS);
+    }
+
+    @Transactional
+    public void closeAuction(Long id, Long auctionId) {
+        Auction findAuction = auctionRepository.findById(auctionId)
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.AUCTION_NOT_FOUND));
+
+        if (!findAuction.getAuctionStatus().equals(AuctionStatus.IN_PROGRESS)) {
+            throw new DataNotFoundException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+
+        if (!findAuction.getKeyboard().getMember().getId().equals(id)) {
+            throw new DataNotMatchException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+
+        Member winnerMember = biddingRepository.findByMaxPriceAuctionId(auctionId);
+
+        findAuction.updateSuccessBiddingMember(winnerMember);
+
+        List<Bidding> biddings = biddingRepository.findAllByIdBiddingMax(auctionId);
+
+        for (Bidding bidding : biddings) {
+            PaymentDeposit paymentDeposit = paymentDepositRepository.findByMember_Id(
+                            bidding.getMember().getId())
+                    .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
+            paymentDeposit.updatePaymentDeposit(bidding.getPrice());
+        }
+
+        findAuction.updateAuctionStatus(AuctionStatus.CLOSED);
     }
 }
