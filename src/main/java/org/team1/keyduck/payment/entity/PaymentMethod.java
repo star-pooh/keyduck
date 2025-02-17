@@ -11,7 +11,7 @@ public enum PaymentMethod {
     EASY_PAY("간편결제"),
     VIRTUAL_ACCOUNT("가상계좌"),
     GIFT_CERTIFICATE("문화상품권"),
-    MOBILE_Phone("휴대폰");
+    MOBILE_PHONE("휴대폰");
 
     private final String paymentType;
 

@@ -24,7 +24,6 @@ public enum ErrorCode {
     BIDDING_PRICE_EXCEEDS_MAX_LIMIT(HttpStatus.BAD_REQUEST, "ERR015", "입찰 금액이 최대 가능 금액보다 큽니다."),
     INVALID_PAYMENT_AMOUNT(HttpStatus.BAD_REQUEST, "ERR016", "결제 금액이 올바르지 않습니다."),
 
-
     //401  UNAUTHORIZED
     UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "ERR101", "인증이 필요한 접근입니다."),
     LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "ERR102", "로그인에 실패했습니다."),
