@@ -7,17 +7,17 @@ import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.dto.request.AuctionCreateRequestDto;
 import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
 import org.team1.keyduck.auction.dto.response.AuctionCreateResponseDto;
-import org.team1.keyduck.auction.dto.response.AuctionReadResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionReadAllResponseDto;
+import org.team1.keyduck.auction.dto.response.AuctionReadResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionUpdateResponseDto;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
+import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataNotMatchException;
 import org.team1.keyduck.common.exception.ErrorCode;
-import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.keyboard.repository.KeyboardRepository;
 
@@ -35,10 +35,6 @@ public class AuctionService {
         Keyboard findKeyboard = keyboardRepository.findByIdAndIsDeletedFalse(
                         requestDto.getKeyboardId())
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
-
-        if (findKeyboard.isDeleted()) {
-            throw new DataNotFoundException(ErrorCode.KEYBOARD_NOT_FOUND);
-        }
 
         if (!findKeyboard.getMember().getId().equals(sellerId)) {
             throw new DataNotMatchException(ErrorCode.FORBIDDEN_ACCESS);
@@ -110,5 +106,21 @@ public class AuctionService {
         return auctions.stream()
                 .map(AuctionReadAllResponseDto::of)
                 .toList();
+    }
+
+    @Transactional
+    public void openAuction(Long memberId, Long auctionId) {
+        Auction findAuction = auctionRepository.findById(auctionId)
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.AUCTION_NOT_FOUND));
+
+        if (!findAuction.getAuctionStatus().equals(AuctionStatus.NOT_STARTED)) {
+            throw new DataNotFoundException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+
+        if (!findAuction.getKeyboard().getMember().getId().equals(memberId)) {
+            throw new DataNotMatchException(ErrorCode.FORBIDDEN_ACCESS);
+        }
+
+        findAuction.updateAuctionStatus(AuctionStatus.IN_PROGRESS);
     }
 }
