@@ -29,6 +29,10 @@ public class AuctionService {
         Keyboard findKeyboard = keyboardRepository.findById(requestDto.getKeyboardId())
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
 
+        if (findKeyboard.isDeleted()) {
+            throw new DataNotFoundException(ErrorCode.KEYBOARD_NOT_FOUND);
+        }
+
         if (!findKeyboard.getMember().getId().equals(sellerId)) {
             throw new DataNotMatchException(ErrorCode.FORBIDDEN_ACCESS);
         }
