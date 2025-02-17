@@ -5,10 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
-import org.team1.keyduck.member.entity.Member;
 
 public interface AuctionRepository extends JpaRepository<Auction, Long> {
 
-    @Query("SELECT t FROM Auction t WHERE t.member = :member AND t.auctionStatus = :auctionStatus")
-    List<Auction> findAllByMember_IdAndAuctionStatus(Member member, AuctionStatus auctionStatus);
+    @Query("SELECT t FROM Auction t WHERE t.member.id = :memberId AND t.auctionStatus = :auctionStatus")
+    List<Auction> findAllByMember_IdAndAuctionStatus(Long memberId, AuctionStatus auctionStatus);
 }

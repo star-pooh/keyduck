@@ -102,7 +102,8 @@ public class BiddingService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        List<Auction> auctions = auctionRepository.findAllByMember_IdAndAuctionStatus(member,
+        List<Auction> auctions = auctionRepository.findAllByMember_IdAndAuctionStatus(
+                member.getId(),
                 AuctionStatus.CLOSED);
 
         List<SuccessBiddingResponseDto> biddingResponseList = auctions.stream()
