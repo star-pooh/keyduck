@@ -1,13 +1,12 @@
 package org.team1.keyduck.auction.dto.response;
 
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 
 @Getter
-public class AuctionReadResponseDto {
+public class AuctionReadAllResponseDto {
     private String title;
     private Long startPrice;
     private Long currentPrice;
@@ -17,9 +16,11 @@ public class AuctionReadResponseDto {
     private LocalDateTime auctionEndDate;
     private AuctionStatus auctionStatus;
 
-    private AuctionReadResponseDto(String title, Long startPrice, Long currentPrice,
+
+    private AuctionReadAllResponseDto(String title, Long startPrice, Long currentPrice,
             Long immediatePurchasePrice, int biddingUnit, LocalDateTime auctionStartDate,
-            LocalDateTime auctionEndDate, AuctionStatus auctionStatus) {
+            LocalDateTime auctionEndDate, AuctionStatus auctionStatus
+    ) {
         this.title = title;
         this.startPrice = startPrice;
         this.currentPrice = currentPrice;
@@ -30,8 +31,8 @@ public class AuctionReadResponseDto {
         this.auctionStatus = auctionStatus;
     }
 
-    public static AuctionReadResponseDto of(Auction auction) {
-        return new AuctionReadResponseDto(
+    public static AuctionReadAllResponseDto of(Auction auction) {
+        return new AuctionReadAllResponseDto(
                 auction.getTitle(),
                 auction.getStartPrice(),
                 auction.getCurrentPrice(),
@@ -42,4 +43,5 @@ public class AuctionReadResponseDto {
                 auction.getAuctionStatus()
         );
     }
+
 }
