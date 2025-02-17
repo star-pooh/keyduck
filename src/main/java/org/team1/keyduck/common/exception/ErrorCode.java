@@ -23,7 +23,6 @@ public enum ErrorCode {
     BIDDING_PRICE_BELOW_CURRENT_PRICE(HttpStatus.BAD_REQUEST, "ERR014", "입찰 금액이 현재가보다 작습니다."),
     BIDDING_PRICE_EXCEEDS_MAX_LIMIT(HttpStatus.BAD_REQUEST, "ERR015", "입찰 금액이 최대 가능 금액보다 큽니다."),
 
-
     //401  UNAUTHORIZED
     UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "ERR101", "인증이 필요한 접근입니다."),
     LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "ERR102", "로그인에 실패했습니다."),
@@ -37,7 +36,6 @@ public enum ErrorCode {
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "ERR300", "요청한 리소스를 찾을 수 없습니다."),
     KEYBOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "ERR303", "해당 아이디를 가진 키보드를 찾을 수 없습니다."),
     AUCTION_NOT_FOUND(HttpStatus.NOT_FOUND, "ERR304", "해당 경매를 찾을 수 없습니다."),
-
 
     // 500 INTERNAL_SERVER_ERROR
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "ERR999", "서버 내부 오류가 발생했습니다.");

@@ -6,12 +6,13 @@ import org.team1.keyduck.bidding.entity.Bidding;
 
 @Getter
 public class BiddingResponseDto {
+
     private String auctionTitle;
     private String memberName;
     private Long biddingPrice;
     private LocalDateTime createdAt;
 
-    public BiddingResponseDto(String auctionTitle, String memberName, Long biddingPrice,
+    private BiddingResponseDto(String auctionTitle, String memberName, Long biddingPrice,
             LocalDateTime createdAt) {
         this.auctionTitle = auctionTitle;
         this.memberName = memberName;
@@ -27,5 +28,6 @@ public class BiddingResponseDto {
                 bidding.getCreatedAt()
         );
     }
-
 }
+
+
