@@ -11,8 +11,7 @@ public interface BiddingRepository extends JpaRepository<Bidding, Long> {
     long countByMember_IdAndAuction_Id(Long memberId, Long auctionId);
 
     @Query("SELECT t FROM Bidding t WHERE t.auction.id = :auctionId AND t.price = "
-            + "(SELECT MAX(b.price) FROM Bidding b WHERE b.auction.id = :auctionId "
-            + "AND b.auction.id = :auctionId AND b.member.id = t.member.id)"
+            + "(SELECT MAX(b.price) FROM Bidding b WHERE b.auction.id = :auctionId AND b.member.id = t.member.id)"
             + "AND t.price < (SELECT MAX(b.price) FROM Bidding b WHERE b.auction.id = :auctionId)")
     List<Bidding> findAllByIdBiddingMax(Long auctionId);
 
