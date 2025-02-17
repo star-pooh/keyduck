@@ -18,13 +18,9 @@ public class PaymentDepositService {
 
     @Transactional
     public void processPaymentDeposit(PaymentDto paymentDto) {
-        paymentDepositRepository
-                .findByMember_Id(paymentDto.getMember().getId())
-                .ifPresentOrElse(
-                        existPaymentDeposit -> updateExistPaymentDeposit(existPaymentDeposit,
-                                paymentDto.getAmount()),
-                        () -> createNewPaymentDeposit(paymentDto)
-                );
+        paymentDepositRepository.findByMember_Id(paymentDto.getMember().getId()).ifPresentOrElse(
+                existPaymentDeposit -> updateExistPaymentDeposit(existPaymentDeposit,
+                        paymentDto.getAmount()), () -> createNewPaymentDeposit(paymentDto));
     }
 
     private void updateExistPaymentDeposit(PaymentDeposit existPaymentDeposit, Long amount) {
@@ -32,10 +28,8 @@ public class PaymentDepositService {
     }
 
     private void createNewPaymentDeposit(PaymentDto paymentDto) {
-        PaymentDeposit newPaymentDeposit = PaymentDeposit.builder()
-                .member(paymentDto.getMember())
-                .depositAmount(paymentDto.getAmount())
-                .build();
+        PaymentDeposit newPaymentDeposit = PaymentDeposit.builder().member(paymentDto.getMember())
+                .depositAmount(paymentDto.getAmount()).build();
 
         paymentDepositRepository.save(newPaymentDeposit);
     }
@@ -44,10 +38,8 @@ public class PaymentDepositService {
     public void payBiddingPrice(Long memberId, Long newBiddingPrice, Long lastBiddingPrice) {
 
         PaymentDeposit paymentDeposit = paymentDepositRepository.findByMember_Id(memberId)
-                .orElseThrow(
-                        () -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND)
-                );
-        if (!(newBiddingPrice - lastBiddingPrice < paymentDeposit.getDepositAmount())) {
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
+        if (!(newBiddingPrice - lastBiddingPrice <= paymentDeposit.getDepositAmount())) {
             throw new BiddingNotAvailableException(ErrorCode.INSUFFICIENT_PAYMENT_AMOUNT);
         }
 

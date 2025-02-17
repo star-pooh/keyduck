@@ -81,10 +81,12 @@ public class BiddingService {
         validateBiddingAvailability(auction, authMember);
         validateBiddingPrice(price, auction);
 
-        Long myGreatBidding = biddingRepository.findByMember_IdAndAuction_Id(member.getId(),
+        Long previousBiddingInfo = biddingRepository.findByMember_IdAndAuction_Id(member.getId(),
                 auctionId);
 
-        paymentDepositService.payBiddingPrice(member.getId(), price, myGreatBidding);
+        previousBiddingInfo = previousBiddingInfo == null ? 0 : previousBiddingInfo;
+
+        paymentDepositService.payBiddingPrice(member.getId(), price, previousBiddingInfo);
 
         Bidding bidding = Bidding.builder()
                 .auction(auction)
