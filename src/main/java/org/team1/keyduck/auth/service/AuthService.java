@@ -25,7 +25,7 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     public SigninResponseDto login(SigninRequestDto signinRequest) {
-        String bearerToken = crateBearerToken(signinRequest.getEmail(),
+        String bearerToken = createBearerToken(signinRequest.getEmail(),
                 signinRequest.getPassword());
         return new SigninResponseDto(bearerToken);
     }
@@ -46,11 +46,11 @@ public class AuthService {
     }
 
     public PaymentFormResponseDto paymentFormLogin(PaymentFormRequestDto dto) {
-        String bearerToken = crateBearerToken(dto.getEmail(), dto.getPassword());
+        String bearerToken = createBearerToken(dto.getEmail(), dto.getPassword());
         return new PaymentFormResponseDto(bearerToken, dto.getAmount());
     }
 
-    private String crateBearerToken(String email, String password) {
+    private String createBearerToken(String email, String password) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.LOGIN_FAILED));
 
