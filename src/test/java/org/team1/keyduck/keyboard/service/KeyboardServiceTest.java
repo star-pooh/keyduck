@@ -23,6 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.team1.keyduck.common.exception.DuplicateDataException;
 import org.team1.keyduck.keyboard.dto.response.KeyboardReadResponseDto;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.keyboard.dto.request.KeyboardCreateRequestDto;
@@ -176,6 +177,27 @@ class KeyboardServiceTest {
 
         // then
         assertEquals(true, keyboard.isDeleted());
+    }
+
+    @Test
+    @DisplayName("키보드 삭제 - 실패 케이스(이미 삭제된 키보드)")
+    void deleteKeyboard_fail_true() {
+        // given
+        Member member = TEST_MEMBER1;
+        Keyboard keyboard = TEST_KEYBOARD1;
+
+        ReflectionTestUtils.setField(member, "id", TEST_ID1);
+
+        // true가 이미 삭제된 상태
+        ReflectionTestUtils.setField(keyboard, "isDeleted", true);
+
+        when(keyboardRepository.findById(keyboard.getId())).thenReturn(Optional.of(keyboard));
+
+        // when
+        // then
+        assertThrows(DuplicateDataException.class, () -> {
+            keyboardService.deleteKeyboard(keyboard.getId(), member.getId());
+        });
     }
 
 }
