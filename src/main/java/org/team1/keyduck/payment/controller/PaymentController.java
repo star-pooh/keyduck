@@ -31,7 +31,7 @@ public class PaymentController {
             Model model, @RequestParam Long amount) {
         model.addAttribute("memberId", authMember.getId());
         model.addAttribute("paymentAmount", amount);
-        return "/payment_process";
+        return "payment_process";
     }
 
     @GetMapping("/success/{memberId}")
@@ -40,7 +40,7 @@ public class PaymentController {
         // memberId, orderId, amount는 결제 요청과 승인 사이에 데이터 무결성을 확인하기 위해 필요하므로 서버에 임시 저장
         tempPaymentService.createTempPayment(memberId, orderId, amount);
 
-        return "/payment_success";
+        return "payment_success";
     }
 
     @PostMapping("/confirm")
@@ -62,6 +62,6 @@ public class PaymentController {
         model.addAttribute("code", failCode);
         model.addAttribute("message", failMessage);
 
-        return "/payment_fail";
+        return "payment_fail";
     }
 }
