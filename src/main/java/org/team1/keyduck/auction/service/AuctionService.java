@@ -144,9 +144,9 @@ public class AuctionService {
             throw new DataNotMatchException(ErrorCode.FORBIDDEN_ACCESS);
         }
 
-        Member greatBiddingMember = biddingRepository.findByMaxPriceAuctionId(auctionId);
+        Member winnerMember = biddingRepository.findByMaxPriceAuctionId(auctionId);
 
-        findAuction.updateSuccessBiddingMember(greatBiddingMember);
+        findAuction.updateSuccessBiddingMember(winnerMember);
 
         List<Bidding> biddings = biddingRepository.findAllByIdBiddingMax(auctionId);
 
