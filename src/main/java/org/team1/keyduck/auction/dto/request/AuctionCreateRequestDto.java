@@ -30,10 +30,11 @@ public class AuctionCreateRequestDto {
 
     @NotNull(message = "경매 시작일은 필수 입력 값입니다.")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Future(message = "경매 시작일은 현재 시각보다 이전일 수 없습니다.")
     private LocalDateTime auctionStartDate;
 
     @NotNull(message = "경매 종료일은 필수 입력 값입니다.")
-    @Future
+    @Future(message = "경매 종료일은 현재 시각보다 이전일 수 없습니다.")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime auctionEndDate;
 
