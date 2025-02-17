@@ -12,4 +12,6 @@ public interface BiddingRepository extends JpaRepository<Bidding, Long> {
     //경매별 입찰내역
     List<Bidding> findByAuctionIdOrderByPriceDesc(Long auctionId);
 
+    List<Bidding> findAllByAuctionId(Long auctionId);
+
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.team1.keyduck.auction.dto.request.AuctionCreateRequestDto;
 import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
 import org.team1.keyduck.auction.dto.response.AuctionCreateResponseDto;
+import org.team1.keyduck.auction.dto.response.AuctionReadResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionReadAllResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionUpdateResponseDto;
 import org.team1.keyduck.auction.service.AuctionService;
@@ -55,6 +56,18 @@ public class AuctionController {
                 SuccessCode.UPDATE_SUCCESS, responseDto);
 
         return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    // 경매 단건 조회 API
+    @GetMapping("/{auctionId}")
+    public ResponseEntity<ApiResponse<AuctionReadResponseDto>> findAuctionAPI(
+            @PathVariable Long auctionId,
+            @AuthenticationPrincipal AuthMember authMember) {
+
+        AuctionReadResponseDto response = auctionService.findAuction(auctionId);
+
+        return new ResponseEntity<>(ApiResponse.success(SuccessCode.READ_SUCCESS, response),
+                SuccessCode.READ_SUCCESS.getStatus());
     }
 
     // 경매 다건 조회 API

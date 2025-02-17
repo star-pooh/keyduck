@@ -1,10 +1,11 @@
 package org.team1.keyduck.auction.dto.response;
 
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
+import java.util.List;
 import lombok.Getter;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
+import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 
 @Getter
 public class AuctionReadResponseDto {
@@ -16,10 +17,12 @@ public class AuctionReadResponseDto {
     private LocalDateTime auctionStartDate;
     private LocalDateTime auctionEndDate;
     private AuctionStatus auctionStatus;
+    private List<BiddingResponseDto> biddings;
+
 
     private AuctionReadResponseDto(String title, Long startPrice, Long currentPrice,
             Long immediatePurchasePrice, int biddingUnit, LocalDateTime auctionStartDate,
-            LocalDateTime auctionEndDate, AuctionStatus auctionStatus) {
+            LocalDateTime auctionEndDate, AuctionStatus auctionStatus, List<BiddingResponseDto> biddings) {
         this.title = title;
         this.startPrice = startPrice;
         this.currentPrice = currentPrice;
@@ -28,9 +31,10 @@ public class AuctionReadResponseDto {
         this.auctionStartDate = auctionStartDate;
         this.auctionEndDate = auctionEndDate;
         this.auctionStatus = auctionStatus;
+        this.biddings = biddings;
     }
 
-    public static AuctionReadResponseDto of(Auction auction) {
+    public static AuctionReadResponseDto of(Auction auction, List<BiddingResponseDto> biddings) {
         return new AuctionReadResponseDto(
                 auction.getTitle(),
                 auction.getStartPrice(),
@@ -39,7 +43,8 @@ public class AuctionReadResponseDto {
                 auction.getBiddingUnit(),
                 auction.getAuctionStartDate(),
                 auction.getAuctionEndDate(),
-                auction.getAuctionStatus()
+                auction.getAuctionStatus(),
+                biddings
         );
     }
 }

@@ -7,14 +7,17 @@ import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.dto.request.AuctionCreateRequestDto;
 import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
 import org.team1.keyduck.auction.dto.response.AuctionCreateResponseDto;
+import org.team1.keyduck.auction.dto.response.AuctionReadResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionReadAllResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionUpdateResponseDto;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
-import org.team1.keyduck.auction.repository.AuctionRepository;
+import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
+import org.team1.keyduck.bidding.repository.BiddingRepository;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataNotMatchException;
 import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.keyboard.repository.KeyboardRepository;
 
@@ -24,6 +27,7 @@ public class AuctionService {
 
     private final AuctionRepository auctionRepository;
     private final KeyboardRepository keyboardRepository;
+    private final BiddingRepository biddingRepository;
 
     public AuctionCreateResponseDto createAuctionService(Long sellerId,
             AuctionCreateRequestDto requestDto) {
@@ -74,6 +78,22 @@ public class AuctionService {
         return AuctionUpdateResponseDto.of(findAuction);
     }
 
+    // 경매 단건 조회
+    @Transactional(readOnly = true)
+    public AuctionReadResponseDto findAuction(Long auctionId) {
+
+        Auction auction = auctionRepository.findById(auctionId)
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        // 경매 입찰 내역 조회
+        List<BiddingResponseDto> responseDto = biddingRepository.findAllByAuctionId(auctionId)
+                .stream()
+                .map(BiddingResponseDto::of)
+                .toList();
+
+        return AuctionReadResponseDto.of(auction, responseDto);
+    }
+
     // 경매 다건 조회
     @Transactional(readOnly = true)
     public List<AuctionReadAllResponseDto> findAllAuction() {
@@ -86,5 +106,4 @@ public class AuctionService {
                 .map(AuctionReadAllResponseDto::of)
                 .toList();
     }
-
 }
