@@ -62,7 +62,7 @@ public class AuctionController {
             @PathVariable Long auctionId,
             @AuthenticationPrincipal AuthMember authMember) {
 
-        AuctionReadResponseDto response = auctionService.findAuction(authMember.getId());
+        AuctionReadResponseDto response = auctionService.findAuction(auctionId);
 
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.READ_SUCCESS, response),
                 SuccessCode.READ_SUCCESS.getStatus());
