@@ -60,6 +60,11 @@ public class AuctionService {
         Auction findAuction = auctionRepository.findById(auctionId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
 
+        //todo 추후 시작되거나 종료된 경매에 대해서는 수정할 수 없다는 내용의 익셉션을 생성하여 적용필요.
+        if (!findAuction.getAuctionStatus().equals(AuctionStatus.NOT_STARTED)) {
+            throw new RuntimeException("진행중 이거나 종료된 경매는 수정할 수 없습니다.");
+        }
+
         if (!findAuction.getMember().getId().equals(sellerId)) {
             throw new DataNotMatchException(ErrorCode.FORBIDDEN_ACCESS);
         }
