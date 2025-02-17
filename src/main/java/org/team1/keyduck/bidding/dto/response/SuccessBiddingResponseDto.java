@@ -1,34 +1,30 @@
 package org.team1.keyduck.bidding.dto.response;
 
-import java.time.LocalDateTime;
 import lombok.Getter;
-import org.team1.keyduck.bidding.entity.Bidding;
+import org.team1.keyduck.auction.entity.Auction;
 
 @Getter
 public class SuccessBiddingResponseDto {
 
-    private final Long id;
+    private final Long auctionId;
 
-    private final Long auction_id;
+    private final String auctionName;
 
-    private final Long member_id;
+    private final Long memberId;
 
     private final Long price;
 
-    private final LocalDateTime createdAt;
-
-    private SuccessBiddingResponseDto(Long id, Long auction_id, Long member_id, long price,
-        LocalDateTime createdAt) {
-        this.id = id;
-        this.auction_id = auction_id;
-        this.member_id = member_id;
+    private SuccessBiddingResponseDto(Long auctionId, String auctionName, Long memberId,
+            Long price) {
+        this.auctionId = auctionId;
+        this.auctionName = auctionName;
+        this.memberId = memberId;
         this.price = price;
-        this.createdAt = createdAt;
     }
 
-    public static SuccessBiddingResponseDto of(Bidding bidding) {
-        return new SuccessBiddingResponseDto(bidding.getId(), bidding.getAuction().getId(),
-            bidding.getMember().getId(), bidding.getPrice(), bidding.getCreatedAt());
+    public static SuccessBiddingResponseDto of(Auction auction) {
+        return new SuccessBiddingResponseDto(auction.getId(), auction.getTitle(),
+                auction.getMember().getId(), auction.getCurrentPrice());
     }
 
 

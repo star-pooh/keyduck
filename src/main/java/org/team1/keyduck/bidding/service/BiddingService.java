@@ -42,7 +42,7 @@ public class BiddingService {
         }
         //비딩 횟수가 열번째 미만이어야함
         long biddingCount = biddingRepository.countByMember_IdAndAuction_Id(authMember.getId(),
-            auction.getId());
+                auction.getId());
         if (biddingCount >= 10) {
             throw new BiddingNotAvailableException(ErrorCode.MAX_BIDDING_COUNT_EXCEEDED);
         }
@@ -69,10 +69,10 @@ public class BiddingService {
     @Transactional
     public void createBidding(Long auctionId, Long price, AuthMember authMember) {
         Auction auction = auctionRepository.findById(auctionId)
-            .orElseThrow(() -> new DataNotFoundException(ErrorCode.AUCTION_NOT_FOUND));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.AUCTION_NOT_FOUND));
 
         Member member = memberRepository.findById(authMember.getId())
-            .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
 
         validateBiddingAvailability(auction, authMember);
         validateBiddingPrice(price, auction);
@@ -86,6 +86,7 @@ public class BiddingService {
 
 
     // 경매별 입찰 내역 조회
+    @Transactional(readOnly = true)
     public List<BiddingResponseDto> getBiddingByAuction(Long auctionId) {
         List<Bidding> biddings = biddingRepository.findByAuctionIdOrderByPriceDesc(auctionId);
 
@@ -98,20 +99,13 @@ public class BiddingService {
         Pageable pageable = PageRequest.of(page - 1, 10);
 
         Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        List<Long> auctionIds = auctionRepository.findAllByMember_IdAndAuctionStatus(member,
-            AuctionStatus.CLOSED);
+        List<Auction> auctions = auctionRepository.findAllByMember_IdAndAuctionStatus(member,
+                AuctionStatus.CLOSED);
 
-        if (auctionIds.isEmpty()) {
-            throw new DataNotFoundException(ErrorCode.AUCTION_NOT_FOUND);
-        }
-
-        List<Bidding> successBiddings = biddingRepository.findSuccessBiddingByAuctionIds(auctionIds,
-            pageable);
-
-        List<SuccessBiddingResponseDto> biddingResponseList = successBiddings.stream()
-            .map(SuccessBiddingResponseDto::of).collect(Collectors.toList());
+        List<SuccessBiddingResponseDto> biddingResponseList = auctions.stream()
+                .map(SuccessBiddingResponseDto::of).collect(Collectors.toList());
 
         return new PageImpl<>(biddingResponseList, pageable, biddingResponseList.size());
     }
