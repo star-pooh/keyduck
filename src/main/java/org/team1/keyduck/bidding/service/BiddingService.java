@@ -1,5 +1,6 @@
 package org.team1.keyduck.bidding.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,6 +8,7 @@ import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.auth.entity.AuthMember;
+import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 import org.team1.keyduck.bidding.entity.Bidding;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
 import org.team1.keyduck.common.exception.BiddingNotAvailableException;
@@ -28,7 +30,6 @@ public class BiddingService {
 
     //비딩참여가 가능한 상태인지 검증
     private void validateBiddingAvailability(Auction auction, AuthMember authMember) {
-
         //경매가 진행 중이어야 가능
         if (!auction.getAuctionStatus().equals(AuctionStatus.IN_PROGRESS)) {
             throw new BiddingNotAvailableException(ErrorCode.AUCTION_NOT_IN_PROGRESS);
@@ -77,10 +78,16 @@ public class BiddingService {
                 .build();
 
         biddingRepository.save(bidding);
-
         //현재가 엽데이트
         auction.updateCurrentPrice(price);
     }
 
 
+    // 경매별 입찰 내역 조회
+    public List<BiddingResponseDto> getBiddingByAuction(Long auctionId) {
+        List<Bidding> biddings = biddingRepository.findByAuctionIdOrderByPriceDesc(auctionId);
+
+        return biddings.stream().map(BiddingResponseDto::of).toList();
+
+    }
 }
