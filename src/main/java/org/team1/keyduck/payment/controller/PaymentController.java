@@ -25,13 +25,13 @@ public class PaymentController {
     private final TempPaymentService tempPaymentService;
     private final PaymentProcessService paymentProcessService;
 
-    @GetMapping
+    @GetMapping("/process")
     public String callPaymentSystem(
             @AuthenticationPrincipal AuthMember authMember,
             Model model, @RequestParam Long amount) {
         model.addAttribute("memberId", authMember.getId());
         model.addAttribute("paymentAmount", amount);
-        return "/checkout";
+        return "/payment_process";
     }
 
     @GetMapping("/success/{memberId}")
@@ -40,7 +40,7 @@ public class PaymentController {
         // memberId, orderId, amount는 결제 요청과 승인 사이에 데이터 무결성을 확인하기 위해 필요하므로 서버에 임시 저장
         tempPaymentService.createTempPayment(memberId, orderId, amount);
 
-        return "/success";
+        return "/payment_success";
     }
 
     @PostMapping("/confirm")
@@ -62,6 +62,6 @@ public class PaymentController {
         model.addAttribute("code", failCode);
         model.addAttribute("message", failMessage);
 
-        return "/fail";
+        return "/payment_fail";
     }
 }

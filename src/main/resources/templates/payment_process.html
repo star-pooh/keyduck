@@ -19,14 +19,6 @@
         <div id="payment-method"></div>
         <!-- 이용약관 UI -->
         <div id="agreement"></div>
-        <!-- 쿠폰 체크박스 -->
-        <div style="padding-left: 25px">
-          <div class="checkable typography--p">
-            <label for="coupon-box" class="checkable__label typography--regular"
-              ><input id="coupon-box" class="checkable__input" type="checkbox" aria-checked="true" /><span class="checkable__label-text">5,000원 쿠폰 적용</span></label
-            >
-          </div>
-        </div>
         <!-- 결제하기 버튼 -->
         <div class="result wrapper">
           <button class="button" id="payment-button" style="margin-top: 30px">
@@ -42,7 +34,6 @@
 
       async function main() {
         const button = document.getElementById("payment-button");
-        const coupon = document.getElementById("coupon-box");
         const amount = {
           currency: "KRW",
           value: paymentAmount,
@@ -59,8 +50,6 @@
         const widgets = tossPayments.widgets({
           customerKey,
         });
-        // 비회원 결제
-        // const widgets = tossPayments.widgets({customerKey: TossPayments.ANONYMOUS});
 
         // ------  주문서의 결제 금액 설정 ------
         // TODO: 위젯의 결제금액을 결제하려는 금액으로 초기화하세요.
@@ -80,24 +69,6 @@
         // ------  이용약관 UI 렌더링 ------
         // @docs https://docs.tosspayments.com/reference/widget-sdk#renderagreement선택자-옵션
         await widgets.renderAgreement({ selector: "#agreement", variantKey: "AGREEMENT" });
-
-        // ------  주문서의 결제 금액이 변경되었을 경우 결제 금액 업데이트 ------
-        // @docs https://docs.tosspayments.com/sdk/v2/js#widgetssetamount
-        coupon.addEventListener("change", async function () {
-          if (coupon.checked) {
-            await widgets.setAmount({
-              currency: "KRW",
-              value: amount.value - 5000,
-            });
-
-            return;
-          }
-
-          await widgets.setAmount({
-            currency: "KRW",
-            value: amount,
-          });
-        });
 
         // ------ '결제하기' 버튼 누르면 결제창 띄우기 ------
         // @docs https://docs.tosspayments.com/sdk/v2/js#widgetsrequestpayment
