@@ -24,6 +24,7 @@ import org.team1.keyduck.common.exception.InvalidBiddingPriceException;
 import org.team1.keyduck.common.util.GlobalConstants;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
+import org.team1.keyduck.payment.service.PaymentDepositService;
 
 
 @Service
@@ -34,9 +35,11 @@ public class BiddingService {
     private final BiddingRepository biddingRepository;
     private final AuctionRepository auctionRepository;
     private final MemberRepository memberRepository;
+    private final PaymentDepositService paymentDepositService;
 
     //비딩참여가 가능한 상태인지 검증
     private void validateBiddingAvailability(Auction auction, AuthMember authMember) {
+
         //경매가 진행 중이어야 가능
         if (!auction.getAuctionStatus().equals(AuctionStatus.IN_PROGRESS)) {
             throw new BiddingNotAvailableException(ErrorCode.AUCTION_NOT_IN_PROGRESS);
@@ -78,9 +81,21 @@ public class BiddingService {
         validateBiddingAvailability(auction, authMember);
         validateBiddingPrice(price, auction);
 
-        Bidding bidding = Bidding.builder().auction(auction).member(member).price(price).build();
+        Long previousBiddingInfo = biddingRepository.findByMember_IdAndAuction_Id(member.getId(),
+                auctionId);
+
+        previousBiddingInfo = previousBiddingInfo == null ? 0 : previousBiddingInfo;
+
+        paymentDepositService.payBiddingPrice(member.getId(), price, previousBiddingInfo);
+
+        Bidding bidding = Bidding.builder()
+                .auction(auction)
+                .member(member)
+                .price(price)
+                .build();
 
         biddingRepository.save(bidding);
+
         //현재가 엽데이트
         auction.updateCurrentPrice(price);
     }
