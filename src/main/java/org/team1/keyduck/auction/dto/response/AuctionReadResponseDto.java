@@ -22,8 +22,7 @@ public class AuctionReadResponseDto {
 
     private AuctionReadResponseDto(String title, Long startPrice, Long currentPrice,
             Long immediatePurchasePrice, int biddingUnit, LocalDateTime auctionStartDate,
-            LocalDateTime auctionEndDate, AuctionStatus auctionStatus, List<BiddingResponseDto> biddings
-    ) {
+            LocalDateTime auctionEndDate, AuctionStatus auctionStatus, List<BiddingResponseDto> biddings) {
         this.title = title;
         this.startPrice = startPrice;
         this.currentPrice = currentPrice;

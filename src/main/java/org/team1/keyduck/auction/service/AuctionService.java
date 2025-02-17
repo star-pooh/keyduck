@@ -27,6 +27,7 @@ public class AuctionService {
 
     private final AuctionRepository auctionRepository;
     private final KeyboardRepository keyboardRepository;
+    private final BiddingRepository biddingRepository;
 
     public AuctionCreateResponseDto createAuctionService(Long sellerId,
             AuctionCreateRequestDto requestDto) {
