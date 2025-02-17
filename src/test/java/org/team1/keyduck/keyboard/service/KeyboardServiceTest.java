@@ -105,7 +105,7 @@ class KeyboardServiceTest {
     @Test
     @DisplayName("키보드 생성 메서드 - 성공 케이스")
     public void createKeyboard_success() {
-        // give
+        // given
         Long memberId = 1L;
         String name = "키보드";
         String description = "키보드입니다.";
@@ -140,7 +140,7 @@ class KeyboardServiceTest {
     @DisplayName("키보드 생성 메서드(실패 케이스) - 유저가 존재하지 않는 경우")
     void createKeyboard_fail() {
 
-        // give
+        // given
         Long memberId = 1L;
         String name = "키보드";
         String description = "키보드입니다.";
@@ -156,4 +156,26 @@ class KeyboardServiceTest {
         });
 
     }
+
+    @Test
+    @DisplayName("키보드 삭제 - 성공 케이스")
+    void deleteKeyboard_success() {
+        // given
+        Member member = TEST_MEMBER1;
+        Keyboard keyboard = TEST_KEYBOARD1;
+
+        ReflectionTestUtils.setField(member, "id", TEST_ID1);
+        // false가 삭제되지 않은 상태
+        ReflectionTestUtils.setField(keyboard, "isDeleted", false);
+
+        // 키보드 조회하면 설정한 키보드 반환
+        when(keyboardRepository.findById(keyboard.getId())).thenReturn(Optional.of(keyboard));
+
+        // when
+        keyboardService.deleteKeyboard(keyboard.getId(), member.getId());
+
+        // then
+        assertEquals(true, keyboard.isDeleted());
+    }
+
 }
