@@ -37,7 +37,6 @@ public class AuctionService {
 
         Auction auction = Auction.builder()
                 .keyboard(findKeyboard)
-                .member(findKeyboard.getMember())
                 .title(requestDto.getTitle())
                 .startPrice(requestDto.getStartPrice())
                 .immediatePurchasePrice(requestDto.getImmediatePurchasePrice())
