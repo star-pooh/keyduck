@@ -7,10 +7,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.team1.keyduck.testdata.TestData.TEST_ID1;
+import static org.team1.keyduck.testdata.TestData.TEST_ID2;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD1;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD2;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD3;
 import static org.team1.keyduck.testdata.TestData.TEST_MEMBER1;
+import static org.team1.keyduck.testdata.TestData.TEST_MEMBER2;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +25,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.team1.keyduck.common.exception.DataNotMatchException;
 import org.team1.keyduck.common.exception.DuplicateDataException;
 import org.team1.keyduck.keyboard.dto.response.KeyboardReadResponseDto;
 import org.team1.keyduck.common.exception.DataNotFoundException;
@@ -197,6 +200,33 @@ class KeyboardServiceTest {
         // then
         assertThrows(DuplicateDataException.class, () -> {
             keyboardService.deleteKeyboard(keyboard.getId(), member.getId());
+        });
+    }
+
+
+    @Test
+    @DisplayName("키보드 삭제 - 실패 케이스(생성 유저와 삭제를 하려는 유저가 동일하지 않음)")
+    void deleteKeyboard_fail_뭐하지() {
+        // given
+        Member member1 = TEST_MEMBER1;
+        Member member2 = TEST_MEMBER2;
+        Keyboard keyboard = TEST_KEYBOARD1;
+
+        ReflectionTestUtils.setField(member1, "id", TEST_ID1);
+        ReflectionTestUtils.setField(member2, "id", TEST_ID2);
+
+        // false가 삭제되지 않은 상태
+        ReflectionTestUtils.setField(keyboard, "isDeleted", false);
+
+        // 키보드1의 작성자를 member2로 설정
+        ReflectionTestUtils.setField(keyboard, "member", member2);
+
+        when(keyboardRepository.findById(keyboard.getId())).thenReturn(Optional.of(keyboard));
+
+        // when
+        // then
+        assertThrows(DataNotMatchException.class, () -> {
+            keyboardService.deleteKeyboard(keyboard.getId(), member1.getId());
         });
     }
 
