@@ -32,8 +32,13 @@ public class AuctionService {
     public AuctionCreateResponseDto createAuctionService(Long sellerId,
             AuctionCreateRequestDto requestDto) {
         //todo ErrorCode 추후에 키보드를 찾을 수 없다는 내용의 에러 코드 추가 후 익셉션 에러코드 변경이 필요함.
-        Keyboard findKeyboard = keyboardRepository.findById(requestDto.getKeyboardId())
+        Keyboard findKeyboard = keyboardRepository.findByIdAndIsDeletedFalse(
+                        requestDto.getKeyboardId())
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        if (findKeyboard.isDeleted()) {
+            throw new DataNotFoundException(ErrorCode.KEYBOARD_NOT_FOUND);
+        }
 
         if (!findKeyboard.getMember().getId().equals(sellerId)) {
             throw new DataNotMatchException(ErrorCode.FORBIDDEN_ACCESS);
