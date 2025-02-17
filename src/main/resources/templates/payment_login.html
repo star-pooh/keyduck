@@ -68,7 +68,7 @@
       return response.json();  // 서버에서 받은 JSON 응답 처리
     })
     .then(data => {
-      window.location.href = `/api/payment/checkout?amount=${data.data.amount}`;
+      window.location.href = `/api/payment/process?amount=${data.data.amount}`;
     })
   });
 </script>

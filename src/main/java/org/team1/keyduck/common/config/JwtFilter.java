@@ -36,17 +36,12 @@ public class JwtFilter implements Filter {
 
         String url = httpRequest.getRequestURI();
 
-//        if (url.startsWith("/api/auth")) {
         if (url.startsWith("/api/auth") || url.endsWith(".html") || url.startsWith("style")) {
             chain.doFilter(request, response);
             return;
         }
 
-        String bearerJwt = httpRequest.getHeader("Authorization") == null
-                ? httpRequest.getCookies()[1].getValue()
-                : httpRequest.getHeader("Authorization");
-
-//        String bearerJwt = httpRequest.getHeader("Authorization");
+        String bearerJwt = jwtUtil.getToken(httpRequest);
 
         if (bearerJwt == null) {
             // 토큰이 없는 경우 400을 반환합니다.
