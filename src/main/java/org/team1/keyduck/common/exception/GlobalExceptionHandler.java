@@ -93,7 +93,9 @@ public class GlobalExceptionHandler {
         Object[] arguments = exception.getDetailMessageArguments();
         if (arguments != null && arguments.length > 0
                 && arguments[0] instanceof String extractedField) {
-            fieldName = extractedField; // 필드명을 가져옴
+            if ("price".equals(extractedField)) {
+                fieldName = "입찰가격";
+            }// 필드명을 가져옴
         }
 
         // 필드명을 포함한 에러 메시지 생성
