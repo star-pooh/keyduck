@@ -26,9 +26,9 @@ import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.bidding.entity.Bidding;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
-import org.team1.keyduck.common.exception.BiddingNotAvailableException;
+import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.ErrorCode;
-import org.team1.keyduck.common.exception.InvalidBiddingPriceException;
+import org.team1.keyduck.common.exception.OperationNotAllowedException;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
@@ -114,13 +114,13 @@ class BiddingServiceTest {
 
         //when,then
         Exception exception = assertThrows(
-                BiddingNotAvailableException.class, // 예외 타입
+                OperationNotAllowedException.class, // 예외 타입
                 () -> biddingService.createBidding(auctionId, price, authMember) // 실행
         );
 
         // 예외 메시지 검증
         assertEquals(ErrorCode.AUCTION_NOT_IN_PROGRESS,
-                ((BiddingNotAvailableException) exception).getErrorCode());
+                ((OperationNotAllowedException) exception).getErrorCode());
 
     }
 
@@ -150,13 +150,13 @@ class BiddingServiceTest {
 
         //when/then
         Exception exception = assertThrows(
-                BiddingNotAvailableException.class,
+                OperationNotAllowedException.class,
                 () -> biddingService.createBidding(auctionId, price, authMember)
         );
 
         //메세지 검증
         assertEquals(ErrorCode.MAX_BIDDING_COUNT_EXCEEDED,
-                ((BiddingNotAvailableException) exception).getErrorCode());
+                ((OperationNotAllowedException) exception).getErrorCode());
     }
 
     @Test
@@ -181,13 +181,13 @@ class BiddingServiceTest {
 
         //when, then
         Exception exception = assertThrows(
-                InvalidBiddingPriceException.class,
+                DataInvalidException.class,
                 () -> biddingService.createBidding(auctionId, price, authMember)
         );
 
         //메세지 검증
         assertEquals(ErrorCode.INVALID_BIDDING_PRICE_UNIT,
-                ((InvalidBiddingPriceException) exception).getErrorCode());
+                ((DataInvalidException) exception).getErrorCode());
     }
 
     @Test
@@ -212,13 +212,13 @@ class BiddingServiceTest {
 
         //when, then
         Exception exception = assertThrows(
-                InvalidBiddingPriceException.class,
+                DataInvalidException.class,
                 () -> biddingService.createBidding(auctionId, price, authMember)
         );
 
         //메세지 검증
         assertEquals(ErrorCode.BIDDING_PRICE_BELOW_CURRENT_PRICE,
-                ((InvalidBiddingPriceException) exception).getErrorCode());
+                ((DataInvalidException) exception).getErrorCode());
     }
 
     @Test
@@ -243,13 +243,13 @@ class BiddingServiceTest {
 
         //when, then
         Exception exception = assertThrows(
-                InvalidBiddingPriceException.class,
+                DataInvalidException.class,
                 () -> biddingService.createBidding(auctionId, price, authMember)
         );
 
         //메세지 검증
         assertEquals(ErrorCode.BIDDING_PRICE_EXCEEDS_MAX_LIMIT,
-                ((InvalidBiddingPriceException) exception).getErrorCode());
+                ((DataInvalidException) exception).getErrorCode());
     }
     
 }
