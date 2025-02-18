@@ -34,7 +34,7 @@ public class KeyboardService {
             KeyboardCreateRequestDto requestDto) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_USER, "회원"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_USER, "멤버"));
 
         Keyboard keyboard = Keyboard.builder()
                 .member(member)
