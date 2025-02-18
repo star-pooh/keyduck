@@ -55,18 +55,20 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException exception) {
         RequestBodyValidException customException = new RequestBodyValidException(
-                exception.getParameter(), exception.getBindingResult(), ErrorCode.INVALID_INPUT_VALUE);
+                exception.getParameter(), exception.getBindingResult(),
+                ErrorCode.INVALID_DATA_VALUE);
         ApiResponse apiResponse = ApiResponse.error(customException.getErrorCode(),
                 customException.getErrorMessage());
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
                 apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
+
     // @RequestParam를 @Valid 해서 에러가 발생한 경우
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<ApiResponse> handleHandlerMethodValidationExceptionException(
             HandlerMethodValidationException exception) {
-        ApiResponse apiResponse = ApiResponse.error(ErrorCode.INVALID_INPUT_VALUE,
+        ApiResponse apiResponse = ApiResponse.error(ErrorCode.INVALID_DATA_VALUE,
                 Arrays.toString(exception.getDetailMessageArguments()));
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
                 apiResponse.getMessage());
