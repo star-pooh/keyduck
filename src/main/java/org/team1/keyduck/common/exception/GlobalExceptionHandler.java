@@ -87,7 +87,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<ApiResponse> handleHandlerMethodValidationExceptionException(
             HandlerMethodValidationException exception) {
-        String fieldName = "값";
+        String fieldName = "";
         Object[] arguments = exception.getDetailMessageArguments();
         if (arguments != null && arguments.length > 0
                 && arguments[0] instanceof String extractedField) {
