@@ -50,17 +50,17 @@ public class Member extends BaseTime {
 
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name = "city", column = @Column(nullable = false)),
-        @AttributeOverride(name = "state", column = @Column(nullable = false)),
-        @AttributeOverride(name = "street", column = @Column(nullable = false)),
-        @AttributeOverride(name = "detailAddress1", column = @Column),
-        @AttributeOverride(name = "detailAddress2", column = @Column)
+            @AttributeOverride(name = "city", column = @Column(nullable = false)),
+            @AttributeOverride(name = "state", column = @Column(nullable = false)),
+            @AttributeOverride(name = "street", column = @Column(nullable = false)),
+            @AttributeOverride(name = "detailAddress1", column = @Column),
+            @AttributeOverride(name = "detailAddress2", column = @Column)
     })
     private Address address;
 
     @Builder
     public Member(String name, String email, String password, MemberRole memberRole,
-        Address address) {
+            Address address) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -74,9 +74,9 @@ public class Member extends BaseTime {
         }
         if (requestDto.getEmail() != null) {
             Pattern pattern = Pattern.compile(
-                "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
+                    "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
             if (!(pattern.matcher(requestDto.getEmail()).matches())) {
-                throw new DataNotMatchException(ErrorCode.INVALID_INPUT_VALUE);
+                throw new DataNotMatchException(ErrorCode.INVALID_DATA_VALUE, "이메일");
             }
             this.email = requestDto.getEmail();
 

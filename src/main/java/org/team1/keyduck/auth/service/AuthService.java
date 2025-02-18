@@ -52,14 +52,14 @@ public class AuthService {
 
     private String createBearerToken(String email, String password) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.LOGIN_FAILED));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.LOGIN_FAILED, null));
 
         if (member.isDeleted()) {
-            throw new DataNotFoundException(ErrorCode.LOGIN_FAILED);
+            throw new DataNotFoundException(ErrorCode.LOGIN_FAILED, null);
         }
 
         if (!passwordEncoder.matches(password, member.getPassword())) {
-            throw new DataNotMatchException(ErrorCode.LOGIN_FAILED);
+            throw new DataNotMatchException(ErrorCode.LOGIN_FAILED, null);
         }
 
         return jwtUtil.createToken(member.getId(), member.getMemberRole());
