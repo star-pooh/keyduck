@@ -1,5 +1,6 @@
 package org.team1.keyduck.common.exception;
 
+import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,28 +50,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
-    @ExceptionHandler(DataNotValidException.class)
-    public ResponseEntity<ApiResponse> handleDataNotValidException(
-            DataNotValidException exception) {
-        ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
-        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-                apiResponse.getMessage());
-        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
-    }
-
-    @ExceptionHandler(OperationNotAllowedException.class)
-    public ResponseEntity<ApiResponse> handleOperationNotAllowedException(
-            OperationNotAllowedException exception) {
-        ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
-        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-                apiResponse.getMessage());
-        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
-    }
-
     // @RequestBody를 @Valid 해서 에러가 발생한 경우
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException exception) {
+        RequestBodyValidException customException = new RequestBodyValidException(
+                exception.getParameter(), exception.getBindingResult(),
+                ErrorCode.INVALID_DATA_VALUE);
         ApiResponse apiResponse = ApiResponse.error(customException.getErrorCode(),
                 customException.getErrorMessage());
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
@@ -82,6 +68,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<ApiResponse> handleHandlerMethodValidationExceptionException(
             HandlerMethodValidationException exception) {
+        ApiResponse apiResponse = ApiResponse.error(ErrorCode.INVALID_DATA_VALUE,
+                Arrays.toString(exception.getDetailMessageArguments()));
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
                 apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
