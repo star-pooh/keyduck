@@ -7,8 +7,8 @@ public class DataUnauthorizedAccessException extends RuntimeException {
 
     private final ErrorCode errorCode;
 
-    public DataUnauthorizedAccessException(ErrorCode errorCode) {
-        super(errorCode.getMessage());
+    public DataUnauthorizedAccessException(ErrorCode errorCode, String arg) {
+        super(errorCode.getMessage(arg));
         this.errorCode = errorCode;
     }
 }

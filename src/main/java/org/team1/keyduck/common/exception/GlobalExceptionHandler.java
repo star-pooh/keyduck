@@ -16,59 +16,60 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<ApiResponse> handleDataNotFoundException(
-        DataNotFoundException exception) {
+            DataNotFoundException exception) {
         ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-            apiResponse.getMessage());
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
     @ExceptionHandler(DataDuplicateException.class)
     public ResponseEntity<ApiResponse> handleDataDuplicateException(
-        DataDuplicateException exception) {
+            DataDuplicateException exception) {
         ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-            apiResponse.getMessage());
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
     @ExceptionHandler(DataNotMatchException.class)
     public ResponseEntity<ApiResponse> handleDataNotMatchException(
-        DataNotMatchException exception) {
+            DataNotMatchException exception) {
         ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-            apiResponse.getMessage());
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
     @ExceptionHandler(DataUnauthorizedAccessException.class)
     public ResponseEntity<ApiResponse> handleDataUnauthorizedAccessException(
-        DataUnauthorizedAccessException exception) {
+            DataUnauthorizedAccessException exception) {
         ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-            apiResponse.getMessage());
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
+    // @RequestBody를 @Valid 해서 에러가 발생한 경우
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(
-        MethodArgumentNotValidException exception) {
+            MethodArgumentNotValidException exception) {
         RequestBodyValidException customException = new RequestBodyValidException(
-            exception.getParameter(), exception.getBindingResult(), ErrorCode.INVALID_INPUT_VALUE);
+                exception.getParameter(), exception.getBindingResult(), ErrorCode.INVALID_INPUT_VALUE);
         ApiResponse apiResponse = ApiResponse.error(customException.getErrorCode(),
-            customException.getErrorMessage());
+                customException.getErrorMessage());
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-            apiResponse.getMessage());
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
-
+    // @RequestParam를 @Valid 해서 에러가 발생한 경우
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<ApiResponse> handleHandlerMethodValidationExceptionException(
-        HandlerMethodValidationException exception) {
+            HandlerMethodValidationException exception) {
         ApiResponse apiResponse = ApiResponse.error(ErrorCode.INVALID_INPUT_VALUE,
-            Arrays.toString(exception.getDetailMessageArguments()));
+                Arrays.toString(exception.getDetailMessageArguments()));
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-            apiResponse.getMessage());
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
@@ -77,7 +78,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse> handleException(Exception exception) {
         ApiResponse apiResponse = ApiResponse.error(ErrorCode.INTERNAL_SERVER_ERROR);
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-            exception.getMessage());
+                exception.getMessage());
         return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

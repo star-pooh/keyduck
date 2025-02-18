@@ -7,8 +7,8 @@ public class DataDuplicateException extends RuntimeException {
 
     private final ErrorCode errorCode;
 
-    public DataDuplicateException(ErrorCode errorCode) {
-        super(errorCode.getMessage());
+    public DataDuplicateException(ErrorCode errorCode, String arg) {
+        super(errorCode.getMessage(arg));
         this.errorCode = errorCode;
     }
 }
