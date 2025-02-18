@@ -1,5 +1,6 @@
 package org.team1.keyduck.auction.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import org.team1.keyduck.auction.entity.Auction;
@@ -7,12 +8,15 @@ import org.team1.keyduck.auction.entity.AuctionStatus;
 
 @Getter
 public class AuctionReadAllResponseDto {
+
     private String title;
     private Long startPrice;
     private Long currentPrice;
     private Long immediatePurchasePrice;
     private int biddingUnit;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime auctionStartDate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime auctionEndDate;
     private AuctionStatus auctionStatus;
 

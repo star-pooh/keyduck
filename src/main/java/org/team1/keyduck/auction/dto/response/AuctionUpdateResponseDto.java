@@ -1,8 +1,8 @@
 package org.team1.keyduck.auction.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import lombok.Getter;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.team1.keyduck.auction.entity.Auction;
 
 @Getter
@@ -18,10 +18,10 @@ public class AuctionUpdateResponseDto {
 
     private final int biddingUnit;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime auctionStartDate;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime auctionEndDate;
 
     private AuctionUpdateResponseDto(
