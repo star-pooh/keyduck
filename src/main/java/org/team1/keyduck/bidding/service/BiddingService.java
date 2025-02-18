@@ -54,14 +54,17 @@ public class BiddingService {
     }
 
     private void validateBiddingPrice(Long price, Auction auction) {
-        //비딩 금액단위가 경매에 설정된 단위보다 작으면 안됨
-        if (price % auction.getBiddingUnit() != 0) {
+        // 입찰가가 최소 입찰 단위 금액의 배수만큼 증가해야함
+        long priceDifference = price - auction.getStartPrice();
+        if (priceDifference % auction.getBiddingUnit() != 0) {
             throw new InvalidBiddingPriceException(ErrorCode.INVALID_BIDDING_PRICE_UNIT);
         }
+
         //비딩 금액이 현재가보다 낮으면 안됨
         if (price <= auction.getCurrentPrice()) {
             throw new InvalidBiddingPriceException(ErrorCode.BIDDING_PRICE_BELOW_CURRENT_PRICE);
         }
+
         //비딩금액이 최대 입찰 호가 보다 높으면 안됨
         long maxPrice = auction.getCurrentPrice() + (auction.getBiddingUnit() * 10L);
         if (price > maxPrice) {
