@@ -1,6 +1,5 @@
 package org.team1.keyduck.common.exception;
 
-import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,13 +71,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException exception) {
-<<<<<<< recycle-Refact-bidding-error
-        exception.getParameter(), exception.getBindingResult(),
-=======
-        RequestBodyValidException customException = new RequestBodyValidException(
-                exception.getParameter(), exception.getBindingResult(),
-                >>>>>>> develop
-        ErrorCode.INVALID_DATA_VALUE);
         ApiResponse apiResponse = ApiResponse.error(customException.getErrorCode(),
                 customException.getErrorMessage());
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
@@ -90,11 +82,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<ApiResponse> handleHandlerMethodValidationExceptionException(
             HandlerMethodValidationException exception) {
-<<<<<<< recycle-Refact-bidding-error
-                =======
-                ApiResponse apiResponse = ApiResponse.error(ErrorCode.INVALID_DATA_VALUE,
-                Arrays.toString(exception.getDetailMessageArguments()));
->>>>>>> develop
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
                 apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
