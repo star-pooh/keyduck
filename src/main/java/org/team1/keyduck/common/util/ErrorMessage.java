@@ -33,6 +33,7 @@ public class ErrorMessage {
 
     // 403 FORBIDDEN
     public static final String FORBIDDEN_ACCESS = "접근 권한이 없습니다.";
+    public static final String DELETE_FAIL_AUCTION_IN_PROGRESS = "경매가 진행중이기 때문에 삭제가 불가능 합니다.";
 
     // 500 INTERNAL_SERVER_ERROR
     public static final String INTERNAL_SERVER_ERROR = "서버 내부 오류가 발생했습니다.";

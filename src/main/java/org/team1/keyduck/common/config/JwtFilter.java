@@ -18,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.team1.keyduck.auth.entity.AuthMember;
+import org.team1.keyduck.auth.service.JwtBlacklistService;
 import org.team1.keyduck.common.util.ErrorMessage;
 import org.team1.keyduck.member.entity.MemberRole;
 
@@ -27,6 +28,7 @@ import org.team1.keyduck.member.entity.MemberRole;
 public class JwtFilter implements Filter {
 
     private final JwtUtil jwtUtil;
+    private final JwtBlacklistService jwtBlacklistService;
 
     @Override
     public void doFilter(
@@ -47,6 +49,11 @@ public class JwtFilter implements Filter {
         if (bearerJwt == null) {
             // 토큰이 없는 경우 400을 반환합니다.
             httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, ErrorMessage.REQUIRED_TOKEN);
+            return;
+        }
+
+        if (jwtBlacklistService.isBlacklisted(bearerJwt)) {
+            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
