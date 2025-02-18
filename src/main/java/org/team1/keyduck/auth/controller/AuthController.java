@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.team1.keyduck.auth.dto.request.MemberCreateRequestDto;
 import org.team1.keyduck.auth.dto.request.PaymentFormRequestDto;
 import org.team1.keyduck.auth.dto.request.SigninRequestDto;
+import org.team1.keyduck.auth.dto.response.MemberCreateResponseDto;
 import org.team1.keyduck.auth.dto.response.PaymentFormResponseDto;
 import org.team1.keyduck.auth.dto.response.SigninResponseDto;
 import org.team1.keyduck.auth.service.AuthService;
@@ -39,17 +40,17 @@ public class AuthController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<ApiResponse<Void>> joinMember(
+    public ResponseEntity<ApiResponse<MemberCreateResponseDto>> joinMember(
             @RequestBody @Valid MemberCreateRequestDto requestDto) {
-        authService.joinMember(requestDto);
-        return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS),
-                SuccessCode.CREATE_SUCCESS.getStatus());
+        ApiResponse<MemberCreateResponseDto> response = ApiResponse.success(
+                SuccessCode.CREATE_SUCCESS, authService.joinMember(requestDto));
+
+        return new ResponseEntity<>(response, response.getStatus());
     }
 
     @PostMapping("/payment")
     public ResponseEntity<ApiResponse<PaymentFormResponseDto>> paymentFormSignin(
-            @RequestBody PaymentFormRequestDto dto,
-            HttpServletResponse response, Model model) {
+            @RequestBody PaymentFormRequestDto dto, HttpServletResponse response, Model model) {
         PaymentFormResponseDto responseDto = authService.paymentFormLogin(dto);
         String bearerToken = URLEncoder.encode(responseDto.getToken(), StandardCharsets.UTF_8);
 
