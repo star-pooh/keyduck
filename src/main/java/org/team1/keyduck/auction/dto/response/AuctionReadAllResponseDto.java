@@ -9,6 +9,7 @@ import org.team1.keyduck.auction.entity.AuctionStatus;
 @Getter
 public class AuctionReadAllResponseDto {
 
+    private Long keyboardId;
     private String title;
     private Long startPrice;
     private Long currentPrice;
@@ -19,11 +20,15 @@ public class AuctionReadAllResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime auctionEndDate;
     private AuctionStatus auctionStatus;
+    private String winnerName;
 
 
-    private AuctionReadAllResponseDto(String title, Long startPrice, Long currentPrice,
-            Long immediatePurchasePrice, int biddingUnit, LocalDateTime auctionStartDate,
-            LocalDateTime auctionEndDate, AuctionStatus auctionStatus) {
+    private AuctionReadAllResponseDto(Long keyboardId, String title, Long startPrice,
+            Long currentPrice, Long immediatePurchasePrice, int biddingUnit,
+            LocalDateTime auctionStartDate, LocalDateTime auctionEndDate,
+            AuctionStatus auctionStatus, String winnerName) {
+
+        this.keyboardId = keyboardId;
         this.title = title;
         this.startPrice = startPrice;
         this.currentPrice = currentPrice;
@@ -32,10 +37,18 @@ public class AuctionReadAllResponseDto {
         this.auctionStartDate = auctionStartDate;
         this.auctionEndDate = auctionEndDate;
         this.auctionStatus = auctionStatus;
+        if (auctionStatus == AuctionStatus.CLOSED) {
+            this.winnerName = winnerName;
+        }
     }
 
     public static AuctionReadAllResponseDto of(Auction auction) {
+        String winnerName = null;
+        if (auction.getAuctionStatus() == AuctionStatus.CLOSED) {
+            winnerName = auction.getMember().getName();
+        }
         return new AuctionReadAllResponseDto(
+                auction.getKeyboard().getId(),
                 auction.getTitle(),
                 auction.getStartPrice(),
                 auction.getCurrentPrice(),
@@ -43,7 +56,8 @@ public class AuctionReadAllResponseDto {
                 auction.getBiddingUnit(),
                 auction.getAuctionStartDate(),
                 auction.getAuctionEndDate(),
-                auction.getAuctionStatus()
+                auction.getAuctionStatus(),
+                winnerName
         );
     }
 

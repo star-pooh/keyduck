@@ -11,6 +11,7 @@ import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 @Getter
 public class AuctionReadResponseDto {
 
+    private Long keyboardId;
     private String title;
     private Long startPrice;
     private Long currentPrice;
@@ -21,13 +22,16 @@ public class AuctionReadResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime auctionEndDate;
     private AuctionStatus auctionStatus;
+    private String winnerName;
     private List<BiddingResponseDto> biddings;
 
 
-    private AuctionReadResponseDto(String title, Long startPrice, Long currentPrice,
-            Long immediatePurchasePrice, int biddingUnit, LocalDateTime auctionStartDate,
-            LocalDateTime auctionEndDate, AuctionStatus auctionStatus,
-            List<BiddingResponseDto> biddings) {
+    private AuctionReadResponseDto(Long keyboardId, String title, Long startPrice,
+            Long currentPrice, Long immediatePurchasePrice, int biddingUnit,
+            LocalDateTime auctionStartDate, LocalDateTime auctionEndDate,
+            AuctionStatus auctionStatus, String winnerName, List<BiddingResponseDto> biddings) {
+
+        this.keyboardId = keyboardId;
         this.title = title;
         this.startPrice = startPrice;
         this.currentPrice = currentPrice;
@@ -37,10 +41,19 @@ public class AuctionReadResponseDto {
         this.auctionEndDate = auctionEndDate;
         this.auctionStatus = auctionStatus;
         this.biddings = biddings;
+        if (auctionStatus == AuctionStatus.CLOSED) {
+            this.winnerName = winnerName;
+        }
+
     }
 
     public static AuctionReadResponseDto of(Auction auction, List<BiddingResponseDto> biddings) {
+        String winnerName = null;
+        if (auction.getAuctionStatus() == AuctionStatus.CLOSED) {
+            winnerName = auction.getMember().getName();
+        }
         return new AuctionReadResponseDto(
+                auction.getKeyboard().getId(),
                 auction.getTitle(),
                 auction.getStartPrice(),
                 auction.getCurrentPrice(),
@@ -49,6 +62,7 @@ public class AuctionReadResponseDto {
                 auction.getAuctionStartDate(),
                 auction.getAuctionEndDate(),
                 auction.getAuctionStatus(),
+                winnerName,
                 biddings
         );
     }
