@@ -77,7 +77,7 @@ public class KeyboardService {
     @Transactional(readOnly = true)
     public List<KeyboardReadResponseDto> findKeyboardBySellerId(Long sellerId) {
 
-        List<Keyboard> keyboards = keyboardRepository.findAllByMemberIdAndIsDeletedFalse(sellerId);
+        List<Keyboard> keyboards = keyboardRepository.findAllByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(sellerId);
 
         return keyboards.stream()
                 .map(KeyboardReadResponseDto::of)
