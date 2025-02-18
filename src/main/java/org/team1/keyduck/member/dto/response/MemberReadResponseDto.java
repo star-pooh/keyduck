@@ -18,17 +18,20 @@ public class MemberReadResponseDto {
 
     private final Address address;
 
+    private final Long deposit;
+
     private MemberReadResponseDto(Long id, String name, String email, MemberRole memberRole,
-        Address address) {
+            Address address, Long deposit) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.memberRole = memberRole;
         this.address = address;
+        this.deposit = deposit;
     }
 
-    public static MemberReadResponseDto of(Member member) {
+    public static MemberReadResponseDto of(Member member, Long deposit) {
         return new MemberReadResponseDto(member.getId(), member.getName(), member.getEmail(),
-            member.getMemberRole(), member.getAddress());
+                member.getMemberRole(), member.getAddress(), deposit);
     }
 }
