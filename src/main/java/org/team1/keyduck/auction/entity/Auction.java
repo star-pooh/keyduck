@@ -31,15 +31,15 @@ public class Auction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "keyboard_id")
+    @JoinColumn(name = "keyboard_id", nullable = false)
     @OneToOne
     private Keyboard keyboard;
 
-    @JoinColumn(name = "successful_bid_user_id")
+    @JoinColumn(name = "successful_bid_user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String title;
 
     @Column(nullable = false)
@@ -60,15 +60,15 @@ public class Auction {
     @Column(nullable = false)
     private LocalDateTime auctionEndDate;
 
-    @Column
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private AuctionStatus auctionStatus;
 
     @Builder
     public Auction(Keyboard keyboard, Member member, String title, Long startPrice,
-        Long immediatePurchasePrice,
-        Long currentPrice, int biddingUnit, LocalDateTime auctionStartDate,
-        LocalDateTime auctionEndDate, AuctionStatus auctionStatus) {
+            Long immediatePurchasePrice,
+            Long currentPrice, int biddingUnit, LocalDateTime auctionStartDate,
+            LocalDateTime auctionEndDate, AuctionStatus auctionStatus) {
         this.keyboard = keyboard;
         this.member = member;
         this.title = title;

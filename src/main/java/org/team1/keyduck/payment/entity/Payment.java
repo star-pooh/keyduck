@@ -30,14 +30,14 @@ public class Payment extends BaseTime {
 
     // 결제 유저 정보
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     // 토스 주문 ID
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     String orderId;
 
-    // 주문 금액
+    // 결제 금액
     @Column(nullable = false)
     Long amount;
 
@@ -47,7 +47,7 @@ public class Payment extends BaseTime {
     PaymentMethod paymentMethod;
 
     // 간편 결제 타입
-    @Column
+    @Column(length = 30)
     String easyPayType;
 
     // 결제 상태
