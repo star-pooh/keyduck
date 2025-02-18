@@ -19,6 +19,7 @@ public class ErrorMessage {
     public static final String EXCEED_BIDDING_COUNT = "입찰은 10번까지만 가능합니다.";
     public static final String LOWER_BIDDING_PRICE = "입찰가가 현재가보다 작습니다.";
     public static final String EXCEED_MAX_BIDDING_PRICE = "입찰가가 1회 입찰 시 가능한 최대 금액(최소 입찰 금액 단위의 10배)을 초과하였습니다.";
+    public static final String INSUFFICIENT_PAYMENT_DEPOSIT_AMOUNT = "입찰 가능한 예치금이 부족합니다.";
     public static final String REQUIRED_TOKEN = "JWT 토큰이 필요합니다.";
     public static final String INVALID_TOKEN = "잘못된 JWT 토큰 입니다.";
     public static final String UNSUPPORTED_TOKEN = "지원되지 않는 JWT 토큰 입니다.";
