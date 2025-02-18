@@ -12,6 +12,7 @@ public class ValidationErrorMessage {
     public static final String PASSWORD_IS_NOT_NULL = "비밀번호은(는) 필수 입력 값입니다.";
     public static final String MEMBER_ROLE_IS_NOT_NULL = "역할은(는) 필수 입력 값입니다.";
     public static final String ADDRESS_IS_NOT_NULL = "주소은(는) 필수 입력 값입니다.";
+    public static final String DESCRIPTION_IS_NOT_NULL = "내용은(는) 필수 입력 값입니다.";
     
 
 }
