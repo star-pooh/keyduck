@@ -25,7 +25,7 @@ public class MemberService {
     public MemberUpdateResponseDto updateMember(MemberUpdateRequestDto requestDto, Long id) {
 
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
-                ErrorCode.NOT_FOUND_USER, null));
+                ErrorCode.NOT_FOUND_USER, "멤버"));
 
         member.updateMember(requestDto);
 
@@ -36,7 +36,7 @@ public class MemberService {
     public void updatePassword(MemberUpdatePasswordRequestDto requestDto, Long id) {
 
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
-                ErrorCode.NOT_FOUND_USER, null));
+                ErrorCode.NOT_FOUND_USER, "멤버"));
 
         if (!passwordEncoder.matches(requestDto.getBeforePassword(), member.getPassword())) {
             throw new DataNotMatchException(ErrorCode.INVALID_DATA_VALUE, "비밀번호");
@@ -50,7 +50,7 @@ public class MemberService {
     @Transactional
     public void deleteMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
-                ErrorCode.NOT_FOUND_USER, null));
+                ErrorCode.NOT_FOUND_USER, "멤버"));
 
         member.deleteMember();
     }
@@ -58,7 +58,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberReadResponseDto getMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
-                ErrorCode.NOT_FOUND_USER, null));
+                ErrorCode.NOT_FOUND_USER, "멤버"));
 
         return MemberReadResponseDto.of(member);
     }
