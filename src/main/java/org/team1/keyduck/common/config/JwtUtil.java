@@ -76,7 +76,7 @@ public class JwtUtil {
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(7);
         }
-        throw new DataNotMatchException(ErrorCode.INVALID_TOKEN);
+        throw new DataNotMatchException(ErrorCode.INVALID_TOKEN, "토큰");
     }
 
     public Claims extractClaims(String token) {
