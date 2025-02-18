@@ -1,5 +1,6 @@
 package org.team1.keyduck.common.exception;
 
+import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.team1.keyduck.common.dto.ApiResponse;
-import org.team1.keyduck.common.util.ErrorMessage;
 
 @Slf4j
 @RestControllerAdvice
@@ -72,8 +72,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException exception) {
+<<<<<<< recycle-Refact-bidding-error
         exception.getParameter(), exception.getBindingResult(),
-                ErrorCode.INVALID_DATA_VALUE);
+=======
+        RequestBodyValidException customException = new RequestBodyValidException(
+                exception.getParameter(), exception.getBindingResult(),
+                >>>>>>> develop
+        ErrorCode.INVALID_DATA_VALUE);
         ApiResponse apiResponse = ApiResponse.error(customException.getErrorCode(),
                 customException.getErrorMessage());
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
@@ -85,6 +90,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<ApiResponse> handleHandlerMethodValidationExceptionException(
             HandlerMethodValidationException exception) {
+<<<<<<< recycle-Refact-bidding-error
+                =======
+                ApiResponse apiResponse = ApiResponse.error(ErrorCode.INVALID_DATA_VALUE,
+                Arrays.toString(exception.getDetailMessageArguments()));
+>>>>>>> develop
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
                 apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
