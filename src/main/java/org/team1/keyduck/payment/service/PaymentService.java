@@ -4,13 +4,13 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
+import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.team1.keyduck.payment.dto.PaymentDto;
 import org.team1.keyduck.payment.entity.Payment;
-import org.team1.keyduck.payment.exception.InvalidPaymentAmountException;
 import org.team1.keyduck.payment.processor.PaymentProcessor;
 import org.team1.keyduck.payment.repository.PaymentRepository;
 
@@ -27,8 +27,7 @@ public class PaymentService {
     @Transactional
     public PaymentDto createPayment(String jsonBody, Long memberId) throws Exception {
         Member foundedMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> new DataNotFoundException(
-                        ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_USER, "멤버"));
 
         JSONObject jsonObject = paymentProcessor.parseJsonBody(jsonBody);
 
@@ -53,7 +52,7 @@ public class PaymentService {
 
         if (!result) {
             // 클라이언트가 결제 금액을 조작한 경우 결제 취소
-            throw new InvalidPaymentAmountException(ErrorCode.INVALID_PAYMENT_AMOUNT);
+            throw new DataInvalidException(ErrorCode.INVALID_DATA_VALUE, "결제 금액");
         }
     }
 }

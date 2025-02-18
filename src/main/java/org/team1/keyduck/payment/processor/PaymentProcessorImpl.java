@@ -15,6 +15,8 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.team1.keyduck.common.exception.DataInvalidException;
+import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.payment.entity.Payment;
 import org.team1.keyduck.payment.entity.PaymentMethod;
@@ -42,7 +44,7 @@ public class PaymentProcessorImpl implements PaymentProcessor {
         try {
             return (JSONObject) PARSER.parse(jsonBody);
         } catch (ParseException e) {
-            throw new RuntimeException("Invalid JSON format", e);
+            throw new DataInvalidException(ErrorCode.INVALID_DATA_TYPE, "JSON");
         }
     }
 

@@ -27,7 +27,7 @@ public class TempPaymentService {
     public boolean validPaymentAmount(Long memberId, String orderId, Long amount) {
         TempPayment tempPayment = tempPaymentRepository.findByOrderId(orderId)
                 .orElseThrow(() -> new DataNotFoundException(
-                        ErrorCode.TEMP_PAYMENT_NOT_FOUND));
+                        ErrorCode.NOT_FOUND_RESOURCE, "결제 금액 정보"));
 
         return tempPayment.getMemberId().equals(memberId)
                 && tempPayment.getAmount().equals(amount);
