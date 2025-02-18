@@ -35,7 +35,7 @@ public class Auction {
     @OneToOne
     private Keyboard keyboard;
 
-    @JoinColumn(name = "successful_bid_user_id", nullable = false)
+    @JoinColumn(name = "successful_bid_user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
