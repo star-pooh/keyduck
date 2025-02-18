@@ -17,8 +17,8 @@ import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 import org.team1.keyduck.bidding.dto.response.SuccessBiddingResponseDto;
 import org.team1.keyduck.bidding.entity.Bidding;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
+import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
-import org.team1.keyduck.common.exception.DataNotValidException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
 import org.team1.keyduck.common.util.GlobalConstants;
@@ -57,18 +57,18 @@ public class BiddingService {
         // 입찰가가 최소 입찰 단위 금액의 배수만큼 증가해야함
         long priceDifference = price - auction.getStartPrice();
         if (priceDifference % auction.getBiddingUnit() != 0) {
-            throw new DataNotValidException(ErrorCode.INVALID_BIDDING_PRICE_UNIT, null);
+            throw new DataInvalidException(ErrorCode.INVALID_BIDDING_PRICE_UNIT, null);
         }
 
         //비딩 금액이 현재가보다 낮으면 안됨
         if (price <= auction.getCurrentPrice()) {
-            throw new DataNotValidException(ErrorCode.BIDDING_PRICE_BELOW_CURRENT_PRICE, null);
+            throw new DataInvalidException(ErrorCode.BIDDING_PRICE_BELOW_CURRENT_PRICE, null);
         }
 
         //비딩금액이 최대 입찰 호가 보다 높으면 안됨
         long maxPrice = auction.getCurrentPrice() + (auction.getBiddingUnit() * 10L);
         if (price > maxPrice) {
-            throw new DataNotValidException(ErrorCode.BIDDING_PRICE_EXCEEDS_MAX_LIMIT, null);
+            throw new DataInvalidException(ErrorCode.BIDDING_PRICE_EXCEEDS_MAX_LIMIT, null);
         }
     }
 

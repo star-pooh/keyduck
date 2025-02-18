@@ -50,9 +50,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
-    @ExceptionHandler(DataNotValidException.class)
+    @ExceptionHandler(DataInvalidException.class)
     public ResponseEntity<ApiResponse> handleDataNotValidException(
-            DataNotValidException exception) {
+            DataInvalidException exception) {
         ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
         log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
                 apiResponse.getMessage());
