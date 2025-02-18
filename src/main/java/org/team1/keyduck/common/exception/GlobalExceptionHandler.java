@@ -50,6 +50,25 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
+    @ExceptionHandler(DataInvalidException.class)
+    public ResponseEntity<ApiResponse> handleDataNotValidException(
+            DataInvalidException exception) {
+        ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
+        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
+                apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+    }
+
+    @ExceptionHandler(OperationNotAllowedException.class)
+    public ResponseEntity<ApiResponse> handleOperationNotAllowedException(
+            OperationNotAllowedException exception) {
+        ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
+        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
+                apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+    }
+
+
     // @RequestBody를 @Valid 해서 에러가 발생한 경우
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(
