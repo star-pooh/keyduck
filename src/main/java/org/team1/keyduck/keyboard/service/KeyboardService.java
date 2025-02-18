@@ -4,6 +4,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.team1.keyduck.auction.entity.AuctionStatus;
+import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.common.exception.DataDuplicateException;
 import org.team1.keyduck.common.exception.DataMismatchException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
@@ -27,6 +29,7 @@ public class KeyboardService {
 
     private final KeyboardRepository keyboardRepository;
     private final MemberRepository memberRepository;
+    private final AuctionRepository auctionRepository;
 
     // 키보드 생성
     @Transactional
@@ -63,6 +66,11 @@ public class KeyboardService {
             throw new DataUnauthorizedAccessException(ErrorCode.FORBIDDEN_ACCESS, null);
         }
 
+        // 경매 진행 중인 키보드 삭제 요청 -> 예외 발생
+        if (auctionRepository.existsByKeyboardIdAndAuctionStatus(keyboardId, AuctionStatus.IN_PROGRESS)) {
+            throw new DataDuplicateException(ErrorCode.AUCTION_IN_PROGRESS, "경매 진행 중인 키보드");
+        }
+
         keyboard.deleteKeyboard();
     }
 
@@ -86,6 +94,12 @@ public class KeyboardService {
         if (!findKeyboard.getMember().getId().equals(sellerId)) {
             throw new DataNotMatchException(ErrorCode.FORBIDDEN_ACCESS, null);
         }
+
+        // 경매 진행 중인 키보드 수정 요청 -> 예외 발생
+        if (auctionRepository.existsByKeyboardIdAndAuctionStatus(keyboardId, AuctionStatus.IN_PROGRESS)) {
+            throw new DataDuplicateException(ErrorCode.AUCTION_IN_PROGRESS, "경매 진행 중인 키보드");
+        }
+
 
         findKeyboard.updateKeyboard(requestDto);
 

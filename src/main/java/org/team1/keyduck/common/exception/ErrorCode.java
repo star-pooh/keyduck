@@ -24,8 +24,8 @@ public enum ErrorCode {
             ErrorMessage.LOWER_BIDDING_PRICE),
     BIDDING_PRICE_EXCEEDS_MAX_LIMIT(HttpStatus.BAD_REQUEST, "INVALID_010",
             ErrorMessage.EXCEED_MAX_BIDDING_PRICE),
-    INSUFFICIENT_PAYMENT_DEPOSIT_AMOUNT(HttpStatus.BAD_REQUEST, "INVALID_011",
-            ErrorMessage.INSUFFICIENT_PAYMENT_DEPOSIT_AMOUNT),
+    AUCTION_IN_PROGRESS(HttpStatus.BAD_REQUEST, "INVALID_011",
+            ErrorMessage.IN_PROGRESS_AUCTION),
 
     // DUPLICATE(중복되는 값)
     DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "DUPLICATE_001", ErrorMessage.DUPLICATE_USE),
@@ -36,7 +36,6 @@ public enum ErrorCode {
     // 401 UNAUTHORIZED
     UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "UNAUTH_001", ErrorMessage.UNAUTHORIZED_ACCESS),
     LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "UNAUTH_002", ErrorMessage.LOGIN_FAILED),
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "UNAUTH_003", ErrorMessage.INVALID_VALUE),
 
     // 403 FORBIDDEN
     FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, "FORBIDDEN_001", ErrorMessage.FORBIDDEN_ACCESS),
@@ -46,7 +45,6 @@ public enum ErrorCode {
     NOT_FOUND_RESOURCE(HttpStatus.NOT_FOUND, "NOTFOUND_002", ErrorMessage.NOT_FOUND_VALUE),
     NOT_FOUND_KEYBOARD(HttpStatus.NOT_FOUND, "NOTFOUND_003", ErrorMessage.NOT_FOUND_VALUE),
     NOT_FOUND_AUCTION(HttpStatus.NOT_FOUND, "NOTFOUND_004", ErrorMessage.NOT_FOUND_VALUE),
-    NOT_FOUND_PAYMENT_METHOD(HttpStatus.NOT_FOUND, "NOTFOUND_005", ErrorMessage.NOT_FOUND_VALUE),
 
     // 500 INTERNAL_SERVER_ERROR
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_001",
@@ -66,4 +64,3 @@ public enum ErrorCode {
         return arg != null ? String.format(this.message, arg) : this.message;
     }
 }
-
