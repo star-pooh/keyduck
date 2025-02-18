@@ -12,4 +12,3 @@ public class DataInvalidException extends RuntimeException {
         this.errorCode = errorCode;
     }
 }
-

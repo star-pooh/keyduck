@@ -24,6 +24,6 @@ public enum PaymentMethod {
                 .filter(value -> value.paymentType.equals(paymentType))
                 .findFirst()
                 .orElseThrow(() -> new DataNotFoundException(
-                        ErrorCode.PAYMENT_METHOD_NOT_FOUND));
+                        ErrorCode.NOT_FOUND_PAYMENT_METHOD, "결제 수단"));
     }
 }
