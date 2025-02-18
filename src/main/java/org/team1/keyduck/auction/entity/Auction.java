@@ -66,9 +66,9 @@ public class Auction {
 
     @Builder
     public Auction(Keyboard keyboard, Member member, String title, Long startPrice,
-            Long immediatePurchasePrice,
-            Long currentPrice, int biddingUnit, LocalDateTime auctionStartDate,
-            LocalDateTime auctionEndDate, AuctionStatus auctionStatus) {
+        Long immediatePurchasePrice,
+        Long currentPrice, int biddingUnit, LocalDateTime auctionStartDate,
+        LocalDateTime auctionEndDate, AuctionStatus auctionStatus) {
         this.keyboard = keyboard;
         this.member = member;
         this.title = title;
@@ -89,6 +89,18 @@ public class Auction {
         this.biddingUnit = requestDto.getBiddingUnit();
         this.auctionStartDate = requestDto.getAuctionStartDate();
         this.auctionEndDate = requestDto.getAuctionEndDate();
+    }
+
+    public void updateCurrentPrice(Long price) {
+        this.currentPrice = price;
+    }
+
+    public void updateAuctionStatus(AuctionStatus auctionStatus) {
+        this.auctionStatus = auctionStatus;
+    }
+
+    public void updateSuccessBiddingMember(Member member) {
+        this.member = member;
     }
 }
 

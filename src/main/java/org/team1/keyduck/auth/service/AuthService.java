@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.team1.keyduck.auth.dto.request.MemberCreateRequestDto;
+import org.team1.keyduck.auth.dto.request.PaymentFormRequestDto;
 import org.team1.keyduck.auth.dto.request.SigninRequestDto;
+import org.team1.keyduck.auth.dto.response.PaymentFormResponseDto;
 import org.team1.keyduck.auth.dto.response.SigninResponseDto;
 import org.team1.keyduck.common.config.JwtUtil;
 import org.team1.keyduck.common.exception.DataDuplicateException;
@@ -23,19 +25,8 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     public SigninResponseDto login(SigninRequestDto signinRequest) {
-        Member member = memberRepository.findByEmail(signinRequest.getEmail())
-            .orElseThrow(() -> new DataNotFoundException(ErrorCode.LOGIN_FAILED));
-
-        if (member.isDeleted()) {
-            throw new DataNotFoundException(ErrorCode.LOGIN_FAILED);
-        }
-
-        if (!passwordEncoder.matches(signinRequest.getPassword(), member.getPassword())) {
-            throw new DataNotMatchException(ErrorCode.LOGIN_FAILED);
-        }
-
-        String bearerToken = jwtUtil.createToken(member.getId(), member.getMemberRole());
-
+        String bearerToken = createBearerToken(signinRequest.getEmail(),
+                signinRequest.getPassword());
         return new SigninResponseDto(bearerToken);
     }
 
@@ -47,10 +38,30 @@ public class AuthService {
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
 
         Member member = Member.builder().name(requestDto.getName())
-            .address(requestDto.getAddress())
-            .memberRole(requestDto.getMemberRole()).email(requestDto.getEmail())
-            .password(encodedPassword).build();
+                .address(requestDto.getAddress())
+                .memberRole(requestDto.getMemberRole()).email(requestDto.getEmail())
+                .password(encodedPassword).build();
 
         memberRepository.save(member);
+    }
+
+    public PaymentFormResponseDto paymentFormLogin(PaymentFormRequestDto dto) {
+        String bearerToken = createBearerToken(dto.getEmail(), dto.getPassword());
+        return new PaymentFormResponseDto(bearerToken, dto.getAmount());
+    }
+
+    private String createBearerToken(String email, String password) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.LOGIN_FAILED));
+
+        if (member.isDeleted()) {
+            throw new DataNotFoundException(ErrorCode.LOGIN_FAILED);
+        }
+
+        if (!passwordEncoder.matches(password, member.getPassword())) {
+            throw new DataNotMatchException(ErrorCode.LOGIN_FAILED);
+        }
+
+        return jwtUtil.createToken(member.getId(), member.getMemberRole());
     }
 }

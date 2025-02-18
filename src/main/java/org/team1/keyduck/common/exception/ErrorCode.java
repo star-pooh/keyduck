@@ -16,7 +16,14 @@ public enum ErrorCode {
     INVALID_JSON_FORMAT(HttpStatus.BAD_REQUEST, "ERR007", "잘못된 JSON 형식입니다."),
     INVALID_MEMBER_ROLE(HttpStatus.BAD_REQUEST, "ERR008", "잘못된 권한입니다."),
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "ERR009", "잘못된 토큰입니다."),
-
+    DUPLICATE_DELETED(HttpStatus.BAD_REQUEST, "ERR010", "이미 삭제된 키보드입니다."),
+    AUCTION_NOT_IN_PROGRESS(HttpStatus.BAD_REQUEST, "ERR011", "진행중인 경매가 아닙니다."),
+    MAX_BIDDING_COUNT_EXCEEDED(HttpStatus.BAD_REQUEST, "ERR012", "입찰은 10번까지만 가능합니다."),
+    INVALID_BIDDING_PRICE_UNIT(HttpStatus.BAD_REQUEST, "ERR013", "입찰 금액이 단위에 맞지 않습니다."),
+    BIDDING_PRICE_BELOW_CURRENT_PRICE(HttpStatus.BAD_REQUEST, "ERR014", "입찰 금액이 현재가보다 작습니다."),
+    BIDDING_PRICE_EXCEEDS_MAX_LIMIT(HttpStatus.BAD_REQUEST, "ERR015", "입찰 금액이 최대 가능 금액보다 큽니다."),
+    INVALID_PAYMENT_AMOUNT(HttpStatus.BAD_REQUEST, "ERR016", "결제 금액이 올바르지 않습니다."),
+    INSUFFICIENT_PAYMENT_AMOUNT(HttpStatus.BAD_REQUEST, "ERR017", "결제 금액이 부족합니다."),
 
     //401  UNAUTHORIZED
     UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "ERR101", "인증이 필요한 접근입니다."),
@@ -29,6 +36,11 @@ public enum ErrorCode {
     // 404 NOT_FOUND
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "ERR301", "사용자를 찾을 수 없습니다."),
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "ERR300", "요청한 리소스를 찾을 수 없습니다."),
+    KEYBOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "ERR303", "해당 아이디를 가진 키보드를 찾을 수 없습니다."),
+    AUCTION_NOT_FOUND(HttpStatus.NOT_FOUND, "ERR304", "해당 경매를 찾을 수 없습니다."),
+    PAYMENT_METHOD_NOT_FOUND(HttpStatus.NOT_FOUND, "ERR305", "결제 수단에 대한 정보를 찾을 수 없습니다."),
+    TEMP_PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "ERR306", "결제 금액에 대한 정보를 찾을 수 없습니다."),
+    PAYMENT_DEPOSIT_NOT_FOUND(HttpStatus.NOT_FOUND, "ERR307", "예치금에 대한 정보를 찾을 수 없습니다."),
 
     // 500 INTERNAL_SERVER_ERROR
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "ERR999", "서버 내부 오류가 발생했습니다.");
