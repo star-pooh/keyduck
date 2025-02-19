@@ -32,6 +32,7 @@ public class ErrorMessage {
 
     // 403 FORBIDDEN
     public static final String FORBIDDEN_ACCESS = "접근 권한이 없습니다.";
+    public static final String FORBIDDEN_PAYMENT_LOGIN_FORM = "구매자만 경매 포인트를 충전할 수 있습니다.";
 
     // 500 INTERNAL_SERVER_ERROR
     public static final String INTERNAL_SERVER_ERROR = "서버 내부 오류가 발생했습니다.";
