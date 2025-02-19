@@ -24,13 +24,13 @@ public class AuctionUpdateRequestDto {
     @NotNull(message = ValidationErrorMessage.BIDDING_UNIT_IS_NOT_NULL)
     private int biddingUnit;
 
-    @Future(message = ValidationErrorMessage.AUCTION_START_DATE_IS_NOT_BEFORE_NOW)
     @NotNull(message = ValidationErrorMessage.AUCTION_START_DATE_IS_NOT_NULL)
+    @Future(message = ValidationErrorMessage.AUCTION_START_DATE_IS_NOT_BEFORE_NOW)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime auctionStartDate;
 
-    @Future(message = ValidationErrorMessage.AUCTION_END_DATE_IS_NOT_BEFORE_NOW)
     @NotNull(message = ValidationErrorMessage.AUCTION_END_DATE_IS_NOT_NULL)
+    @Future(message = ValidationErrorMessage.AUCTION_END_DATE_IS_NOT_BEFORE_NOW)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime auctionEndDate;
 }

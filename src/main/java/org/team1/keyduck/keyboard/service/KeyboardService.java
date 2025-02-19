@@ -5,11 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.common.exception.DataDuplicateException;
-import org.team1.keyduck.common.exception.DataMismatchException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
-import org.team1.keyduck.common.exception.DataNotMatchException;
 import org.team1.keyduck.common.exception.DataUnauthorizedAccessException;
-import org.team1.keyduck.common.exception.DuplicateDataException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.keyboard.dto.request.KeyboardCreateRequestDto;
 import org.team1.keyduck.keyboard.dto.request.KeyboardUpdateRequestDto;
@@ -34,7 +31,7 @@ public class KeyboardService {
             KeyboardCreateRequestDto requestDto) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_USER, "멤버"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
 
         Keyboard keyboard = Keyboard.builder()
                 .member(member)
@@ -84,7 +81,7 @@ public class KeyboardService {
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_KEYBOARD, "키보드"));
 
         if (!findKeyboard.getMember().getId().equals(sellerId)) {
-            throw new DataNotMatchException(ErrorCode.FORBIDDEN_ACCESS, null);
+            throw new DataUnauthorizedAccessException(ErrorCode.FORBIDDEN_ACCESS, null);
         }
 
         findKeyboard.updateKeyboard(requestDto);
