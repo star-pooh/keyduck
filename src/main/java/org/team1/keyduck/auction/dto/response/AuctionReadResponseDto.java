@@ -7,14 +7,13 @@ import lombok.Getter;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
+import org.team1.keyduck.keyboard.dto.response.KeyboardDto;
 
 @Getter
 public class AuctionReadResponseDto {
 
     private Long auctionId;
-    private Long keyboardId;
-    private final String keyboardName;
-    private final String keyboardDescription;
+    private KeyboardDto keyboard;
     private String title;
     private Long startPrice;
     private Long currentPrice;
@@ -30,15 +29,13 @@ public class AuctionReadResponseDto {
     private List<BiddingResponseDto> biddings;
 
 
-    private AuctionReadResponseDto(Long keyboardId, Long auctionId, String keyboardName,
-            String keyboardDescription, String title, Long startPrice, Long currentPrice,
-            Long immediatePurchasePrice, int biddingUnit, LocalDateTime auctionStartDate,
-            LocalDateTime auctionEndDate, AuctionStatus auctionStatus, Long winnerId,
-            String winnerName, List<BiddingResponseDto> biddings) {
+    private AuctionReadResponseDto(Long auctionId, KeyboardDto keyboard, String title,
+            Long startPrice, Long currentPrice, Long immediatePurchasePrice, int biddingUnit,
+            LocalDateTime auctionStartDate, LocalDateTime auctionEndDate,
+            AuctionStatus auctionStatus, Long winnerId, String winnerName,
+            List<BiddingResponseDto> biddings) {
         this.auctionId = auctionId;
-        this.keyboardId = keyboardId;
-        this.keyboardName = keyboardName;
-        this.keyboardDescription = keyboardDescription;
+        this.keyboard = keyboard;
         this.title = title;
         this.startPrice = startPrice;
         this.currentPrice = currentPrice;
@@ -53,11 +50,12 @@ public class AuctionReadResponseDto {
     }
 
     public static AuctionReadResponseDto of(Auction auction, List<BiddingResponseDto> biddings) {
+
+        KeyboardDto keyboardDto = KeyboardDto.of(auction.getKeyboard());
+
         return new AuctionReadResponseDto(
                 auction.getId(),
-                auction.getKeyboard().getId(),
-                auction.getKeyboard().getName(),
-                auction.getKeyboard().getDescription(),
+                keyboardDto,
                 auction.getTitle(),
                 auction.getStartPrice(),
                 auction.getCurrentPrice(),
