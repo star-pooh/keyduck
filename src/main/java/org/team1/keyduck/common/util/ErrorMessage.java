@@ -33,6 +33,7 @@ public class ErrorMessage {
 
     // 403 FORBIDDEN
     public static final String FORBIDDEN_ACCESS = "접근 권한이 없습니다.";
+    public static final String FORBIDDEN_PAYMENT_LOGIN_FORM = "판매자는 경매 포인트를 충전 할 수 없습니다";
     public static final String NOT_AVAILABLE_TOKEN_DELETE_MEMBER = "삭제된 멤버의 JWT 토큰은 사용할 수 없습니다.";
     public static final String DELETE_FAIL_AUCTION_IN_PROGRESS = "진행 중인 경매가 있기 때문에 삭제가 불가능 합니다.";
 

@@ -39,7 +39,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/auctions**").permitAll()
                         .requestMatchers("/api/members**").hasAnyRole("SELLER", "CUSTOMER")
                         .requestMatchers("/api/keyboards**").hasRole("SELLER")
-                        .requestMatchers("/api/payment**").hasRole("CUSTOMER")
                         .requestMatchers(HttpMethod.POST, "/api/auctions").hasRole("SELLER")
                         .requestMatchers(HttpMethod.PATCH, "/api/auctions/*").hasRole("SELLER")
                         .requestMatchers(HttpMethod.GET, "/api/biddings/*")
