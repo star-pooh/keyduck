@@ -9,9 +9,10 @@ import org.team1.keyduck.auth.dto.request.SigninRequestDto;
 import org.team1.keyduck.auth.dto.response.PaymentFormResponseDto;
 import org.team1.keyduck.auth.dto.response.SigninResponseDto;
 import org.team1.keyduck.common.config.JwtUtil;
+import org.team1.keyduck.common.exception.DataDuplicateException;
+import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataNotMatchException;
-import org.team1.keyduck.common.exception.DuplicateDataException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
@@ -33,7 +34,7 @@ public class AuthService {
     public void joinMember(MemberCreateRequestDto requestDto) {
 
         if (memberRepository.existsByEmail(requestDto.getEmail())) {
-            throw new DuplicateDataException(ErrorCode.DUPLICATE_EMAIL);
+            throw new DataDuplicateException(ErrorCode.DUPLICATE_EMAIL, "이메일");
         }
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
 
@@ -52,14 +53,14 @@ public class AuthService {
 
     private String createBearerToken(String email, String password) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.LOGIN_FAILED));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.LOGIN_FAILED, null));
 
         if (member.isDeleted()) {
-            throw new DataNotFoundException(ErrorCode.LOGIN_FAILED);
+            throw new DataInvalidException(ErrorCode.DUPLICATE_DELETED, "멤버");
         }
 
         if (!passwordEncoder.matches(password, member.getPassword())) {
-            throw new DataNotMatchException(ErrorCode.LOGIN_FAILED);
+            throw new DataNotMatchException(ErrorCode.LOGIN_FAILED, null);
         }
 
         return jwtUtil.createToken(member.getId(), member.getMemberRole());

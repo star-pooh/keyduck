@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.team1.keyduck.common.exception.DataNotMatchException;
+import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.member.entity.MemberRole;
 
@@ -76,7 +76,7 @@ public class JwtUtil {
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(7);
         }
-        throw new DataNotMatchException(ErrorCode.INVALID_TOKEN);
+        throw new DataInvalidException(ErrorCode.INVALID_TOKEN, "토큰");
     }
 
     public Claims extractClaims(String token) {

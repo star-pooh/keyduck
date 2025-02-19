@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum PaymentStatus {
 
+    // @docs https://docs.tosspayments.com/reference#객체-상세-2
     ABORTED,
     CANCELED,
     DONE,

@@ -23,7 +23,7 @@ public class TempPayment {
     @Column(nullable = false)
     Long memberId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     String orderId;
 
     @Column(nullable = false)

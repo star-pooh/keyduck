@@ -17,10 +17,10 @@ import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 import org.team1.keyduck.bidding.dto.response.SuccessBiddingResponseDto;
 import org.team1.keyduck.bidding.entity.Bidding;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
-import org.team1.keyduck.common.exception.BiddingNotAvailableException;
+import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
-import org.team1.keyduck.common.exception.InvalidBiddingPriceException;
+import org.team1.keyduck.common.exception.OperationNotAllowedException;
 import org.team1.keyduck.common.util.GlobalConstants;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
@@ -30,7 +30,6 @@ import org.team1.keyduck.payment.service.PaymentDepositService;
 @Service
 @RequiredArgsConstructor
 public class BiddingService {
-
 
     private final BiddingRepository biddingRepository;
     private final AuctionRepository auctionRepository;
@@ -42,13 +41,13 @@ public class BiddingService {
 
         //경매가 진행 중이어야 가능
         if (!auction.getAuctionStatus().equals(AuctionStatus.IN_PROGRESS)) {
-            throw new BiddingNotAvailableException(ErrorCode.AUCTION_NOT_IN_PROGRESS);
+            throw new DataInvalidException(ErrorCode.AUCTION_NOT_IN_PROGRESS, null);
         }
         //비딩 횟수가 열번째 미만이어야함
         long biddingCount = biddingRepository.countByMember_IdAndAuction_Id(authMember.getId(),
                 auction.getId());
         if (biddingCount >= 10) {
-            throw new BiddingNotAvailableException(ErrorCode.MAX_BIDDING_COUNT_EXCEEDED);
+            throw new OperationNotAllowedException(ErrorCode.MAX_BIDDING_COUNT_EXCEEDED, null);
         }
 
     }
@@ -57,18 +56,18 @@ public class BiddingService {
         // 입찰가가 최소 입찰 단위 금액의 배수만큼 증가해야함
         long priceDifference = price - auction.getStartPrice();
         if (priceDifference % auction.getBiddingUnit() != 0) {
-            throw new InvalidBiddingPriceException(ErrorCode.INVALID_BIDDING_PRICE_UNIT);
+            throw new DataInvalidException(ErrorCode.INVALID_BIDDING_PRICE_UNIT, null);
         }
 
         //비딩 금액이 현재가보다 낮으면 안됨
         if (price <= auction.getCurrentPrice()) {
-            throw new InvalidBiddingPriceException(ErrorCode.BIDDING_PRICE_BELOW_CURRENT_PRICE);
+            throw new DataInvalidException(ErrorCode.BIDDING_PRICE_BELOW_CURRENT_PRICE, null);
         }
 
         //비딩금액이 최대 입찰 호가 보다 높으면 안됨
         long maxPrice = auction.getCurrentPrice() + (auction.getBiddingUnit() * 10L);
         if (price > maxPrice) {
-            throw new InvalidBiddingPriceException(ErrorCode.BIDDING_PRICE_EXCEEDS_MAX_LIMIT);
+            throw new DataInvalidException(ErrorCode.BIDDING_PRICE_EXCEEDS_MAX_LIMIT, null);
         }
     }
 
@@ -76,10 +75,10 @@ public class BiddingService {
     @Transactional
     public void createBidding(Long auctionId, Long price, AuthMember authMember) {
         Auction auction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.AUCTION_NOT_FOUND));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION, "경매"));
 
         Member member = memberRepository.findById(authMember.getId())
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
 
         validateBiddingAvailability(auction, authMember);
         validateBiddingPrice(price, auction);
@@ -118,7 +117,7 @@ public class BiddingService {
         Pageable pageable = PageRequest.of(page - 1, GlobalConstants.BIDDING_PAGE_SIZE);
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
 
         List<Auction> auctions = auctionRepository.findAllByMember_IdAndAuctionStatus(
                 member.getId(),

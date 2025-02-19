@@ -3,7 +3,7 @@ package org.team1.keyduck.payment.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.team1.keyduck.common.exception.BiddingNotAvailableException;
+import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.payment.dto.PaymentDto;
@@ -38,9 +38,10 @@ public class PaymentDepositService {
     public void payBiddingPrice(Long memberId, Long newBiddingPrice, Long lastBiddingPrice) {
 
         PaymentDeposit paymentDeposit = paymentDepositRepository.findByMember_Id(memberId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
+
         if (!(newBiddingPrice - lastBiddingPrice <= paymentDeposit.getDepositAmount())) {
-            throw new BiddingNotAvailableException(ErrorCode.INSUFFICIENT_PAYMENT_AMOUNT);
+            throw new DataInvalidException(ErrorCode.INSUFFICIENT_PAYMENT_DEPOSIT_AMOUNT, null);
         }
 
         if (lastBiddingPrice == 0) {
