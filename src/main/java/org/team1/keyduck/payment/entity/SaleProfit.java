@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.team1.keyduck.auction.entity.Auction;
@@ -34,5 +35,12 @@ public class SaleProfit extends BaseTime {
 
     @Column(nullable = false)
     private Long winningPrice;
+
+    @Builder
+    public SaleProfit(Member member, Auction auction, Long winningPrice) {
+        this.member = member;
+        this.auction = auction;
+        this.winningPrice = winningPrice;
+    }
 
 }
