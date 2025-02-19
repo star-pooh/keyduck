@@ -20,13 +20,14 @@ public class AuctionReadAllResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime auctionEndDate;
     private AuctionStatus auctionStatus;
+    private Long winnerId;
     private String winnerName;
 
 
     private AuctionReadAllResponseDto(Long keyboardId, String title, Long startPrice,
             Long currentPrice, Long immediatePurchasePrice, int biddingUnit,
             LocalDateTime auctionStartDate, LocalDateTime auctionEndDate,
-            AuctionStatus auctionStatus, String winnerName) {
+            AuctionStatus auctionStatus, Long winnerId, String winnerName) {
 
         this.keyboardId = keyboardId;
         this.title = title;
@@ -37,16 +38,12 @@ public class AuctionReadAllResponseDto {
         this.auctionStartDate = auctionStartDate;
         this.auctionEndDate = auctionEndDate;
         this.auctionStatus = auctionStatus;
-        if (auctionStatus == AuctionStatus.CLOSED) {
-            this.winnerName = winnerName;
-        }
+        this.winnerId = winnerId;
+        this.winnerName = winnerName;
+
     }
 
     public static AuctionReadAllResponseDto of(Auction auction) {
-        String winnerName = null;
-        if (auction.getAuctionStatus() == AuctionStatus.CLOSED) {
-            winnerName = auction.getMember().getName();
-        }
         return new AuctionReadAllResponseDto(
                 auction.getKeyboard().getId(),
                 auction.getTitle(),
@@ -57,7 +54,8 @@ public class AuctionReadAllResponseDto {
                 auction.getAuctionStartDate(),
                 auction.getAuctionEndDate(),
                 auction.getAuctionStatus(),
-                winnerName
+                auction.getMember() == null ? null : auction.getMember().getId(),
+                auction.getMember() == null ? null : auction.getMember().getName()
         );
     }
 

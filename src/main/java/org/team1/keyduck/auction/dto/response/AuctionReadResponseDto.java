@@ -22,6 +22,7 @@ public class AuctionReadResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime auctionEndDate;
     private AuctionStatus auctionStatus;
+    private Long winnerId;
     private String winnerName;
     private List<BiddingResponseDto> biddings;
 
@@ -29,7 +30,8 @@ public class AuctionReadResponseDto {
     private AuctionReadResponseDto(Long keyboardId, String title, Long startPrice,
             Long currentPrice, Long immediatePurchasePrice, int biddingUnit,
             LocalDateTime auctionStartDate, LocalDateTime auctionEndDate,
-            AuctionStatus auctionStatus, String winnerName, List<BiddingResponseDto> biddings) {
+            AuctionStatus auctionStatus, Long winnerId, String winnerName,
+            List<BiddingResponseDto> biddings) {
 
         this.keyboardId = keyboardId;
         this.title = title;
@@ -40,18 +42,12 @@ public class AuctionReadResponseDto {
         this.auctionStartDate = auctionStartDate;
         this.auctionEndDate = auctionEndDate;
         this.auctionStatus = auctionStatus;
+        this.winnerId = winnerId;
+        this.winnerName = winnerName;
         this.biddings = biddings;
-        if (auctionStatus == AuctionStatus.CLOSED) {
-            this.winnerName = winnerName;
-        }
-
     }
 
     public static AuctionReadResponseDto of(Auction auction, List<BiddingResponseDto> biddings) {
-        String winnerName = null;
-        if (auction.getAuctionStatus() == AuctionStatus.CLOSED) {
-            winnerName = auction.getMember().getName();
-        }
         return new AuctionReadResponseDto(
                 auction.getKeyboard().getId(),
                 auction.getTitle(),
@@ -62,7 +58,8 @@ public class AuctionReadResponseDto {
                 auction.getAuctionStartDate(),
                 auction.getAuctionEndDate(),
                 auction.getAuctionStatus(),
-                winnerName,
+                auction.getMember() == null ? null : auction.getMember().getId(),
+                auction.getMember() == null ? null : auction.getMember().getName(),
                 biddings
         );
     }
