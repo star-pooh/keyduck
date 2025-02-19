@@ -38,7 +38,7 @@ public class PaymentDepositService {
     public void payBiddingPrice(Long memberId, Long newBiddingPrice, Long lastBiddingPrice) {
 
         PaymentDeposit paymentDeposit = paymentDepositRepository.findByMember_Id(memberId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_USER, "멤버"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
 
         if (!(newBiddingPrice - lastBiddingPrice <= paymentDeposit.getDepositAmount())) {
             throw new DataInvalidException(ErrorCode.INSUFFICIENT_PAYMENT_DEPOSIT_AMOUNT, null);

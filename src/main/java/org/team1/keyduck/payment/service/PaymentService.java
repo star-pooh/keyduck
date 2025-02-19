@@ -27,7 +27,7 @@ public class PaymentService {
     @Transactional
     public PaymentDto createPayment(String jsonBody, Long memberId) throws Exception {
         Member foundedMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_USER, "멤버"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
 
         JSONObject jsonObject = paymentProcessor.parseJsonBody(jsonBody);
 

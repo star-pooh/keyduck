@@ -6,7 +6,6 @@ import lombok.Getter;
 public class ErrorMessage {
 
     // 중복되는 메시지
-    public static final String REQUIRED_VALUE = "%s은(는) 필수 입력 값입니다.";
     public static final String INVALID_VALUE = "유효하지 않은 %s 입니다.";
     public static final String DUPLICATE_USE = "해당 %s은(는) 이미 사용 중입니다.";
     public static final String DUPLICATE_DELETE = "이미 삭제된 %s 입니다.";
