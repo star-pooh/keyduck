@@ -4,10 +4,13 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.team1.keyduck.auction.entity.AuctionStatus;
+import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.common.exception.DataDuplicateException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataUnauthorizedAccessException;
 import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.exception.OperationNotAllowedException;
 import org.team1.keyduck.keyboard.dto.request.KeyboardCreateRequestDto;
 import org.team1.keyduck.keyboard.dto.request.KeyboardUpdateRequestDto;
 import org.team1.keyduck.keyboard.dto.response.KeyboardCreateResponseDto;
@@ -24,6 +27,7 @@ public class KeyboardService {
 
     private final KeyboardRepository keyboardRepository;
     private final MemberRepository memberRepository;
+    private final AuctionRepository auctionRepository;
 
     // 키보드 생성
     @Transactional
@@ -60,13 +64,18 @@ public class KeyboardService {
             throw new DataUnauthorizedAccessException(ErrorCode.FORBIDDEN_ACCESS, null);
         }
 
+        // 경매 진행 중인 키보드 삭제 요청 -> 예외 발생
+        if (auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(keyboardId, AuctionStatus.IN_PROGRESS)) {
+            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_MODIFIABLE_AND_DELETEABLE, null);
+        }
+
         keyboard.deleteKeyboard();
     }
 
     @Transactional(readOnly = true)
     public List<KeyboardReadResponseDto> findKeyboardBySellerId(Long sellerId) {
 
-        List<Keyboard> keyboards = keyboardRepository.findAllByMemberIdAndIsDeletedFalse(sellerId);
+        List<Keyboard> keyboards = keyboardRepository.findAllByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(sellerId);
 
         return keyboards.stream()
                 .map(KeyboardReadResponseDto::of)
@@ -82,6 +91,11 @@ public class KeyboardService {
 
         if (!findKeyboard.getMember().getId().equals(sellerId)) {
             throw new DataUnauthorizedAccessException(ErrorCode.FORBIDDEN_ACCESS, null);
+        }
+
+        // 경매가 진행 중이거나 종료된 키보드 수정 요청 -> 예외 발생
+        if (!auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(keyboardId, AuctionStatus.NOT_STARTED)) {
+            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_MODIFIABLE_AND_DELETEABLE, null);
         }
 
         findKeyboard.updateKeyboard(requestDto);
