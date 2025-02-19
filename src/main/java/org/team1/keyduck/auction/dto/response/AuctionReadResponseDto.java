@@ -7,12 +7,13 @@ import lombok.Getter;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
+import org.team1.keyduck.keyboard.dto.response.AuctionKeyboardDto;
 
 @Getter
 public class AuctionReadResponseDto {
 
     private Long auctionId;
-    private Long keyboardId;
+    private AuctionKeyboardDto keyboard;
     private String title;
     private Long startPrice;
     private Long currentPrice;
@@ -28,13 +29,13 @@ public class AuctionReadResponseDto {
     private List<BiddingResponseDto> biddings;
 
 
-    private AuctionReadResponseDto(Long keyboardId, Long auctionId, String title, Long startPrice,
-            Long currentPrice, Long immediatePurchasePrice, int biddingUnit,
+    private AuctionReadResponseDto(Long auctionId, AuctionKeyboardDto keyboard, String title,
+            Long startPrice, Long currentPrice, Long immediatePurchasePrice, int biddingUnit,
             LocalDateTime auctionStartDate, LocalDateTime auctionEndDate,
             AuctionStatus auctionStatus, Long winnerId, String winnerName,
             List<BiddingResponseDto> biddings) {
         this.auctionId = auctionId;
-        this.keyboardId = keyboardId;
+        this.keyboard = keyboard;
         this.title = title;
         this.startPrice = startPrice;
         this.currentPrice = currentPrice;
@@ -49,9 +50,12 @@ public class AuctionReadResponseDto {
     }
 
     public static AuctionReadResponseDto of(Auction auction, List<BiddingResponseDto> biddings) {
+
+        AuctionKeyboardDto keyboardDto = AuctionKeyboardDto.of(auction.getKeyboard());
+
         return new AuctionReadResponseDto(
                 auction.getId(),
-                auction.getKeyboard().getId(),
+                keyboardDto,
                 auction.getTitle(),
                 auction.getStartPrice(),
                 auction.getCurrentPrice(),
