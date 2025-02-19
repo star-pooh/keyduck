@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import org.team1.keyduck.auction.entity.Auction;
-import org.team1.keyduck.keyboard.dto.response.KeyboardDto;
+import org.team1.keyduck.keyboard.dto.response.AuctionKeyboardDto;
 
 @Getter
 public class AuctionCreateResponseDto {
 
     private final Long auctionId;
 
-    private final KeyboardDto keyboard;
+    private final AuctionKeyboardDto keyboard;
 
     private final String title;
 
@@ -29,7 +29,7 @@ public class AuctionCreateResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime auctionEndDate;
 
-    private AuctionCreateResponseDto(Long auctionId, KeyboardDto keyboard, String title,
+    private AuctionCreateResponseDto(Long auctionId, AuctionKeyboardDto keyboard, String title,
             Long startPrice, Long immediatePurchasePrice, Long currentPrice, int biddingUnit,
             LocalDateTime auctionStartDate, LocalDateTime auctionEndDate) {
         this.auctionId = auctionId;
@@ -45,7 +45,7 @@ public class AuctionCreateResponseDto {
 
     public static AuctionCreateResponseDto of(Auction auction) {
 
-        KeyboardDto keyboardDto = KeyboardDto.of(auction.getKeyboard());
+        AuctionKeyboardDto keyboardDto = AuctionKeyboardDto.of(auction.getKeyboard());
 
         return new AuctionCreateResponseDto(
                 auction.getId(),

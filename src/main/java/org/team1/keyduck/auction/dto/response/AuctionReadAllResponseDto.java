@@ -5,13 +5,13 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
-import org.team1.keyduck.keyboard.dto.response.KeyboardDto;
+import org.team1.keyduck.keyboard.dto.response.AuctionKeyboardDto;
 
 @Getter
 public class AuctionReadAllResponseDto {
 
     private Long auctionId;
-    private KeyboardDto keyboard;
+    private AuctionKeyboardDto keyboard;
     private String title;
     private Long startPrice;
     private Long currentPrice;
@@ -26,7 +26,7 @@ public class AuctionReadAllResponseDto {
     private String winnerName;
 
 
-    private AuctionReadAllResponseDto(Long auctionId, KeyboardDto keyboard, String title,
+    private AuctionReadAllResponseDto(Long auctionId, AuctionKeyboardDto keyboard, String title,
             Long startPrice, Long currentPrice, Long immediatePurchasePrice, int biddingUnit,
             LocalDateTime auctionStartDate, LocalDateTime auctionEndDate,
             AuctionStatus auctionStatus, Long winnerId, String winnerName) {
@@ -47,7 +47,7 @@ public class AuctionReadAllResponseDto {
 
     public static AuctionReadAllResponseDto of(Auction auction) {
 
-        KeyboardDto keyboardDto = KeyboardDto.of(auction.getKeyboard());
+        AuctionKeyboardDto keyboardDto = AuctionKeyboardDto.of(auction.getKeyboard());
 
         return new AuctionReadAllResponseDto(
                 auction.getId(),

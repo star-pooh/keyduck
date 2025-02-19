@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 
 @Getter
-public class KeyboardDto {
+public class AuctionKeyboardDto {
 
     private final Long id;
 
@@ -12,14 +12,14 @@ public class KeyboardDto {
 
     private final String description;
 
-    private KeyboardDto(Long id, String name, String description) {
+    private AuctionKeyboardDto(Long id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
     }
 
-    public static KeyboardDto of(Keyboard keyboard) {
-        return new KeyboardDto(
+    public static AuctionKeyboardDto of(Keyboard keyboard) {
+        return new AuctionKeyboardDto(
                 keyboard.getId(),
                 keyboard.getName(),
                 keyboard.getDescription()
