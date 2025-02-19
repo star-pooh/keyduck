@@ -60,6 +60,9 @@ dependencies {
 
     // Spring Security Test
     testImplementation 'org.springframework.security:spring-security-test'
+
+    //  cache
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
 }
 
 tasks.named('test') {
