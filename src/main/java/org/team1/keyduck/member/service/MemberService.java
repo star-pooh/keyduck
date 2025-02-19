@@ -62,8 +62,9 @@ public class MemberService {
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
                 ErrorCode.NOT_FOUND_USER, "멤버"));
 
-        Long deposit = paymentDepositRepository.findPaymentDepositAmountMember_Id(id).orElse(0L);
+        Long paymentDeposit = paymentDepositRepository.findPaymentDepositAmountMember_Id(id)
+                .orElse(0L);
 
-        return MemberReadResponseDto.of(member, deposit);
+        return MemberReadResponseDto.of(member, paymentDeposit);
     }
 }
