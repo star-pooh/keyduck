@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
                 exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
 
         log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
-                exception.getMessage());
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
@@ -30,9 +30,9 @@ public class GlobalExceptionHandler {
             DataDuplicateException exception) {
         ApiResponse apiResponse = ApiResponse.error(
                 exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
-        
+
         log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
-                exception.getMessage());
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
                 exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
 
         log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
-                exception.getMessage());
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
                 exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
 
         log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
-                exception.getMessage());
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
                 exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
 
         log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
-                exception.getMessage());
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
@@ -76,7 +76,7 @@ public class GlobalExceptionHandler {
                 exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
 
         log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
-                exception.getMessage());
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
