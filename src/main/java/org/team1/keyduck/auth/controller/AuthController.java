@@ -22,6 +22,7 @@ import org.team1.keyduck.auth.dto.response.SigninResponseDto;
 import org.team1.keyduck.auth.service.AuthService;
 import org.team1.keyduck.common.dto.ApiResponse;
 import org.team1.keyduck.common.exception.SuccessCode;
+import org.team1.keyduck.member.entity.MemberRole;
 
 @Controller
 @RequestMapping("/api/auth")
@@ -38,12 +39,20 @@ public class AuthController {
                 SuccessCode.LOGIN_SUCCESS.getStatus());
     }
 
-    @PostMapping("/join")
-    public ResponseEntity<ApiResponse<MemberCreateResponseDto>> joinMember(
+    @PostMapping("/join/customer")
+    public ResponseEntity<ApiResponse<MemberCreateResponseDto>> joinCustomer(
             @RequestBody @Valid MemberCreateRequestDto requestDto) {
         ApiResponse<MemberCreateResponseDto> response = ApiResponse.success(
-                SuccessCode.CREATE_SUCCESS, authService.joinMember(requestDto));
+                SuccessCode.CREATE_SUCCESS,
+                authService.joinMember(requestDto, MemberRole.CUSTOMER));
+        return new ResponseEntity<>(response, response.getStatus());
+    }
 
+    @PostMapping("/join/seller")
+    public ResponseEntity<ApiResponse<MemberCreateResponseDto>> joinSeller(
+            @RequestBody @Valid MemberCreateRequestDto requestDto) {
+        ApiResponse<MemberCreateResponseDto> response = ApiResponse.success(
+                SuccessCode.CREATE_SUCCESS, authService.joinMember(requestDto, MemberRole.SELLER));
         return new ResponseEntity<>(response, response.getStatus());
     }
 

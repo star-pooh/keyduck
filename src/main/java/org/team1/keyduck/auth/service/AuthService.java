@@ -16,6 +16,7 @@ import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataNotMatchException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.member.entity.Member;
+import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
 
 @Service
@@ -32,17 +33,20 @@ public class AuthService {
         return new SigninResponseDto(bearerToken);
     }
 
-    public MemberCreateResponseDto joinMember(MemberCreateRequestDto requestDto) {
+    public MemberCreateResponseDto joinMember(MemberCreateRequestDto requestDto, MemberRole memberRole) {
 
         if (memberRepository.existsByEmail(requestDto.getEmail())) {
             throw new DataDuplicateException(ErrorCode.DUPLICATE_EMAIL, "이메일");
         }
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
 
-        Member member = Member.builder().name(requestDto.getName())
+        Member member = Member.builder()
+                .name(requestDto.getName())
                 .address(requestDto.getAddress())
-                .memberRole(requestDto.getMemberRole()).email(requestDto.getEmail())
-                .password(encodedPassword).build();
+                .memberRole(memberRole)
+                .email(requestDto.getEmail())
+                .password(encodedPassword)
+                .build();
 
         return MemberCreateResponseDto.of(memberRepository.save(member));
     }
