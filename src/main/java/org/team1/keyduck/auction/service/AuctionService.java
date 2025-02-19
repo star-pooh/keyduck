@@ -26,6 +26,7 @@ import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.team1.keyduck.payment.entity.PaymentDeposit;
 import org.team1.keyduck.payment.repository.PaymentDepositRepository;
+import org.team1.keyduck.payment.service.SaleProfitService;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +37,7 @@ public class AuctionService {
     private final BiddingRepository biddingRepository;
     private final PaymentDepositRepository paymentDepositRepository;
     private final MemberRepository memberRepository;
+    private final SaleProfitService saleProfitService;
 
     public AuctionCreateResponseDto createAuctionService(Long sellerId,
             AuctionCreateRequestDto requestDto) {
@@ -155,6 +157,7 @@ public class AuctionService {
                     .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
             paymentDeposit.updatePaymentDeposit(bidding.getPrice());
         }
+        saleProfitService.saleProfit(auctionId);
 
         findAuction.updateAuctionStatus(AuctionStatus.CLOSED);
     }
