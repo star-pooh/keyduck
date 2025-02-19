@@ -13,6 +13,7 @@ import org.team1.keyduck.member.dto.response.MemberReadResponseDto;
 import org.team1.keyduck.member.dto.response.MemberUpdateResponseDto;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
+import org.team1.keyduck.payment.repository.PaymentDepositRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +21,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PaymentDepositRepository paymentDepositRepository;
 
     @Transactional
     public MemberUpdateResponseDto updateMember(MemberUpdateRequestDto requestDto, Long id) {
@@ -60,6 +62,9 @@ public class MemberService {
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
                 ErrorCode.NOT_FOUND_MEMBER, "멤버"));
 
-        return MemberReadResponseDto.of(member);
+        Long paymentDeposit = paymentDepositRepository.findPaymentDepositAmountMember_Id(id)
+                .orElse(0L);
+
+        return MemberReadResponseDto.of(member, paymentDeposit);
     }
 }
