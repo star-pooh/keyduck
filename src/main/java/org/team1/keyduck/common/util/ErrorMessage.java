@@ -6,7 +6,6 @@ import lombok.Getter;
 public class ErrorMessage {
 
     // 중복되는 메시지
-    public static final String REQUIRED_VALUE = "%s은(는) 필수 입력 값입니다.";
     public static final String INVALID_VALUE = "유효하지 않은 %s 입니다.";
     public static final String DUPLICATE_USE = "해당 %s은(는) 이미 사용 중입니다.";
     public static final String DUPLICATE_DELETE = "이미 삭제된 %s 입니다.";
@@ -33,6 +32,8 @@ public class ErrorMessage {
 
     // 403 FORBIDDEN
     public static final String FORBIDDEN_ACCESS = "접근 권한이 없습니다.";
+    public static final String NOT_AVAILABLE_TOKEN_DELETE_MEMBER = "삭제된 멤버의 JWT 토큰은 사용할 수 없습니다.";
+    public static final String DELETE_FAIL_AUCTION_IN_PROGRESS = "진행 중인 경매가 있기 때문에 삭제가 불가능 합니다.";
 
     // 500 INTERNAL_SERVER_ERROR
     public static final String INTERNAL_SERVER_ERROR = "서버 내부 오류가 발생했습니다.";
