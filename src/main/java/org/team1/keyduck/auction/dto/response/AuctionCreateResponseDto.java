@@ -8,6 +8,8 @@ import org.team1.keyduck.auction.entity.Auction;
 @Getter
 public class AuctionCreateResponseDto {
 
+    private final Long auctionId;
+
     private final Long keyboardId;
 
     private final String title;
@@ -26,10 +28,11 @@ public class AuctionCreateResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime auctionEndDate;
 
-    private AuctionCreateResponseDto(Long keyboardId, String title, Long startPrice,
+    private AuctionCreateResponseDto(Long auctionId, Long keyboardId, String title, Long startPrice,
             Long immediatePurchasePrice, Long currentPrice, int biddingUnit,
             LocalDateTime auctionStartDate,
             LocalDateTime auctionEndDate) {
+        this.auctionId = auctionId;
         this.keyboardId = keyboardId;
         this.title = title;
         this.startPrice = startPrice;
@@ -40,9 +43,9 @@ public class AuctionCreateResponseDto {
         this.auctionEndDate = auctionEndDate;
     }
 
-    //todo 추후 엔티티명 수정시 정적팩토리 메서드 내부 필드명 수정 예정
     public static AuctionCreateResponseDto of(Auction auction) {
         return new AuctionCreateResponseDto(
+                auction.getId(),
                 auction.getKeyboard().getId(),
                 auction.getTitle(),
                 auction.getStartPrice(),
