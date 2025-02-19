@@ -66,7 +66,7 @@ public class KeyboardService {
 
         // 경매 진행 중인 키보드 삭제 요청 -> 예외 발생
         if (auctionRepository.existsByKeyboardIdAndAuctionStatus(keyboardId, AuctionStatus.IN_PROGRESS)) {
-            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_IN_PROGRESS, null);
+            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_MODIFIABLE_AND_DELETEABLE, null);
         }
 
         keyboard.deleteKeyboard();
@@ -93,14 +93,9 @@ public class KeyboardService {
             throw new DataUnauthorizedAccessException(ErrorCode.FORBIDDEN_ACCESS, null);
         }
 
-        // 경매 진행 중인 키보드 수정 요청 -> 예외 발생
-        if (auctionRepository.existsByKeyboardIdAndAuctionStatus(keyboardId, AuctionStatus.IN_PROGRESS)) {
-            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_IN_PROGRESS, null);
-        }
-
-        // 경매 종료된 키보드 수정 요청 -> 예외 발생
-        if (auctionRepository.existsByKeyboardIdAndAuctionStatus(keyboardId, AuctionStatus.CLOSED)) {
-            throw new OperationNotAllowedException(ErrorCode.AUCTION_CLOSED, null);
+        // 경매가 진행 중이거나 종료된 키보드 수정 요청 -> 예외 발생
+        if (!auctionRepository.existsByKeyboardIdAndAuctionStatus(keyboardId, AuctionStatus.NOT_STARTED)) {
+            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_MODIFIABLE_AND_DELETEABLE, null);
         }
 
         findKeyboard.updateKeyboard(requestDto);
