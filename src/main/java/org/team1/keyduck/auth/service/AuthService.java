@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.team1.keyduck.auth.dto.request.MemberCreateRequestDto;
 import org.team1.keyduck.auth.dto.request.PaymentFormRequestDto;
 import org.team1.keyduck.auth.dto.request.SigninRequestDto;
+import org.team1.keyduck.auth.dto.response.MemberCreateResponseDto;
 import org.team1.keyduck.auth.dto.response.PaymentFormResponseDto;
 import org.team1.keyduck.auth.dto.response.SigninResponseDto;
 import org.team1.keyduck.common.config.JwtUtil;
@@ -31,7 +32,7 @@ public class AuthService {
         return new SigninResponseDto(bearerToken);
     }
 
-    public void joinMember(MemberCreateRequestDto requestDto) {
+    public MemberCreateResponseDto joinMember(MemberCreateRequestDto requestDto) {
 
         if (memberRepository.existsByEmail(requestDto.getEmail())) {
             throw new DataDuplicateException(ErrorCode.DUPLICATE_EMAIL, "이메일");
@@ -43,7 +44,7 @@ public class AuthService {
                 .memberRole(requestDto.getMemberRole()).email(requestDto.getEmail())
                 .password(encodedPassword).build();
 
-        memberRepository.save(member);
+        return MemberCreateResponseDto.of(memberRepository.save(member));
     }
 
     public PaymentFormResponseDto paymentFormLogin(PaymentFormRequestDto dto) {
