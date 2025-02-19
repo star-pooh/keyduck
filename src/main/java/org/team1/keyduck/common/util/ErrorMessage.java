@@ -22,7 +22,8 @@ public class ErrorMessage {
     public static final String REQUIRED_TOKEN = "JWT 토큰이 필요합니다.";
     public static final String INVALID_TOKEN = "잘못된 JWT 토큰 입니다.";
     public static final String UNSUPPORTED_TOKEN = "지원되지 않는 JWT 토큰 입니다.";
-    public static final String IN_PROGRESS_AUCTION = "진행 중인 경매입니다.";
+    public static final String IN_PROGRESS_AUCTION = "진행 중인 경매는 수정, 삭제가 불가합니다.";
+    public static final String CLOSED_AUCTION = "종료된 경매는 수정이 불가합니다.";
 
 
     // 401 UNAUTHORIZED

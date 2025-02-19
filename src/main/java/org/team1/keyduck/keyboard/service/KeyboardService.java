@@ -10,6 +10,7 @@ import org.team1.keyduck.common.exception.DataDuplicateException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataUnauthorizedAccessException;
 import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.exception.OperationNotAllowedException;
 import org.team1.keyduck.keyboard.dto.request.KeyboardCreateRequestDto;
 import org.team1.keyduck.keyboard.dto.request.KeyboardUpdateRequestDto;
 import org.team1.keyduck.keyboard.dto.response.KeyboardCreateResponseDto;
@@ -65,7 +66,7 @@ public class KeyboardService {
 
         // 경매 진행 중인 키보드 삭제 요청 -> 예외 발생
         if (auctionRepository.existsByKeyboardIdAndAuctionStatus(keyboardId, AuctionStatus.IN_PROGRESS)) {
-            throw new DataDuplicateException(ErrorCode.AUCTION_IN_PROGRESS, "경매 진행 중인 키보드");
+            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_IN_PROGRESS, null);
         }
 
         keyboard.deleteKeyboard();
@@ -94,9 +95,13 @@ public class KeyboardService {
 
         // 경매 진행 중인 키보드 수정 요청 -> 예외 발생
         if (auctionRepository.existsByKeyboardIdAndAuctionStatus(keyboardId, AuctionStatus.IN_PROGRESS)) {
-            throw new DataDuplicateException(ErrorCode.AUCTION_IN_PROGRESS, "경매 진행 중인 키보드");
+            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_IN_PROGRESS, null);
         }
 
+        // 경매 종료된 키보드 수정 요청 -> 예외 발생
+        if (auctionRepository.existsByKeyboardIdAndAuctionStatus(keyboardId, AuctionStatus.CLOSED)) {
+            throw new OperationNotAllowedException(ErrorCode.AUCTION_CLOSED, null);
+        }
 
         findKeyboard.updateKeyboard(requestDto);
 
