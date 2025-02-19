@@ -12,4 +12,6 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     List<Auction> findAllByMember_IdAndAuctionStatus(Long memberId, AuctionStatus auctionStatus);
 
     boolean existsByKeyboard_Member_IdAndAuctionStatus(Long id, AuctionStatus auctionStatus);
+
+    List<Auction> findAllByOrderByIdDesc();
 }

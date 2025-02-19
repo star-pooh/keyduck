@@ -106,7 +106,7 @@ public class AuctionService {
     public List<AuctionReadAllResponseDto> findAllAuction() {
 
         // 전체 경매를 조회하고
-        List<Auction> auctions = auctionRepository.findAll();
+        List<Auction> auctions = auctionRepository.findAllByOrderByIdDesc();
 
         // DTO로 변환 후 반환
         return auctions.stream()
