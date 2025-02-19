@@ -8,6 +8,8 @@ import org.team1.keyduck.auction.entity.Auction;
 @Getter
 public class AuctionUpdateResponseDto {
 
+    private final Long auctionId;
+
     private final Long keyboardId;
 
     private final String title;
@@ -25,9 +27,10 @@ public class AuctionUpdateResponseDto {
     private final LocalDateTime auctionEndDate;
 
     private AuctionUpdateResponseDto(
-            Long keyboardId, String title, Long startPrice,
+            Long auctionId, Long keyboardId, String title, Long startPrice,
             Long immediatePurchasePrice, int biddingUnit,
             LocalDateTime auctionStartDate, LocalDateTime auctionEndDate) {
+        this.auctionId = auctionId;
         this.keyboardId = keyboardId;
         this.title = title;
         this.startPrice = startPrice;
@@ -39,6 +42,7 @@ public class AuctionUpdateResponseDto {
 
     public static AuctionUpdateResponseDto of(Auction auction) {
         return new AuctionUpdateResponseDto(
+                auction.getId(),
                 auction.getKeyboard().getId(),
                 auction.getTitle(),
                 auction.getStartPrice(),

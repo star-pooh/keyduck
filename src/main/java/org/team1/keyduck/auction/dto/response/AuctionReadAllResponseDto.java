@@ -9,6 +9,8 @@ import org.team1.keyduck.auction.entity.AuctionStatus;
 @Getter
 public class AuctionReadAllResponseDto {
 
+    private Long auctionId;
+    private Long keyboardId;
     private String title;
     private Long startPrice;
     private Long currentPrice;
@@ -19,11 +21,16 @@ public class AuctionReadAllResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime auctionEndDate;
     private AuctionStatus auctionStatus;
+    private Long winnerId;
+    private String winnerName;
 
 
-    private AuctionReadAllResponseDto(String title, Long startPrice, Long currentPrice,
-            Long immediatePurchasePrice, int biddingUnit, LocalDateTime auctionStartDate,
-            LocalDateTime auctionEndDate, AuctionStatus auctionStatus) {
+    private AuctionReadAllResponseDto(Long auctionId, Long keyboardId, String title, Long startPrice,
+            Long currentPrice, Long immediatePurchasePrice, int biddingUnit,
+            LocalDateTime auctionStartDate, LocalDateTime auctionEndDate,
+            AuctionStatus auctionStatus, Long winnerId, String winnerName) {
+        this.auctionId = auctionId;
+        this.keyboardId = keyboardId;
         this.title = title;
         this.startPrice = startPrice;
         this.currentPrice = currentPrice;
@@ -32,10 +39,15 @@ public class AuctionReadAllResponseDto {
         this.auctionStartDate = auctionStartDate;
         this.auctionEndDate = auctionEndDate;
         this.auctionStatus = auctionStatus;
+        this.winnerId = winnerId;
+        this.winnerName = winnerName;
+
     }
 
     public static AuctionReadAllResponseDto of(Auction auction) {
         return new AuctionReadAllResponseDto(
+                auction.getId(),
+                auction.getKeyboard().getId(),
                 auction.getTitle(),
                 auction.getStartPrice(),
                 auction.getCurrentPrice(),
@@ -43,7 +55,9 @@ public class AuctionReadAllResponseDto {
                 auction.getBiddingUnit(),
                 auction.getAuctionStartDate(),
                 auction.getAuctionEndDate(),
-                auction.getAuctionStatus()
+                auction.getAuctionStatus(),
+                auction.getMember() == null ? null : auction.getMember().getId(),
+                auction.getMember() == null ? null : auction.getMember().getName()
         );
     }
 
