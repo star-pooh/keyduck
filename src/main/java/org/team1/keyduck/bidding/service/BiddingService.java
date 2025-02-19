@@ -24,7 +24,10 @@ import org.team1.keyduck.common.exception.OperationNotAllowedException;
 import org.team1.keyduck.common.util.GlobalConstants;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
+import org.team1.keyduck.payment.entity.PaymentDeposit;
+import org.team1.keyduck.payment.repository.PaymentDepositRepository;
 import org.team1.keyduck.payment.service.PaymentDepositService;
+import org.team1.keyduck.payment.service.SaleProfitService;
 
 
 @Service
@@ -35,6 +38,8 @@ public class BiddingService {
     private final AuctionRepository auctionRepository;
     private final MemberRepository memberRepository;
     private final PaymentDepositService paymentDepositService;
+    private final PaymentDepositRepository paymentDepositRepository;
+    private final SaleProfitService saleProfitService;
 
     //비딩참여가 가능한 상태인지 검증
     private void validateBiddingAvailability(Auction auction, AuthMember authMember) {
@@ -55,19 +60,23 @@ public class BiddingService {
     private void validateBiddingPrice(Long price, Auction auction) {
         // 입찰가가 최소 입찰 단위 금액의 배수만큼 증가해야함
         long priceDifference = price - auction.getStartPrice();
-        if (priceDifference % auction.getBiddingUnit() != 0) {
-            throw new DataInvalidException(ErrorCode.INVALID_BIDDING_PRICE_UNIT, null);
-        }
 
-        //비딩 금액이 현재가보다 낮으면 안됨
-        if (price <= auction.getCurrentPrice()) {
-            throw new DataInvalidException(ErrorCode.BIDDING_PRICE_BELOW_CURRENT_PRICE, null);
-        }
+        if (!price.equals(auction.getImmediatePurchasePrice())) {
 
-        //비딩금액이 최대 입찰 호가 보다 높으면 안됨
-        long maxPrice = auction.getCurrentPrice() + (auction.getBiddingUnit() * 10L);
-        if (price > maxPrice) {
-            throw new DataInvalidException(ErrorCode.BIDDING_PRICE_EXCEEDS_MAX_LIMIT, null);
+            if (priceDifference % auction.getBiddingUnit() != 0) {
+                throw new DataInvalidException(ErrorCode.INVALID_BIDDING_PRICE_UNIT, null);
+            }
+
+            //비딩 금액이 현재가보다 낮으면 안됨
+            if (price <= auction.getCurrentPrice()) {
+                throw new DataInvalidException(ErrorCode.BIDDING_PRICE_BELOW_CURRENT_PRICE, null);
+            }
+
+            //비딩금액이 최대 입찰 호가 보다 높으면 안됨
+            long maxPrice = auction.getCurrentPrice() + (auction.getBiddingUnit() * 10L);
+            if (price > maxPrice) {
+                throw new DataInvalidException(ErrorCode.BIDDING_PRICE_EXCEEDS_MAX_LIMIT, null);
+            }
         }
     }
 
@@ -90,16 +99,34 @@ public class BiddingService {
 
         paymentDepositService.payBiddingPrice(member.getId(), price, previousBiddingInfo);
 
-        Bidding bidding = Bidding.builder()
+        Bidding buildBiddings = Bidding.builder()
                 .auction(auction)
                 .member(member)
                 .price(price)
                 .build();
 
-        biddingRepository.save(bidding);
-
+        biddingRepository.save(buildBiddings);
         //현재가 엽데이트
         auction.updateCurrentPrice(price);
+
+        if (price.equals(auction.getImmediatePurchasePrice())) {
+
+            List<Bidding> biddings = biddingRepository.findAllByIdBiddingMax(auctionId);
+
+            auction.updateSuccessBiddingMember(member);
+
+            //todo 추후 paymentDepositService로 책임분리 예정 / 책임분리 완료 후 로직 변경예정
+            for (Bidding bidding : biddings) {
+                PaymentDeposit paymentDeposit = paymentDepositRepository.findByMember_Id(
+                                bidding.getMember().getId())
+                        .orElseThrow(
+                                () -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
+                paymentDeposit.updatePaymentDeposit(bidding.getPrice());
+            }
+            saleProfitService.saleProfit(auctionId);
+
+            auction.updateAuctionStatus(AuctionStatus.CLOSED);
+        }
     }
 
 
