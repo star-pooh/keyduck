@@ -31,7 +31,6 @@ import org.team1.keyduck.payment.service.PaymentDepositService;
 @RequiredArgsConstructor
 public class BiddingService {
 
-
     private final BiddingRepository biddingRepository;
     private final AuctionRepository auctionRepository;
     private final MemberRepository memberRepository;
@@ -42,7 +41,7 @@ public class BiddingService {
 
         //경매가 진행 중이어야 가능
         if (!auction.getAuctionStatus().equals(AuctionStatus.IN_PROGRESS)) {
-            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_IN_PROGRESS, null);
+            throw new DataInvalidException(ErrorCode.AUCTION_NOT_IN_PROGRESS, null);
         }
         //비딩 횟수가 열번째 미만이어야함
         long biddingCount = biddingRepository.countByMember_IdAndAuction_Id(authMember.getId(),
@@ -79,7 +78,7 @@ public class BiddingService {
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION, "경매"));
 
         Member member = memberRepository.findById(authMember.getId())
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_USER, "멤버"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
 
         validateBiddingAvailability(auction, authMember);
         validateBiddingPrice(price, auction);
@@ -118,7 +117,7 @@ public class BiddingService {
         Pageable pageable = PageRequest.of(page - 1, GlobalConstants.BIDDING_PAGE_SIZE);
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_USER, "멤버"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
 
         List<Auction> auctions = auctionRepository.findAllByMember_IdAndAuctionStatus(
                 member.getId(),
