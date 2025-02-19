@@ -12,6 +12,10 @@ public class AuctionUpdateResponseDto {
 
     private final Long keyboardId;
 
+    private final String keyboardName;
+
+    private final String keyboardDescription;
+
     private final String title;
 
     private final Long startPrice;
@@ -27,11 +31,13 @@ public class AuctionUpdateResponseDto {
     private final LocalDateTime auctionEndDate;
 
     private AuctionUpdateResponseDto(
-            Long auctionId, Long keyboardId, String title, Long startPrice,
-            Long immediatePurchasePrice, int biddingUnit,
+            Long auctionId, Long keyboardId, String keyboardName, String keyboardDescription,
+            String title, Long startPrice, Long immediatePurchasePrice, int biddingUnit,
             LocalDateTime auctionStartDate, LocalDateTime auctionEndDate) {
         this.auctionId = auctionId;
         this.keyboardId = keyboardId;
+        this.keyboardName = keyboardName;
+        this.keyboardDescription = keyboardDescription;
         this.title = title;
         this.startPrice = startPrice;
         this.immediatePurchasePrice = immediatePurchasePrice;
@@ -44,6 +50,8 @@ public class AuctionUpdateResponseDto {
         return new AuctionUpdateResponseDto(
                 auction.getId(),
                 auction.getKeyboard().getId(),
+                auction.getKeyboard().getName(),
+                auction.getKeyboard().getDescription(),
                 auction.getTitle(),
                 auction.getStartPrice(),
                 auction.getImmediatePurchasePrice(),

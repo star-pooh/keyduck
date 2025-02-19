@@ -13,6 +13,8 @@ public class AuctionReadResponseDto {
 
     private Long auctionId;
     private Long keyboardId;
+    private final String keyboardName;
+    private final String keyboardDescription;
     private String title;
     private Long startPrice;
     private Long currentPrice;
@@ -28,13 +30,15 @@ public class AuctionReadResponseDto {
     private List<BiddingResponseDto> biddings;
 
 
-    private AuctionReadResponseDto(Long keyboardId, Long auctionId, String title, Long startPrice,
-            Long currentPrice, Long immediatePurchasePrice, int biddingUnit,
-            LocalDateTime auctionStartDate, LocalDateTime auctionEndDate,
-            AuctionStatus auctionStatus, Long winnerId, String winnerName,
-            List<BiddingResponseDto> biddings) {
+    private AuctionReadResponseDto(Long keyboardId, Long auctionId, String keyboardName,
+            String keyboardDescription, String title, Long startPrice, Long currentPrice,
+            Long immediatePurchasePrice, int biddingUnit, LocalDateTime auctionStartDate,
+            LocalDateTime auctionEndDate, AuctionStatus auctionStatus, Long winnerId,
+            String winnerName, List<BiddingResponseDto> biddings) {
         this.auctionId = auctionId;
         this.keyboardId = keyboardId;
+        this.keyboardName = keyboardName;
+        this.keyboardDescription = keyboardDescription;
         this.title = title;
         this.startPrice = startPrice;
         this.currentPrice = currentPrice;
@@ -52,6 +56,8 @@ public class AuctionReadResponseDto {
         return new AuctionReadResponseDto(
                 auction.getId(),
                 auction.getKeyboard().getId(),
+                auction.getKeyboard().getName(),
+                auction.getKeyboard().getDescription(),
                 auction.getTitle(),
                 auction.getStartPrice(),
                 auction.getCurrentPrice(),
