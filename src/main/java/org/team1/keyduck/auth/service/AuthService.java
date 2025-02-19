@@ -27,6 +27,7 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final JwtBlacklistService jwtBlacklistService;
 
     public SigninResponseDto login(SigninRequestDto signinRequest) {
         Member member = memberRepository.findByEmail(signinRequest.getEmail())
