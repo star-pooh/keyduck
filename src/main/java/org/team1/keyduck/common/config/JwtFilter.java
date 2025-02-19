@@ -31,8 +31,7 @@ public class JwtFilter implements Filter {
     private final JwtBlacklistService jwtBlacklistService;
 
     @Override
-    public void doFilter(
-            ServletRequest request, ServletResponse response, FilterChain chain)
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
@@ -53,7 +52,8 @@ public class JwtFilter implements Filter {
         }
 
         if (jwtBlacklistService.isBlacklisted(bearerJwt)) {
-            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                    ErrorMessage.NOT_AVAILABLE_TOKEN_DELETE_MEMBER);
             return;
         }
 
@@ -71,8 +71,7 @@ public class JwtFilter implements Filter {
             Long userId = Long.parseLong(claims.getSubject());
             MemberRole memberRole = MemberRole.valueOf(claims.get("memberRole", String.class));
 
-            AuthMember authMember = new AuthMember(userId,
-                    memberRole);
+            AuthMember authMember = new AuthMember(userId, memberRole);
             SecurityContextHolder.getContext().setAuthentication(
                     new UsernamePasswordAuthenticationToken(authMember, null,
                             authMember.getAuthorities()));

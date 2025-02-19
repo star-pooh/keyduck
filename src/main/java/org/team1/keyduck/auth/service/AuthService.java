@@ -28,7 +28,6 @@ public class AuthService {
     public SigninResponseDto login(SigninRequestDto signinRequest) {
         String bearerToken = createBearerToken(signinRequest.getEmail(),
                 signinRequest.getPassword());
-        jwtBlacklistService.isBlacklisted(bearerToken);
         return new SigninResponseDto(bearerToken);
     }
 

@@ -62,8 +62,8 @@ public class MemberService {
         }
 
         //현재 진행중인 경매가 있으면 탈퇴 불가능
-        if ((auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(id,
-                AuctionStatus.IN_PROGRESS))) {
+        if (auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(id,
+                AuctionStatus.IN_PROGRESS)) {
             throw new OperationNotAllowedException(ErrorCode.DELETE_FAIL_AUCTION_IN_PROGRESS, null);
         }
 
