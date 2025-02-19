@@ -9,6 +9,7 @@ import org.team1.keyduck.auction.entity.AuctionStatus;
 @Getter
 public class AuctionReadAllResponseDto {
 
+    private Long auctionId;
     private Long keyboardId;
     private String title;
     private Long startPrice;
@@ -24,11 +25,11 @@ public class AuctionReadAllResponseDto {
     private String winnerName;
 
 
-    private AuctionReadAllResponseDto(Long keyboardId, String title, Long startPrice,
+    private AuctionReadAllResponseDto(Long auctionId, Long keyboardId, String title, Long startPrice,
             Long currentPrice, Long immediatePurchasePrice, int biddingUnit,
             LocalDateTime auctionStartDate, LocalDateTime auctionEndDate,
             AuctionStatus auctionStatus, Long winnerId, String winnerName) {
-
+        this.auctionId = auctionId;
         this.keyboardId = keyboardId;
         this.title = title;
         this.startPrice = startPrice;
@@ -45,6 +46,7 @@ public class AuctionReadAllResponseDto {
 
     public static AuctionReadAllResponseDto of(Auction auction) {
         return new AuctionReadAllResponseDto(
+                auction.getId(),
                 auction.getKeyboard().getId(),
                 auction.getTitle(),
                 auction.getStartPrice(),

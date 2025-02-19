@@ -11,6 +11,7 @@ import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 @Getter
 public class AuctionReadResponseDto {
 
+    private Long auctionId;
     private Long keyboardId;
     private String title;
     private Long startPrice;
@@ -27,12 +28,12 @@ public class AuctionReadResponseDto {
     private List<BiddingResponseDto> biddings;
 
 
-    private AuctionReadResponseDto(Long keyboardId, String title, Long startPrice,
+    private AuctionReadResponseDto(Long keyboardId, Long auctionId, String title, Long startPrice,
             Long currentPrice, Long immediatePurchasePrice, int biddingUnit,
             LocalDateTime auctionStartDate, LocalDateTime auctionEndDate,
             AuctionStatus auctionStatus, Long winnerId, String winnerName,
             List<BiddingResponseDto> biddings) {
-
+        this.auctionId = auctionId;
         this.keyboardId = keyboardId;
         this.title = title;
         this.startPrice = startPrice;
@@ -49,6 +50,7 @@ public class AuctionReadResponseDto {
 
     public static AuctionReadResponseDto of(Auction auction, List<BiddingResponseDto> biddings) {
         return new AuctionReadResponseDto(
+                auction.getId(),
                 auction.getKeyboard().getId(),
                 auction.getTitle(),
                 auction.getStartPrice(),
