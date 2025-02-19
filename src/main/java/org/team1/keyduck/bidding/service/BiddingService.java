@@ -41,13 +41,17 @@ public class BiddingService {
 
         //경매가 진행 중이어야 가능
         if (!auction.getAuctionStatus().equals(AuctionStatus.IN_PROGRESS)) {
-            throw new DataInvalidException(ErrorCode.AUCTION_NOT_IN_PROGRESS, null);
+            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_IN_PROGRESS, null);
         }
         //비딩 횟수가 열번째 미만이어야함
         long biddingCount = biddingRepository.countByMember_IdAndAuction_Id(authMember.getId(),
                 auction.getId());
         if (biddingCount >= 10) {
             throw new OperationNotAllowedException(ErrorCode.MAX_BIDDING_COUNT_EXCEEDED, null);
+        }
+        //본인이 생성한 경매에는 입찰 불가
+        if (authMember.getId() == auction.getMember().getId()) {
+            throw new OperationNotAllowedException(ErrorCode.SELLER_CANNOT_BID, null);
         }
 
     }
