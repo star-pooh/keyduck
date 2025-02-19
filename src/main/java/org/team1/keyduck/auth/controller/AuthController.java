@@ -23,7 +23,6 @@ import org.team1.keyduck.auth.service.AuthService;
 import org.team1.keyduck.common.dto.ApiResponse;
 import org.team1.keyduck.common.exception.SuccessCode;
 
-//@RestController
 @Controller
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
