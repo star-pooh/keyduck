@@ -39,7 +39,7 @@ public class AuthService {
             throw new DataInvalidException(ErrorCode.DUPLICATE_DELETED, "멤버");
         }
 
-        commonService.passwordMatches(signinRequest.getPassword(), member.getPassword());
+        commonService.comparePassword(signinRequest.getPassword(), member.getPassword());
 
         String bearerToken = jwtUtil.createToken(member.getId(), member.getMemberRole());
 
@@ -77,7 +77,7 @@ public class AuthService {
             throw new OperationNotAllowedException(ErrorCode.FORBIDDEN_PAYMENT_LOGIN_FORM, null);
         }
 
-        commonService.passwordMatches(dto.getPassword(), member.getPassword());
+        commonService.comparePassword(dto.getPassword(), member.getPassword());
 
         String bearerToken = jwtUtil.createToken(member.getId(), member.getMemberRole());
 

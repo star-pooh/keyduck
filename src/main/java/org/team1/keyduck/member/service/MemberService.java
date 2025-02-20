@@ -48,7 +48,7 @@ public class MemberService {
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
                 ErrorCode.NOT_FOUND_MEMBER, "멤버"));
 
-        commonService.passwordMatches(requestDto.getBeforePassword(), member.getPassword());
+        commonService.comparePassword(requestDto.getBeforePassword(), member.getPassword());
 
         String encodedModifyPassword = passwordEncoder.encode(requestDto.getModifyPassword());
 

@@ -12,7 +12,7 @@ public class CommonService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public void passwordMatches(CharSequence rawPassword, String encodedPassword) {
+    public void comparePassword(CharSequence rawPassword, String encodedPassword) {
         if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
             throw new DataInvalidException(ErrorCode.INVALID_DATA_VALUE, "비밀번호");
         }
