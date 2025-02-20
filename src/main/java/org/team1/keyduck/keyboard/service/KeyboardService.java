@@ -31,6 +31,8 @@ public class KeyboardService {
 
     private Long testLong;
 
+    private Long testLong2;
+
     // 키보드 생성
     @Transactional
     public KeyboardCreateResponseDto createKeyboard(Long memberId,

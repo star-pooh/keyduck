@@ -48,12 +48,11 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
           port: 22
-          source: .env
-          #          source: |
-          #            .env
-          #            ./build/libs/*.jar
-
-          target: "~"
+          source: |
+            .env
+            ./build/libs/*.jar
+            Dockerfile
+          target: "~"  # ~/app 디렉토리로 전송
 
       - name: Deploy to EC2 and Build Docker Image
         uses: appleboy/ssh-action@v0.1.6
