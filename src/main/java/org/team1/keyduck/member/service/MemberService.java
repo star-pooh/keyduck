@@ -29,8 +29,6 @@ public class MemberService {
     private final JwtBlacklistService jwtBlacklistService;
     private final PaymentDepositRepository paymentDepositRepository;
 
-    private String testVal;
-
     @Transactional
     public MemberUpdateResponseDto updateMember(MemberUpdateRequestDto requestDto, Long id) {
 

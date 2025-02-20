@@ -29,8 +29,6 @@ public class KeyboardService {
     private final MemberRepository memberRepository;
     private final AuctionRepository auctionRepository;
 
-    private String testVal;
-
     // 키보드 생성
     @Transactional
     public KeyboardCreateResponseDto createKeyboard(Long memberId,

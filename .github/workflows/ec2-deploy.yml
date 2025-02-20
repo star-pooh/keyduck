@@ -15,11 +15,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      #      - name: Set up JDK
-      #        uses: actions/setup-java@v2
-      #        with:
-      #          java-version: '17'
-
       - name: Gradle 캐싱
         uses: actions/cache@v3
         with:
@@ -33,19 +28,16 @@ jobs:
       - name: Make .env file from GitHub Secrets
         run: |
           echo "${{ secrets.ENV_SECRET }}" > .env
+          echo "SPRING_PROFILES_ACTIVE=dev" >> .env  # 배포 시 RDS를 사용하도록 환경 설정 추가
         shell: bash
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Build the application and Docker image
-        run: |
-          ./gradlew bootJar -x test
-          docker build -t myapp:latest .
+      - name: Run tests with H2
+        run: ./gradlew test -Dspring.profiles.active=test
 
-      - name: Save Docker image
-        run: docker save myapp:latest | gzip > myapp.tar.gz
-
+      # 이미지 빌드를 EC2에서 하도록 수정
       - name: Copy files to EC2
         uses: appleboy/scp-action@master
         with:
@@ -54,19 +46,23 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           source: |
             .env
-            myapp.tar.gz
             ./build/libs/*.jar
           target: "~"
 
-      - name: Deploy to EC2
+      - name: Deploy to EC2 and Build Docker Image
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
           script: |
+            # EC2에서 Docker 빌드 실행
+            cd ~
+            ./gradlew bootJar
+            docker build --build-arg PROFILE=dev -t myapp:latest .
+
+            # 컨테이너 실행
             docker stop myapp-container || true
             docker rm myapp-container || true
-            docker load < myapp.tar.gz
             docker run -d --name myapp-container --env-file .env -p 8080:8080 myapp:latest
             docker image prune -f
