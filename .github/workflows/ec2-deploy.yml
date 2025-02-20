@@ -47,7 +47,8 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
           port: 22
-          source: ".env, myapp.tar.gz, ./build/libs/*.jar"
+          source: ".env, ./gradlew, ./gradle/wrapper/*, ./build.gradle, ./settings.gradle, ./src, Dockerfile"
+          #          ".env, ./gradlew, ./gradle/wrapper/*, ./build.gradle, ./settings.gradle, ./src, Dockerfile, ./build/libs/*.jar"
           target: "~/myapp"
 
       - name: Verify files on EC2
