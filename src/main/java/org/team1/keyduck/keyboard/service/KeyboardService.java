@@ -29,6 +29,8 @@ public class KeyboardService {
     private final MemberRepository memberRepository;
     private final AuctionRepository auctionRepository;
 
+    private String testVal;
+
     // 키보드 생성
     @Transactional
     public KeyboardCreateResponseDto createKeyboard(Long memberId,
@@ -65,8 +67,10 @@ public class KeyboardService {
         }
 
         // 경매 진행 중인 키보드 삭제 요청 -> 예외 발생
-        if (auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(keyboardId, AuctionStatus.IN_PROGRESS)) {
-            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_MODIFIABLE_AND_DELETEABLE, null);
+        if (auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(keyboardId,
+                AuctionStatus.IN_PROGRESS)) {
+            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_MODIFIABLE_AND_DELETEABLE,
+                    null);
         }
 
         keyboard.deleteKeyboard();
@@ -75,7 +79,8 @@ public class KeyboardService {
     @Transactional(readOnly = true)
     public List<KeyboardReadResponseDto> findKeyboardBySellerId(Long sellerId) {
 
-        List<Keyboard> keyboards = keyboardRepository.findAllByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(sellerId);
+        List<Keyboard> keyboards = keyboardRepository.findAllByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(
+                sellerId);
 
         return keyboards.stream()
                 .map(KeyboardReadResponseDto::of)
@@ -94,8 +99,10 @@ public class KeyboardService {
         }
 
         // 경매가 진행 중이거나 종료된 키보드 수정 요청 -> 예외 발생
-        if (!auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(keyboardId, AuctionStatus.NOT_STARTED)) {
-            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_MODIFIABLE_AND_DELETEABLE, null);
+        if (!auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(keyboardId,
+                AuctionStatus.NOT_STARTED)) {
+            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_MODIFIABLE_AND_DELETEABLE,
+                    null);
         }
 
         findKeyboard.updateKeyboard(requestDto);
