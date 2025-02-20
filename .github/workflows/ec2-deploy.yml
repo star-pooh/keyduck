@@ -37,16 +37,8 @@ jobs:
       - name: Run tests with H2
         run: ./gradlew test -Dspring.profiles.active=test
 
-      - name: Build JAR file with H2
-        run: ./gradlew bootJar -Dspring.profiles.active=test
-
-      - name: Check JAR file exists
-        run: |
-          if [ ! -f "./build/libs/*.jar" ]; then
-            echo "❌ JAR 파일이 존재하지 않습니다. 빌드를 확인하세요."
-            exit 1
-          fi
-        shell: bash
+      #      - name: Build JAR file with H2
+      #        run: ./gradlew bootJar -Dspring.profiles.active=test
 
       # 이미지 빌드를 EC2에서 하도록 수정
       - name: Copy files to EC2
