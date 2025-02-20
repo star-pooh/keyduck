@@ -31,7 +31,7 @@ public class KeyboardService {
     private final MemberRepository memberRepository;
     private final AuctionRepository auctionRepository;
 
-    private String testVal;
+    private Long testLong;
 
     // 키보드 생성
     @Transactional
