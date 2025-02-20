@@ -7,10 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.auth.service.JwtBlacklistService;
-import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
+import org.team1.keyduck.common.service.CommonService;
 import org.team1.keyduck.member.dto.request.MemberUpdatePasswordRequestDto;
 import org.team1.keyduck.member.dto.request.MemberUpdateRequestDto;
 import org.team1.keyduck.member.dto.response.MemberReadResponseDto;
@@ -26,8 +26,10 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuctionRepository auctionRepository;
-    private final JwtBlacklistService jwtBlacklistService;
     private final PaymentDepositRepository paymentDepositRepository;
+
+    private final JwtBlacklistService jwtBlacklistService;
+    private final CommonService commonService;
 
     @Transactional
     public MemberUpdateResponseDto updateMember(MemberUpdateRequestDto requestDto, Long id) {
@@ -46,9 +48,7 @@ public class MemberService {
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
                 ErrorCode.NOT_FOUND_MEMBER, "멤버"));
 
-        if (!passwordEncoder.matches(requestDto.getBeforePassword(), member.getPassword())) {
-            throw new DataInvalidException(ErrorCode.INVALID_DATA_VALUE, "비밀번호");
-        }
+        commonService.passwordMatches(requestDto.getBeforePassword(), member.getPassword());
 
         String encodedModifyPassword = passwordEncoder.encode(requestDto.getModifyPassword());
 
