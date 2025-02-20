@@ -25,6 +25,8 @@ import org.team1.keyduck.member.repository.MemberRepository;
 @RequiredArgsConstructor
 public class KeyboardService {
 
+    private String testVal1234;
+
     private final KeyboardRepository keyboardRepository;
     private final MemberRepository memberRepository;
     private final AuctionRepository auctionRepository;
