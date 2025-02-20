@@ -29,7 +29,6 @@ public class KeyboardService {
     private final MemberRepository memberRepository;
     private final AuctionRepository auctionRepository;
 
-    private Long testLong;
 
     private Long testLong2;
 

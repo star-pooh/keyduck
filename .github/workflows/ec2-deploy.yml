@@ -37,10 +37,24 @@ jobs:
       - name: Run tests with H2
         run: ./gradlew test -Dspring.profiles.active=test
 
-      #      - name: Build JAR file with H2
-      #        run: ./gradlew bootJar -Dspring.profiles.active=test
+      - name: Build JAR file with H2
+        run: ./gradlew bootJar -Dspring.profiles.active=test
 
-      # 이미지 빌드를 EC2에서 하도록 수정
+      # 파일 확인 및 로그 추가
+      - name: List files before copying
+        run: |
+          echo "Files to be copied:"
+          echo ".env file:"
+          cat .env
+          echo "Gradle Wrapper (gradlew):"
+          cat ./gradlew
+          echo "Gradle build files:"
+          ls -al ./build.gradle ./settings.gradle
+          echo "Source folder contents (src):"
+          ls -al ./src
+          echo "Dockerfile:"
+          cat Dockerfile
+
       - name: Copy files to EC2
         uses: appleboy/scp-action@master
         with:
@@ -57,11 +71,20 @@ jobs:
             Dockerfile
           target: "~/myapp"
 
-      #          source: |
-      #            .env
-      #            ./build/libs/*.jar
-      #            Dockerfile
-      #          target: "~"  # ~/app 디렉토리로 전송
+      # EC2에서 파일 확인 및 빌드 로그 추가
+      - name: Verify files on EC2
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            echo "Listing files in EC2 target directory:"
+            ls -al ~/myapp
+            echo "Checking Dockerfile content:"
+            cat ~/myapp/Dockerfile
+            echo "Checking .env content:"
+            cat ~/myapp/.env
 
       - name: Deploy to EC2 and Build Docker Image
         uses: appleboy/ssh-action@v0.1.6
@@ -71,29 +94,15 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd ~/myapp
+            echo "Building JAR file on EC2..."
             chmod +x ./gradlew
             ./gradlew clean bootJar
+            echo "Building Docker image..."
             docker build --build-arg PROFILE=dev -t myapp:latest .
-            # 컨테이너 실행
+            echo "Stopping existing container (if any)..."
             docker stop myapp-container || true
             docker rm myapp-container || true
+            echo "Running Docker container..."
             docker run -d --name myapp-container --env-file .env -p 8080:8080 myapp:latest
+            echo "Cleaning up unused Docker images..."
             docker image prune -f
-
-#      - name: Deploy to EC2 and Build Docker Image
-#        uses: appleboy/ssh-action@v0.1.6
-#        with:
-#          host: ${{ secrets.SSH_HOST }}
-#          username: ubuntu
-#          key: ${{ secrets.SSH_KEY }}
-#          script: |
-#            # EC2에서 Docker 빌드 실행
-#            cd ~
-#            ./gradlew bootJar
-#            docker build --build-arg PROFILE=dev -t myapp:latest .
-#
-#            # 컨테이너 실행
-#            docker stop myapp-container || true
-#            docker rm myapp-container || true
-#            docker run -d --name myapp-container --env-file .env -p 8080:8080 myapp:latest
-#            docker image prune -f
