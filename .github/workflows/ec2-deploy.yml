@@ -58,9 +58,18 @@ jobs:
           port: 22
           source: |
             .env
-            ./build/libs/*.jar
+            ./gradlew
+            ./build.gradle
+            ./settings.gradle
+            ./src
             Dockerfile
-          target: "~"  # ~/app 디렉토리로 전송
+          target: "~/myapp"
+
+      #          source: |
+      #            .env
+      #            ./build/libs/*.jar
+      #            Dockerfile
+      #          target: "~"  # ~/app 디렉토리로 전송
 
       - name: Deploy to EC2 and Build Docker Image
         uses: appleboy/ssh-action@v0.1.6
@@ -69,13 +78,30 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
           script: |
-            # EC2에서 Docker 빌드 실행
-            cd ~
-            ./gradlew bootJar
+            cd ~/myapp
+            chmod +x ./gradlew
+            ./gradlew clean bootJar
             docker build --build-arg PROFILE=dev -t myapp:latest .
-
             # 컨테이너 실행
             docker stop myapp-container || true
             docker rm myapp-container || true
             docker run -d --name myapp-container --env-file .env -p 8080:8080 myapp:latest
             docker image prune -f
+
+#      - name: Deploy to EC2 and Build Docker Image
+#        uses: appleboy/ssh-action@v0.1.6
+#        with:
+#          host: ${{ secrets.SSH_HOST }}
+#          username: ubuntu
+#          key: ${{ secrets.SSH_KEY }}
+#          script: |
+#            # EC2에서 Docker 빌드 실행
+#            cd ~
+#            ./gradlew bootJar
+#            docker build --build-arg PROFILE=dev -t myapp:latest .
+#
+#            # 컨테이너 실행
+#            docker stop myapp-container || true
+#            docker rm myapp-container || true
+#            docker run -d --name myapp-container --env-file .env -p 8080:8080 myapp:latest
+#            docker image prune -f
