@@ -73,7 +73,9 @@ jobs:
           script: |
             cd ~/myapp
             echo "Building JAR file on EC2..."
+            chmod +x ./gradle
             chmod +x ./gradlew
+            ./gradle wrapper
             ./gradlew clean bootJar
             echo "Building Docker image..."
             docker build --build-arg PROFILE=dev -t myapp:latest .
