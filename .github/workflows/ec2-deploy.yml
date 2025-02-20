@@ -56,7 +56,7 @@ jobs:
           cat Dockerfile
 
       - name: Copy files to EC2
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@v0.1.6
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ubuntu
