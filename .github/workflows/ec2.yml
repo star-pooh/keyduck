@@ -6,7 +6,7 @@ on:
     types:
       - closed
     branches:
-      - test/git-action-ci-cd
+      - main
 
 jobs:
   deploy:
