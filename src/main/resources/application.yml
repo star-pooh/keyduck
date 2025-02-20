@@ -16,21 +16,17 @@ spring:
     hibernate:
       ddl-auto: create
 
-  #    properties:
-  #      hibernate:
-  #        show_sql: false
-  #        format_sql: false
-  #        ddl-auto: create
-  #
-  #    hibernate:
-  #      ddl-auto: create
-
-
   datasource:
+    # 기본은 RDS (Production 환경)
     url: jdbc:mysql://${RDS_HOST}:${RDS_PORT}/${RDS_DATABASE}
     username: ${RDS_USERNAME}
     password: ${RDS_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # 테스트 환경에서는 H2 사용
+  profiles:
+    group:
+      test: h2
 
 jwt:
   secret:
