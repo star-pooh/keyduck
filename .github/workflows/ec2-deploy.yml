@@ -37,6 +37,9 @@ jobs:
       - name: Run tests with H2
         run: ./gradlew test -Dspring.profiles.active=test
 
+      - name: Build JAR file with H2
+        run: ./gradlew bootJar -Dspring.profiles.active=test
+
       # 이미지 빌드를 EC2에서 하도록 수정
       - name: Copy files to EC2
         uses: appleboy/scp-action@master
