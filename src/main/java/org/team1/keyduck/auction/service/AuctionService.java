@@ -14,7 +14,6 @@ import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
-import org.team1.keyduck.bidding.entity.Bidding;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
@@ -23,9 +22,7 @@ import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.keyboard.repository.KeyboardRepository;
 import org.team1.keyduck.member.entity.Member;
-import org.team1.keyduck.member.repository.MemberRepository;
-import org.team1.keyduck.payment.entity.PaymentDeposit;
-import org.team1.keyduck.payment.repository.PaymentDepositRepository;
+import org.team1.keyduck.payment.service.PaymentDepositService;
 import org.team1.keyduck.payment.service.SaleProfitService;
 
 @Service
@@ -35,9 +32,9 @@ public class AuctionService {
     private final AuctionRepository auctionRepository;
     private final KeyboardRepository keyboardRepository;
     private final BiddingRepository biddingRepository;
-    private final PaymentDepositRepository paymentDepositRepository;
-    private final MemberRepository memberRepository;
+    
     private final SaleProfitService saleProfitService;
+    private final PaymentDepositService paymentDepositService;
 
     public AuctionCreateResponseDto createAuctionService(Long sellerId,
             AuctionCreateRequestDto requestDto) {
@@ -146,17 +143,9 @@ public class AuctionService {
         }
 
         Member winnerMember = biddingRepository.findByMaxPriceAuctionId(auctionId);
-
         findAuction.updateSuccessBiddingMember(winnerMember);
 
-        List<Bidding> biddings = biddingRepository.findAllByIdBiddingMax(auctionId);
-
-        for (Bidding bidding : biddings) {
-            PaymentDeposit paymentDeposit = paymentDepositRepository.findByMember_Id(
-                            bidding.getMember().getId())
-                    .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
-            paymentDeposit.updatePaymentDeposit(bidding.getPrice());
-        }
+        paymentDepositService.refundPaymentDeposit(auctionId);
         saleProfitService.saleProfit(auctionId);
 
         findAuction.updateAuctionStatus(AuctionStatus.CLOSED);
