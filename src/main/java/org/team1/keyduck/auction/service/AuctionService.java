@@ -20,6 +20,7 @@ import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataUnauthorizedAccessException;
 import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.keyboard.repository.KeyboardRepository;
 import org.team1.keyduck.member.entity.Member;
@@ -42,9 +43,10 @@ public class AuctionService {
     public AuctionCreateResponseDto createAuctionService(Long sellerId,
             AuctionCreateRequestDto requestDto) {
 
-        Keyboard findKeyboard = keyboardRepository.findByIdAndIsDeletedFalse(
-                        requestDto.getKeyboardId())
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_KEYBOARD, "키보드"));
+        Keyboard findKeyboard = keyboardRepository
+                .findByIdAndIsDeletedFalse(requestDto.getKeyboardId())
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_KEYBOARD,
+                        ErrorMessageParameter.KEYBOARD));
 
         if (!findKeyboard.getMember().getId().equals(sellerId)) {
             throw new DataUnauthorizedAccessException(ErrorCode.FORBIDDEN_ACCESS, null);
@@ -73,10 +75,12 @@ public class AuctionService {
             AuctionUpdateRequestDto requestDto) {
 
         Auction findAuction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION, "경매"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
+                        ErrorMessageParameter.AUCTION));
 
         if (!findAuction.getAuctionStatus().equals(AuctionStatus.NOT_STARTED)) {
-            throw new DataInvalidException(ErrorCode.INVALID_STATUS, "경매 상태");
+            throw new DataInvalidException(ErrorCode.INVALID_STATUS,
+                    ErrorMessageParameter.AUCTION_STATUS);
         }
 
         if (!findAuction.getKeyboard().getMember().getId().equals(sellerId)) {
@@ -92,7 +96,8 @@ public class AuctionService {
     public AuctionReadResponseDto findAuction(Long auctionId) {
 
         Auction auction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION, "경매"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
+                        ErrorMessageParameter.AUCTION));
 
         // 경매 입찰 내역 조회
         List<BiddingResponseDto> responseDto = biddingRepository.findAllByAuctionId(auctionId)
@@ -119,10 +124,12 @@ public class AuctionService {
     @Transactional
     public void openAuction(Long memberId, Long auctionId) {
         Auction findAuction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION, "경매"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
+                        ErrorMessageParameter.AUCTION));
 
         if (!findAuction.getAuctionStatus().equals(AuctionStatus.NOT_STARTED)) {
-            throw new DataInvalidException(ErrorCode.INVALID_STATUS, "경매 상태");
+            throw new DataInvalidException(ErrorCode.INVALID_STATUS,
+                    ErrorMessageParameter.AUCTION_STATUS);
         }
 
         if (!findAuction.getKeyboard().getMember().getId().equals(memberId)) {
@@ -135,10 +142,12 @@ public class AuctionService {
     @Transactional
     public void closeAuction(Long id, Long auctionId) {
         Auction findAuction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION, "경매"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
+                        ErrorMessageParameter.AUCTION));
 
         if (!findAuction.getAuctionStatus().equals(AuctionStatus.IN_PROGRESS)) {
-            throw new DataInvalidException(ErrorCode.INVALID_STATUS, "경매 상태");
+            throw new DataInvalidException(ErrorCode.INVALID_STATUS,
+                    ErrorMessageParameter.AUCTION_STATUS);
         }
 
         if (!findAuction.getKeyboard().getMember().getId().equals(id)) {
@@ -154,7 +163,8 @@ public class AuctionService {
         for (Bidding bidding : biddings) {
             PaymentDeposit paymentDeposit = paymentDepositRepository.findByMember_Id(
                             bidding.getMember().getId())
-                    .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
+                    .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
+                            ErrorMessageParameter.MEMBER));
             paymentDeposit.updatePaymentDeposit(bidding.getPrice());
         }
         saleProfitService.saleProfit(auctionId);

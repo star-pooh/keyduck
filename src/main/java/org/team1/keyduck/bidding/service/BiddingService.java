@@ -21,7 +21,8 @@ import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
-import org.team1.keyduck.common.util.GlobalConstants;
+import org.team1.keyduck.common.util.Constants;
+import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.team1.keyduck.payment.service.PaymentDepositService;
@@ -65,7 +66,8 @@ public class BiddingService {
         }
 
         //비딩금액이 최대 입찰 호가 보다 높으면 안됨
-        long maxPrice = auction.getCurrentPrice() + (auction.getBiddingUnit() * 10L);
+        long maxPrice = auction.getCurrentPrice() + (auction.getBiddingUnit()
+                * Constants.MAX_BIDDING_MULTIPLE);
         if (price > maxPrice) {
             throw new DataInvalidException(ErrorCode.BIDDING_PRICE_EXCEEDS_MAX_LIMIT, null);
         }
@@ -75,10 +77,12 @@ public class BiddingService {
     @Transactional
     public void createBidding(Long auctionId, Long price, AuthMember authMember) {
         Auction auction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION, "경매"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
+                        ErrorMessageParameter.AUCTION));
 
         Member member = memberRepository.findById(authMember.getId())
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
+                        ErrorMessageParameter.MEMBER));
 
         validateBiddingAvailability(auction, authMember);
         validateBiddingPrice(price, auction);
@@ -114,10 +118,11 @@ public class BiddingService {
 
     @Transactional(readOnly = true)
     public Page<SuccessBiddingResponseDto> getSuccessBidding(Long memberId, int page) {
-        Pageable pageable = PageRequest.of(page - 1, GlobalConstants.BIDDING_PAGE_SIZE);
+        Pageable pageable = PageRequest.of(page - 1, Constants.SUCCESS_BIDDING_PAGE_SIZE);
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
+                        ErrorMessageParameter.MEMBER));
 
         List<Auction> auctions = auctionRepository.findAllByMember_IdAndAuctionStatus(
                 member.getId(),
