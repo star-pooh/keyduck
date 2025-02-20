@@ -62,7 +62,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
           port: 22
-          source: ".env, ./gradlew, ./build.gradle, ./settings.gradle, ./src/, Dockerfile"
+          source: ".env, ./gradlew, ./build.gradle, ./settings.gradle, ./src, Dockerfile"
           target: "~/myapp"
 
       # EC2에서 파일 확인 및 빌드 로그 추가
