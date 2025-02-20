@@ -29,7 +29,7 @@ public class KeyboardService {
     private final MemberRepository memberRepository;
     private final AuctionRepository auctionRepository;
 
-    private String testVal1;
+    private String testVal;
 
     // 키보드 생성
     @Transactional
