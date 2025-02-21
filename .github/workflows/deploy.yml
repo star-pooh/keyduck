@@ -28,7 +28,6 @@ jobs:
       - name: Make .env file from GitHub Secrets
         run: |
           echo "${{ secrets.ENV_SECRET }}" > .env
-          echo "SPRING_PROFILES_ACTIVE=dev" >> .env
         shell: bash
 
       - name: Grant execute permission for gradlew
