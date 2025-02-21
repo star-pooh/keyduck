@@ -6,7 +6,7 @@ import lombok.Getter;
 import org.team1.keyduck.common.util.ValidationErrorMessage;
 
 @Getter
-public class EmailRequestDto {
+public class GeneralEmailRequestDto {
 
     @NotBlank(message = ValidationErrorMessage.EMAIL_IS_NOT_NULL)
     @Pattern(regexp = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$", message = ValidationErrorMessage.EMAIL_IS_NOT_VALID)
