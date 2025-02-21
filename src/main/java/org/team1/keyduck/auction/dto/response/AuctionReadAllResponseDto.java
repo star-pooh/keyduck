@@ -45,6 +45,23 @@ public class AuctionReadAllResponseDto {
 
     }
 
+    public AuctionReadAllResponseDto(Auction auction) {
+        AuctionKeyboardDto keyboardDto = AuctionKeyboardDto.of(auction.getKeyboard());
+        this.auctionId = auction.getId();
+        this.keyboard = keyboardDto;
+        this.title = auction.getTitle();
+        this.startPrice = auction.getStartPrice();
+        this.currentPrice = auction.getCurrentPrice();
+        this.immediatePurchasePrice = auction.getImmediatePurchasePrice();
+        this.biddingUnit = auction.getBiddingUnit();
+        this.auctionStartDate = auction.getAuctionStartDate();
+        this.auctionEndDate = auction.getAuctionEndDate();
+        this.auctionStatus = auction.getAuctionStatus();
+        this.winnerId = auction.getMember().getId();
+        this.winnerName = auction.getMember().getName();
+    }
+
+
     public static AuctionReadAllResponseDto of(Auction auction) {
 
         AuctionKeyboardDto keyboardDto = AuctionKeyboardDto.of(auction.getKeyboard());

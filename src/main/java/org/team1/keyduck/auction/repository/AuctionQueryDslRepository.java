@@ -6,6 +6,7 @@ import org.team1.keyduck.auction.dto.response.AuctionReadAllResponseDto;
 
 public interface AuctionQueryDslRepository {
 
-    Page<AuctionReadAllResponseDto> findAllAuction(Pageable pageable, String option);
+    Page<AuctionReadAllResponseDto> findAllAuction(Pageable pageable, String keyboardName,
+            String auctionTitle, String sellerName);
 
 }

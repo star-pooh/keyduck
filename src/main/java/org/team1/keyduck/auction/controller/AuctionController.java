@@ -1,8 +1,9 @@
 package org.team1.keyduck.auction.controller;
 
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.team1.keyduck.auction.dto.request.AuctionCreateRequestDto;
 import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
@@ -72,8 +74,13 @@ public class AuctionController {
 
     // 경매 다건 조회 API
     @GetMapping
-    public ResponseEntity<ApiResponse<List<AuctionReadAllResponseDto>>> findAllAuctionAPI() {
-        List<AuctionReadAllResponseDto> response = auctionService.findAllAuction();
+    public ResponseEntity<ApiResponse<Page<AuctionReadAllResponseDto>>> findAllAuctionAPI(
+            Pageable pageable, @RequestParam(required = false) String keyboardName,
+            @RequestParam(required = false) String auctionTitle,
+            @RequestParam(required = false) String sellerName) {
+
+        Page<AuctionReadAllResponseDto> response = auctionService.findAllAuction(pageable,
+                keyboardName, auctionTitle, sellerName);
 
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.READ_SUCCESS, response),
                 SuccessCode.READ_SUCCESS.getStatus());
@@ -90,8 +97,8 @@ public class AuctionController {
 
     @PatchMapping("/{auctionId}/close")
     public ResponseEntity<ApiResponse<Void>> closeAuction(
-        @AuthenticationPrincipal AuthMember authMember,
-        @PathVariable Long auctionId
+            @AuthenticationPrincipal AuthMember authMember,
+            @PathVariable Long auctionId
     ) {
         auctionService.closeAuction(authMember.getId(), auctionId);
         ApiResponse<Void> response = ApiResponse.success(SuccessCode.UPDATE_SUCCESS);
