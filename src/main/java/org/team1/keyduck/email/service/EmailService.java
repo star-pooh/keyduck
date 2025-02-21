@@ -7,7 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.team1.keyduck.common.exception.DataNotFoundException;
+import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.email.dto.GeneralEmailRequestDto;
+import org.team1.keyduck.email.dto.MemberEmailRequestDto;
+import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -64,4 +68,33 @@ public class EmailService {
             log.error("이메일 전송 실패", e);
         }
     }
+
+    public void sendMemberEmail(Long memberId, MemberEmailRequestDto memberEmailRequestDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
+
+        String recipientEmail = member.getEmail();
+
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+            helper.setFrom(SENDER_EMAIL);
+            helper.setTo(recipientEmail);
+            helper.setSubject(memberEmailRequestDto.getEmailTitle());
+
+            Context context = new Context();
+            context.setVariable("emailTitle", memberEmailRequestDto.getEmailTitle());
+            context.setVariable("emailContent", memberEmailRequestDto.getEmailContent());
+
+            String htmlContent = templateEngine.process("email_template", context);
+            helper.setText(htmlContent, true);
+
+            mailSender.send(mimeMessage);
+            log.info("이메일 전송 완료: '{}'", memberEmailRequestDto.getEmailTitle());
+        } catch (Exception e) {
+            log.error("이메일 전송 실패", e);
+        }
+    }
+
 }
