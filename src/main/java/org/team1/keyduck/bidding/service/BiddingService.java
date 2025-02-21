@@ -80,8 +80,8 @@ public class BiddingService {
         Member member = memberRepository.findById(authMember.getId())
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
 
-        validateBiddingAvailability(auction, authMember);
-        validateBiddingPrice(price, auction);
+        //validateBiddingAvailability(auction, authMember);
+        //validateBiddingPrice(price, auction);
 
         Long previousBiddingInfo = biddingRepository.findByMember_IdAndAuction_Id(member.getId(),
                 auctionId);
@@ -99,6 +99,36 @@ public class BiddingService {
         biddingRepository.save(bidding);
 
         //현재가 엽데이트
+        auction.updateCurrentPrice(price);
+    }
+
+    // 생성 메서드(비관적 락 사용)
+    @Transactional
+    public void createBiddingWithPessimisticLock(Long auctionId, Long price, AuthMember authMember) {
+        Auction auction = auctionRepository.findByIdWithPessimisticLock(auctionId)
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION, "경매"));
+
+        Member member = memberRepository.findById(authMember.getId())
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
+
+        //validateBiddingAvailability(auction, authMember);
+        //validateBiddingPrice(price, auction);
+
+        Long previousBiddingInfo = biddingRepository.findByMember_IdAndAuction_Id(member.getId(),
+                auctionId);
+        previousBiddingInfo = previousBiddingInfo == null ? 0 : previousBiddingInfo;
+
+        paymentDepositService.payBiddingPrice(member.getId(), price, previousBiddingInfo);
+
+        Bidding bidding = Bidding.builder()
+                .auction(auction)
+                .member(member)
+                .price(price)
+                .build();
+
+        biddingRepository.save(bidding);
+
+        // 현재가 업데이트
         auction.updateCurrentPrice(price);
     }
 
