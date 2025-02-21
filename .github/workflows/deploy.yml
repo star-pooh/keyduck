@@ -6,7 +6,7 @@ on:
     types:
       - closed
     branches:
-      - main
+      - test/git-action-ci-cd
 
 jobs:
   deploy:
@@ -37,8 +37,6 @@ jobs:
       - name: Run tests with H2
         run: ./gradlew test -Dspring.profiles.active=test
 
-        
-
       - name: Copy files to EC2
         uses: appleboy/scp-action@master
         with:
@@ -61,11 +59,11 @@ jobs:
             chmod +x ./gradlew
             ./gradlew clean bootJar
             echo "Building Docker image..."
-            docker build --build-arg PROFILE=default -t myapp:latest .
+            docker build -t myapp:latest .
             echo "Stopping existing container (if any)..."
             docker stop myapp-container || true
             docker rm myapp-container || true
             echo "Running Docker container..."
-            docker run -d --name myapp-container --env-file .env -p 8080:8080 myapp:latest
+            docker run -d --name myapp-container --env-file .env --env SPRING_PROFILES_ACTIVE= -p 8080:8080 myapp:latest
             echo "Cleaning up unused Docker images..."
             docker image prune -f
