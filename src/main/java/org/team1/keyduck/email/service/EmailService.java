@@ -8,7 +8,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.team1.keyduck.email.dto.EmailRequestDto;
-import org.team1.keyduck.member.repository.MemberRepository;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
@@ -18,7 +17,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 public class EmailService {
 
     private final JavaMailSender mailSender;
-    private final MemberRepository memberRepository;
+
     // 이메일 발신자 주소 설정
     private static final String SENDER_EMAIL = "qa9377pl@gmail.com";
     private final SpringTemplateEngine templateEngine;
