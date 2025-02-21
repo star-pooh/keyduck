@@ -2,6 +2,7 @@ package org.team1.keyduck.email.service;
 
 
 import jakarta.mail.internet.MimeMessage;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -11,6 +12,7 @@ import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.email.dto.GeneralEmailRequestDto;
 import org.team1.keyduck.email.dto.MemberEmailRequestDto;
+import org.team1.keyduck.email.dto.MultipleEmailRequestDto;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.thymeleaf.context.Context;
@@ -69,6 +71,7 @@ public class EmailService {
         }
     }
 
+    //멤버정보에서 가져온 이메일로 보내기
     public void sendMemberEmail(Long memberId, MemberEmailRequestDto memberEmailRequestDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
@@ -94,6 +97,22 @@ public class EmailService {
             log.info("이메일 전송 완료: '{}'", memberEmailRequestDto.getEmailTitle());
         } catch (Exception e) {
             log.error("이메일 전송 실패", e);
+        }
+    }
+
+    //여러명에게 한번에 보내기
+    public void sendMultipleEmails(MultipleEmailRequestDto requestDto) {
+        List<Member> members = memberRepository.findAllById(requestDto.getMemberIds());
+
+        if (members.isEmpty()) {
+            throw new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버 목록");
+        }
+        MemberEmailRequestDto memberEmailRequestDto = new MemberEmailRequestDto(
+                requestDto.getEmailTitle(),
+                requestDto.getEmailContent()
+        );
+        for (Member member : members) {
+            sendMemberEmail(member.getId(), memberEmailRequestDto);
         }
     }
 
