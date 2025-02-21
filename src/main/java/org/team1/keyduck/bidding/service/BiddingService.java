@@ -88,9 +88,7 @@ public class BiddingService {
         validateBiddingPrice(price, auction);
 
         Long previousBiddingInfo = biddingRepository.findByMember_IdAndAuction_Id(member.getId(),
-                auctionId);
-
-        previousBiddingInfo = previousBiddingInfo == null ? 0 : previousBiddingInfo;
+                auctionId).orElse(0L);
 
         paymentDepositService.payBiddingPrice(member.getId(), price, previousBiddingInfo);
 
