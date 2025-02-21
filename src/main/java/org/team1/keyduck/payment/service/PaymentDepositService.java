@@ -9,6 +9,7 @@ import org.team1.keyduck.bidding.repository.BiddingRepository;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.payment.dto.PaymentDto;
 import org.team1.keyduck.payment.entity.PaymentDeposit;
 import org.team1.keyduck.payment.repository.PaymentDepositRepository;
@@ -42,7 +43,8 @@ public class PaymentDepositService {
     public void payBiddingPrice(Long memberId, Long newBiddingPrice, Long lastBiddingPrice) {
 
         PaymentDeposit paymentDeposit = paymentDepositRepository.findByMember_Id(memberId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
+                        ErrorMessageParameter.MEMBER));
 
         if (!(newBiddingPrice - lastBiddingPrice <= paymentDeposit.getDepositAmount())) {
             throw new DataInvalidException(ErrorCode.INSUFFICIENT_PAYMENT_DEPOSIT_AMOUNT, null);
