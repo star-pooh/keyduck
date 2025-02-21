@@ -13,9 +13,9 @@ import org.team1.keyduck.common.config.JwtUtil;
 import org.team1.keyduck.common.exception.DataDuplicateException;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
-import org.team1.keyduck.common.exception.DataNotMatchException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
+import org.team1.keyduck.common.service.CommonService;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
@@ -28,7 +28,9 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+
     private final JwtBlacklistService jwtBlacklistService;
+    private final CommonService commonService;
 
     public SigninResponseDto login(SigninRequestDto signinRequest) {
         Member member = memberRepository.findByEmail(signinRequest.getEmail())
@@ -39,9 +41,7 @@ public class AuthService {
                     ErrorMessageParameter.MEMBER);
         }
 
-        if (!passwordEncoder.matches(signinRequest.getPassword(), member.getPassword())) {
-            throw new DataNotMatchException(ErrorCode.LOGIN_FAILED, null);
-        }
+        commonService.comparePassword(signinRequest.getPassword(), member.getPassword());
 
         String bearerToken = jwtUtil.createToken(member.getId(), member.getMemberRole());
 
@@ -81,9 +81,7 @@ public class AuthService {
             throw new OperationNotAllowedException(ErrorCode.FORBIDDEN_PAYMENT_LOGIN_FORM, null);
         }
 
-        if (!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
-            throw new DataNotMatchException(ErrorCode.LOGIN_FAILED, null);
-        }
+        commonService.comparePassword(dto.getPassword(), member.getPassword());
 
         String bearerToken = jwtUtil.createToken(member.getId(), member.getMemberRole());
 
