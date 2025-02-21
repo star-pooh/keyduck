@@ -10,11 +10,8 @@ import org.team1.keyduck.auth.service.JwtBlacklistService;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
-<<<<<<< HEAD
 import org.team1.keyduck.common.service.CommonService;
-=======
 import org.team1.keyduck.common.util.ErrorMessageParameter;
->>>>>>> a45cf1648359b7edf4704dab306aca0d85d511d2
 import org.team1.keyduck.member.dto.request.MemberUpdatePasswordRequestDto;
 import org.team1.keyduck.member.dto.request.MemberUpdateRequestDto;
 import org.team1.keyduck.member.dto.response.MemberReadResponseDto;
