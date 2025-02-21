@@ -21,7 +21,7 @@ public class EmailService {
     private final MemberRepository memberRepository;
 
     // 이메일 발신자 주소 설정
-    private static final String SENDER_EMAIL = "qa9377pl@gmail.com";
+    private static final String SENDER_EMAIL = "qa9377pl@gmail.com"; //application.yml에서 설정한 지메일 계정, 이계정은 그냥 제 지메일계정입니다
     private final SpringTemplateEngine templateEngine;
 
     /*
