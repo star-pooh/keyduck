@@ -16,6 +16,7 @@ import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
 import org.team1.keyduck.common.service.CommonService;
+import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
@@ -36,7 +37,8 @@ public class AuthService {
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.LOGIN_FAILED, null));
 
         if (member.isDeleted()) {
-            throw new DataInvalidException(ErrorCode.DUPLICATE_DELETED, "멤버");
+            throw new DataInvalidException(ErrorCode.DUPLICATE_DELETED,
+                    ErrorMessageParameter.MEMBER);
         }
 
         commonService.comparePassword(signinRequest.getPassword(), member.getPassword());
@@ -50,7 +52,8 @@ public class AuthService {
             MemberRole memberRole) {
 
         if (memberRepository.existsByEmail(requestDto.getEmail())) {
-            throw new DataDuplicateException(ErrorCode.DUPLICATE_EMAIL, "이메일");
+            throw new DataDuplicateException(ErrorCode.DUPLICATE_EMAIL,
+                    ErrorMessageParameter.EMAIL);
         }
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
 
@@ -70,7 +73,8 @@ public class AuthService {
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.LOGIN_FAILED, null));
 
         if (member.isDeleted()) {
-            throw new DataInvalidException(ErrorCode.DUPLICATE_DELETED, "멤버");
+            throw new DataInvalidException(ErrorCode.DUPLICATE_DELETED,
+                    ErrorMessageParameter.MEMBER);
         }
 
         if (member.getMemberRole().equals(MemberRole.SELLER)) {
