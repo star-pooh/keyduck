@@ -90,8 +90,8 @@ public class AuctionController {
 
     @PatchMapping("/{auctionId}/close")
     public ResponseEntity<ApiResponse<Void>> closeAuction(
-        @AuthenticationPrincipal AuthMember authMember,
-        @PathVariable Long auctionId
+            @AuthenticationPrincipal AuthMember authMember,
+            @PathVariable Long auctionId
     ) {
         auctionService.closeAuction(authMember.getId(), auctionId);
         ApiResponse<Void> response = ApiResponse.success(SuccessCode.UPDATE_SUCCESS);
