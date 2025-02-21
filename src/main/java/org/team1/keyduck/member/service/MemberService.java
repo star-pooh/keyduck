@@ -7,10 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.auth.service.JwtBlacklistService;
-import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
+import org.team1.keyduck.common.service.CommonService;
+import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.dto.request.MemberUpdatePasswordRequestDto;
 import org.team1.keyduck.member.dto.request.MemberUpdateRequestDto;
 import org.team1.keyduck.member.dto.response.MemberReadResponseDto;
@@ -26,14 +27,16 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuctionRepository auctionRepository;
-    private final JwtBlacklistService jwtBlacklistService;
     private final PaymentDepositRepository paymentDepositRepository;
+
+    private final JwtBlacklistService jwtBlacklistService;
+    private final CommonService commonService;
 
     @Transactional
     public MemberUpdateResponseDto updateMember(MemberUpdateRequestDto requestDto, Long id) {
 
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
-                ErrorCode.NOT_FOUND_MEMBER, "멤버"));
+                ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
 
         member.updateMember(requestDto);
 
@@ -44,14 +47,11 @@ public class MemberService {
     public void updatePassword(MemberUpdatePasswordRequestDto requestDto, Long id) {
 
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
-                ErrorCode.NOT_FOUND_MEMBER, "멤버"));
+                ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
 
-        if (!passwordEncoder.matches(requestDto.getBeforePassword(), member.getPassword())) {
-            throw new DataInvalidException(ErrorCode.INVALID_DATA_VALUE, "비밀번호");
-        }
+        commonService.comparePassword(requestDto.getBeforePassword(), member.getPassword());
 
         String encodedModifyPassword = passwordEncoder.encode(requestDto.getModifyPassword());
-
         member.updatePassword(encodedModifyPassword);
     }
 
@@ -60,7 +60,8 @@ public class MemberService {
         Member member = memberRepository.findByIdAndIsDeleted(id, false);
 
         if (member == null) {
-            throw new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버");
+            throw new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
+                    ErrorMessageParameter.MEMBER);
         }
 
         //현재 진행중인 경매가 있으면 탈퇴 불가능
@@ -77,7 +78,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberReadResponseDto getMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
-                ErrorCode.NOT_FOUND_MEMBER, "멤버"));
+                ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
 
         Long paymentDeposit = paymentDepositRepository.findPaymentDepositAmountMember_Id(id)
                 .orElse(0L);
