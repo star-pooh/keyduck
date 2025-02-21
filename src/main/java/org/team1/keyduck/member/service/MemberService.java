@@ -17,6 +17,7 @@ import org.team1.keyduck.member.dto.request.MemberUpdateRequestDto;
 import org.team1.keyduck.member.dto.response.MemberReadResponseDto;
 import org.team1.keyduck.member.dto.response.MemberUpdateResponseDto;
 import org.team1.keyduck.member.entity.Member;
+import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.team1.keyduck.payment.repository.PaymentDepositRepository;
 
@@ -65,7 +66,8 @@ public class MemberService {
         }
 
         //현재 진행중인 경매가 있으면 탈퇴 불가능
-        if (auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(id,
+        if (member.getMemberRole().equals(MemberRole.SELLER)
+                && auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(id,
                 AuctionStatus.IN_PROGRESS)) {
             throw new OperationNotAllowedException(ErrorCode.DELETE_FAIL_AUCTION_IN_PROGRESS, null);
         }
