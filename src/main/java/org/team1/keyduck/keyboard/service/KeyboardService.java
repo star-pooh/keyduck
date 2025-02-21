@@ -11,6 +11,7 @@ import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataUnauthorizedAccessException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
+import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.keyboard.dto.request.KeyboardCreateRequestDto;
 import org.team1.keyduck.keyboard.dto.request.KeyboardUpdateRequestDto;
 import org.team1.keyduck.keyboard.dto.response.KeyboardCreateResponseDto;
@@ -29,16 +30,14 @@ public class KeyboardService {
     private final MemberRepository memberRepository;
     private final AuctionRepository auctionRepository;
 
-
-    private Long testLong;
-
     // 키보드 생성
     @Transactional
     public KeyboardCreateResponseDto createKeyboard(Long memberId,
             KeyboardCreateRequestDto requestDto) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
+                        ErrorMessageParameter.MEMBER));
 
         Keyboard keyboard = Keyboard.builder()
                 .member(member)
@@ -55,11 +54,13 @@ public class KeyboardService {
     public void deleteKeyboard(Long keyboardId, Long memberId) {
 
         Keyboard keyboard = keyboardRepository.findById(keyboardId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_KEYBOARD, "키보드"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_KEYBOARD,
+                        ErrorMessageParameter.KEYBOARD));
 
         // 이미 삭제된 키보드를 삭제 요청 -> 예외 발생
         if (keyboard.isDeleted()) {
-            throw new DataDuplicateException(ErrorCode.DUPLICATE_DELETED, "키보드");
+            throw new DataDuplicateException(ErrorCode.DUPLICATE_DELETED,
+                    ErrorMessageParameter.KEYBOARD);
         }
 
         // 삭제하는 유저와 생성한 유저한 동일한지 확인 -> 아니면 예외 발생
@@ -68,8 +69,8 @@ public class KeyboardService {
         }
 
         // 경매 진행 중인 키보드 삭제 요청 -> 예외 발생
-        if (auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(keyboardId,
-                AuctionStatus.IN_PROGRESS)) {
+        if (auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(
+                keyboardId, AuctionStatus.IN_PROGRESS)) {
             throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_MODIFIABLE_AND_DELETEABLE,
                     null);
         }
@@ -93,7 +94,8 @@ public class KeyboardService {
             KeyboardUpdateRequestDto requestDto) {
 
         Keyboard findKeyboard = keyboardRepository.findById(keyboardId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_KEYBOARD, "키보드"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_KEYBOARD,
+                        ErrorMessageParameter.KEYBOARD));
 
         if (!findKeyboard.getMember().getId().equals(sellerId)) {
             throw new DataUnauthorizedAccessException(ErrorCode.FORBIDDEN_ACCESS, null);
