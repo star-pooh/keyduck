@@ -15,10 +15,9 @@ public class MemberUpdateRequestDto {
     private Address address;
 
     public void isEmpty() {
-        boolean nullCheck =
-                (name == null || name.isBlank()) && (email == null || email.isBlank()) && (address
-                        == null);
-        if (nullCheck) {
+        if ((name == null || name.isBlank()) &&
+                (email == null || email.isBlank()) &&
+                (address == null)) {
             throw new DataInvalidException(ErrorCode.EMPTY_REQUEST_BODY, null);
         }
     }
