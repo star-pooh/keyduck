@@ -20,6 +20,8 @@ import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataUnauthorizedAccessException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
+import org.team1.keyduck.email.dto.MemberEmailRequestDto;
+import org.team1.keyduck.email.service.EmailService;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.keyboard.repository.KeyboardRepository;
 import org.team1.keyduck.member.entity.Member;
@@ -33,6 +35,7 @@ public class AuctionService {
     private final AuctionRepository auctionRepository;
     private final KeyboardRepository keyboardRepository;
     private final BiddingRepository biddingRepository;
+    private final EmailService emailService;
 
     private final SaleProfitService saleProfitService;
     private final PaymentDepositService paymentDepositService;
@@ -63,6 +66,12 @@ public class AuctionService {
 
         Auction saveAuction = auctionRepository.save(auction);
 
+        MemberEmailRequestDto emailRequestDto = new MemberEmailRequestDto(
+                "경매가 성공적으로 시작되었습니다.",
+                "회원님이 생성한 " + auction.getKeyboard().getName() + " 키보드의 경매 '" + auction.getTitle()
+                        + "'가 정상적으로 등록되었습니다. 경매가 시작될 때까지 기다려주세요."
+        );
+        emailService.sendMemberEmail(auction.getKeyboard().getMember().getId(), emailRequestDto);
         return AuctionCreateResponseDto.of(saveAuction);
 
     }
