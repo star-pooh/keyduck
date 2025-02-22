@@ -19,6 +19,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.team1.keyduck.common.entity.BaseTime;
 import org.team1.keyduck.common.exception.DataNotMatchException;
 import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.Constants;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.dto.request.MemberUpdateRequestDto;
 
@@ -74,8 +75,7 @@ public class Member extends BaseTime {
             this.name = requestDto.getName();
         }
         if (requestDto.getEmail() != null) {
-            Pattern pattern = Pattern.compile(
-                    "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
+            Pattern pattern = Pattern.compile(Constants.EMAIL_REGEXP);
             if (!(pattern.matcher(requestDto.getEmail()).matches())) {
                 throw new DataNotMatchException(ErrorCode.INVALID_DATA_VALUE,
                         ErrorMessageParameter.EMAIL);
