@@ -35,7 +35,7 @@ public class MemberService {
     @Transactional
     public MemberUpdateResponseDto updateMember(MemberUpdateRequestDto requestDto, Long id) {
 
-        requestDto.isEmpty();
+        requestDto.isAllFieldsEmpty();
 
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
                 ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
