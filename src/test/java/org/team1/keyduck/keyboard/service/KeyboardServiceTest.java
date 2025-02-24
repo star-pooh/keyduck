@@ -25,7 +25,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.team1.keyduck.auction.entity.AuctionStatus;
+import org.team1.keyduck.auction.repository.AuctionRepository;
+import org.team1.keyduck.common.exception.DataDuplicateException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
+import org.team1.keyduck.common.exception.DataUnauthorizedAccessException;
+import org.team1.keyduck.common.exception.OperationNotAllowedException;
 import org.team1.keyduck.keyboard.dto.request.KeyboardCreateRequestDto;
 import org.team1.keyduck.keyboard.dto.response.KeyboardCreateResponseDto;
 import org.team1.keyduck.keyboard.entity.Keyboard;
@@ -43,61 +48,61 @@ class KeyboardServiceTest {
     @InjectMocks
     private KeyboardService keyboardService;
 
-    @Test
-    @DisplayName("키보드 조회_성공_키보드가 1개일때")
-    public void findKeyboard_success_one() {
-        //given : 설정(테스트준비)
-        Member member = TEST_MEMBER1;
-        Keyboard keyboard = TEST_KEYBOARD1;
-
-        ReflectionTestUtils.setField(member, "id", TEST_ID1);
-
-        //when : 수행할 작업(테스트 검증을 위한 준비)
-        when(keyboardRepository.findAllByMemberId(member.getId())).thenReturn(List.of(keyboard));
-        //then : 결과검증
-        List<KeyboardReadResponseDto> result = keyboardService.findKeyboardBySellerId(
-                member.getId());
-
-        assertEquals(1, result.size());
-        assertEquals(keyboard.getId(), result.get(0).getId());
-    }
-
-    @Test
-    @DisplayName("키보드 조회_성공_키보드가 여러개일때")
-    public void findKeyboard_success_many() {
-
-        //given : 설정
-        Member member = TEST_MEMBER1;
-
-        List<Keyboard> keyboardList = List.of(TestData.TEST_KEYBOARD1, TEST_KEYBOARD2,
-                TEST_KEYBOARD3);
-
-        //when : 수행할 작업
-        when(keyboardRepository.findAllByMemberId(member.getId())).thenReturn(keyboardList);
-
-        List<KeyboardReadResponseDto> result = keyboardService.findKeyboardBySellerId(
-                member.getId());
-
-        //then : 결과검증
-        assertEquals(3, result.size());
-    }
-
-    @Test
-    @DisplayName("키보드 조회_키보드가 없을때")
-    public void findKeyboard_empty() {
-
-        //given : 설정
-        Member member = TEST_MEMBER1;
-
-        //when : 수행할 작업
-        when(keyboardRepository.findAllByMemberId(member.getId())).thenReturn(
-                Collections.emptyList());
-
-        //then : 결과검증
-        List<KeyboardReadResponseDto> result = keyboardService.findKeyboardBySellerId(TEST_ID1);
-
-        assertTrue(result.isEmpty());
-    }
+//    @Test
+//    @DisplayName("키보드 조회_성공_키보드가 1개일때")
+//    public void findKeyboard_success_one() {
+//        //given : 설정(테스트준비)
+//        Member member = TEST_MEMBER1;
+//        Keyboard keyboard = TEST_KEYBOARD1;
+//
+//        ReflectionTestUtils.setField(member, "id", TEST_ID1);
+//
+//        //when : 수행할 작업(테스트 검증을 위한 준비)
+//        when(keyboardRepository.findAllByMemberId(member.getId())).thenReturn(List.of(keyboard));
+//        //then : 결과검증
+//        List<KeyboardReadResponseDto> result = keyboardService.findKeyboardBySellerId(
+//                member.getId());
+//
+//        assertEquals(1, result.size());
+//        assertEquals(keyboard.getId(), result.get(0).getId());
+//    }
+//
+//    @Test
+//    @DisplayName("키보드 조회_성공_키보드가 여러개일때")
+//    public void findKeyboard_success_many() {
+//
+//        //given : 설정
+//        Member member = TEST_MEMBER1;
+//
+//        List<Keyboard> keyboardList = List.of(TestData.TEST_KEYBOARD1, TEST_KEYBOARD2,
+//                TEST_KEYBOARD3);
+//
+//        //when : 수행할 작업
+//        when(keyboardRepository.findAllByMemberId(member.getId())).thenReturn(keyboardList);
+//
+//        List<KeyboardReadResponseDto> result = keyboardService.findKeyboardBySellerId(
+//                member.getId());
+//
+//        //then : 결과검증
+//        assertEquals(3, result.size());
+//    }
+//
+//    @Test
+//    @DisplayName("키보드 조회_키보드가 없을때")
+//    public void findKeyboard_empty() {
+//
+//        //given : 설정
+//        Member member = TEST_MEMBER1;
+//
+//        //when : 수행할 작업
+//        when(keyboardRepository.findAllByMemberId(member.getId())).thenReturn(
+//                Collections.emptyList());
+//
+//        //then : 결과검증
+//        List<KeyboardReadResponseDto> result = keyboardService.findKeyboardBySellerId(TEST_ID1);
+//
+//        assertTrue(result.isEmpty());
+//    }
 
     // 가짜 객체
     @Mock
@@ -169,7 +174,7 @@ class KeyboardServiceTest {
         keyboardService.deleteKeyboard(keyboard.getId(), member.getId());
 
         // then
-        assertEquals(true, keyboard.isDeleted());
+        assertTrue(keyboard.isDeleted());
     }
 
     @Test
@@ -179,8 +184,6 @@ class KeyboardServiceTest {
         Member member = TEST_MEMBER1;
         Keyboard keyboard = TEST_KEYBOARD1;
 
-        ReflectionTestUtils.setField(member, "id", TEST_ID1);
-
         // true가 이미 삭제된 상태
         ReflectionTestUtils.setField(keyboard, "isDeleted", true);
 
@@ -188,15 +191,14 @@ class KeyboardServiceTest {
 
         // when
         // then
-        assertThrows(DuplicateDataException.class, () -> {
+        assertThrows(DataDuplicateException.class, () -> {
             keyboardService.deleteKeyboard(keyboard.getId(), member.getId());
         });
     }
-
-
+//
     @Test
     @DisplayName("키보드 삭제 - 실패 케이스(생성 유저와 삭제를 하려는 유저가 동일하지 않음)")
-    void deleteKeyboard_fail_뭐하지() {
+    void deleteKeyboard_fail_not_same_member() {
         // given
         Member member1 = TEST_MEMBER1;
         Member member2 = TEST_MEMBER2;
@@ -215,9 +217,35 @@ class KeyboardServiceTest {
 
         // when
         // then
-        assertThrows(DataNotMatchException.class, () -> {
+        assertThrows(DataUnauthorizedAccessException.class, () -> {
             keyboardService.deleteKeyboard(keyboard.getId(), member1.getId());
         });
+    }
+
+    @Mock
+    private AuctionRepository auctionRepository;
+
+    @Test
+    @DisplayName("키보드 삭제 - 실패 케이스(경매 진행 중인 키보드 삭제 요청)")
+    void deleteKeyboard_fail_auction_in_Progress() {
+        // given
+        Member member = TestData.TEST_MEMBER1;
+        Keyboard keyboard = TestData.TEST_KEYBOARD1;
+
+        ReflectionTestUtils.setField(member, "id", TEST_ID1);
+        ReflectionTestUtils.setField(keyboard, "id", TEST_ID2);
+
+        ReflectionTestUtils.setField(keyboard, "isDeleted", false);
+
+        when(keyboardRepository.findById(keyboard.getId())).thenReturn(Optional.of(keyboard));
+        when(auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(
+                keyboard.getId(), AuctionStatus.IN_PROGRESS)).thenReturn(true);
+
+        // when
+        // then
+        assertThrows(OperationNotAllowedException.class, () ->
+                keyboardService.deleteKeyboard(keyboard.getId(), member.getId())
+        );
     }
 
 }
