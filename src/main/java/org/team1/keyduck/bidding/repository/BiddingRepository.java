@@ -1,6 +1,7 @@
 package org.team1.keyduck.bidding.repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.team1.keyduck.bidding.entity.Bidding;
@@ -27,5 +28,5 @@ public interface BiddingRepository extends JpaRepository<Bidding, Long> {
 
 
     @Query("SELECT MAX(b.price) FROM Bidding b WHERE b.auction.id = :auctionId AND b.member.id = :memberId")
-    Long findByMember_IdAndAuction_Id(Long memberId, Long auctionId);
+    Optional<Long> findByMember_IdAndAuction_Id(Long memberId, Long auctionId);
 }

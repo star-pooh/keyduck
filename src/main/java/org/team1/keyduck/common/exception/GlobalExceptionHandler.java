@@ -17,8 +17,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<ApiResponse> handleDataNotFoundException(
             DataNotFoundException exception) {
-        ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
-        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
+        ApiResponse apiResponse = ApiResponse.error(
+                exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
+
+        log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
                 apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
@@ -26,8 +28,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataDuplicateException.class)
     public ResponseEntity<ApiResponse> handleDataDuplicateException(
             DataDuplicateException exception) {
-        ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
-        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
+        ApiResponse apiResponse = ApiResponse.error(
+                exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
+
+        log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
                 apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
@@ -35,8 +39,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataNotMatchException.class)
     public ResponseEntity<ApiResponse> handleDataNotMatchException(
             DataNotMatchException exception) {
-        ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
-        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
+        ApiResponse apiResponse = ApiResponse.error(
+                exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
+
+        log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
                 apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
@@ -44,8 +50,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataUnauthorizedAccessException.class)
     public ResponseEntity<ApiResponse> handleDataUnauthorizedAccessException(
             DataUnauthorizedAccessException exception) {
-        ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
-        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
+        ApiResponse apiResponse = ApiResponse.error(
+                exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
+
+        log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
                 apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
@@ -53,8 +61,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataInvalidException.class)
     public ResponseEntity<ApiResponse> handleDataNotValidException(
             DataInvalidException exception) {
-        ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
-        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
+        ApiResponse apiResponse = ApiResponse.error(
+                exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
+
+        log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
                 apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
@@ -62,8 +72,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(OperationNotAllowedException.class)
     public ResponseEntity<ApiResponse> handleOperationNotAllowedException(
             OperationNotAllowedException exception) {
-        ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
-        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
+        ApiResponse apiResponse = ApiResponse.error(
+                exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
+
+        log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
                 apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
@@ -76,9 +88,11 @@ public class GlobalExceptionHandler {
         RequestBodyValidException customException = new RequestBodyValidException(
                 exception.getParameter(), exception.getBindingResult(),
                 ErrorCode.INVALID_DATA_VALUE);
+
         ApiResponse apiResponse = ApiResponse.error(customException.getErrorCode(),
-                customException.getErrorMessage());
-        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
+                customException.getErrorMessage(), customException.getStackTrace());
+
+        log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
                 apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
@@ -88,17 +102,20 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse> handleHandlerMethodValidationExceptionException(
             HandlerMethodValidationException exception) {
         ApiResponse apiResponse = ApiResponse.error(ErrorCode.INVALID_DATA_VALUE,
-                Arrays.toString(exception.getDetailMessageArguments()));
-        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
+                Arrays.toString(exception.getDetailMessageArguments()),
+                exception.getStackTrace());
+
+        log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
                 apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleException(Exception exception) {
-        ApiResponse apiResponse = ApiResponse.error(ErrorCode.INTERNAL_SERVER_ERROR);
-        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
+        ApiResponse apiResponse = ApiResponse.error(
+                ErrorCode.INTERNAL_SERVER_ERROR, exception.getStackTrace());
+
+        log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
                 exception.getMessage());
         return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
