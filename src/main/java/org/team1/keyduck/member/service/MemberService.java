@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.auth.service.JwtBlacklistService;
+import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
@@ -47,6 +48,11 @@ public class MemberService {
 
     @Transactional
     public void updatePassword(MemberUpdatePasswordRequestDto requestDto, Long id) {
+
+        if (requestDto.getBeforePassword().equals(requestDto.getModifyPassword())) {
+            throw new DataInvalidException(ErrorCode.BEFORE_INFO_NOT_AVAILABLE,
+                    ErrorMessageParameter.PASSWORD);
+        }
 
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
                 ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
