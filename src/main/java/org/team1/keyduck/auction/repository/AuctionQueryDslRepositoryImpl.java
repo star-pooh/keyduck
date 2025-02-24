@@ -18,7 +18,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
-import org.team1.keyduck.auction.dto.response.AuctionReadAllResponseDto;
+import org.team1.keyduck.auction.dto.response.AuctionDto;
+import org.team1.keyduck.auction.dto.response.AuctionDto.SearchResponse;
 
 @Repository
 @RequiredArgsConstructor
@@ -27,17 +28,31 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<AuctionReadAllResponseDto> findAllAuction(Pageable pageable,
+    public Page<AuctionDto.SearchResponse> findAllAuction(Pageable pageable,
             String keyboardName, String auctionTitle, String sellerName) {
-        List<AuctionReadAllResponseDto> auctionList = queryFactory.select(
+        List<AuctionDto.SearchResponse> auctionList = queryFactory.select(
                         Projections.constructor(
-                                AuctionReadAllResponseDto.class,
-                                auction
+                                SearchResponse.class,
+                                auction.id,
+                                auction.keyboard.id,
+                                auction.keyboard.name,
+                                auction.keyboard.description,
+                                auction.title,
+                                auction.currentPrice,
+                                auction.immediatePurchasePrice,
+                                auction.auctionStatus,
+                                auction.member.id,
+                                auction.member.name
                         )
                 )
                 .from(auction)
-                .where(buildSearchConditions(keyboardName, auctionTitle,
-                        sellerName))
+                .leftJoin(auction.keyboard, keyboard)
+                .leftJoin(keyboard.member, member)
+                .where(
+                        keyboard(keyboardName),
+                        auctionTitle(auctionTitle),
+                        sellerName(sellerName)
+                )
                 .orderBy(getSortOrders(pageable))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
@@ -50,27 +65,26 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
         return new PageImpl<>(auctionList, pageable, totalCount);
     }
 
-    private BooleanExpression buildSearchConditions(String keyboardName, String auctionTitle,
-            String sellerName) {
-
-        BooleanExpression condition = null;
-
-        if (keyboardName != null && !keyboardName.isEmpty()) {
-            condition = auction.keyboard.name.like("%" + keyboardName + "%");
+    private BooleanExpression keyboard(String keyboardName) {
+        if (keyboardName == null) {
+            return null;
         }
-
-        if (auctionTitle != null && !auctionTitle.isEmpty()) {
-            condition = auction.title.like("%" + auctionTitle + "%");
-        }
-
-        if (sellerName != null && !sellerName.isEmpty()) {
-            condition = auction.keyboard.member.name.like("%" + sellerName + "%");
-        }
-
-        return condition != null ? condition : null;
-
+        return auction.keyboard.name.like("%" + keyboardName + "%");
     }
 
+    private BooleanExpression auctionTitle(String auctionTitle) {
+        if (auctionTitle == null) {
+            return null;
+        }
+        return auction.title.like("%" + auctionTitle + "%");
+    }
+
+    private BooleanExpression sellerName(String sellerName) {
+        if (sellerName == null) {
+            return null;
+        }
+        return auction.keyboard.member.name.like("%" + sellerName + "%");
+    }
 
     private OrderSpecifier<?>[] getSortOrders(Pageable pageable) {
         List<OrderSpecifier<?>> orders = new ArrayList<>();
@@ -82,9 +96,11 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
                 boolean isAscending = order.isAscending();
 
                 OrderSpecifier<?> orderSpecifier = switch (property) {
-                    case "keyboardName" -> isAscending ? keyboard.name.asc() : keyboard.name.desc();
+                    case "keyboardName" -> isAscending ? auction.keyboard.name.asc()
+                            : auction.keyboard.name.desc();
                     case "auctionTitle" -> isAscending ? auction.title.asc() : auction.title.desc();
-                    case "sellerName" -> isAscending ? member.name.asc() : member.name.desc();
+                    case "sellerName" -> isAscending ? auction.keyboard.member.name.asc()
+                            : auction.keyboard.member.name.desc();
                     default -> auction.id.desc();
                 };
                 orders.add(orderSpecifier);

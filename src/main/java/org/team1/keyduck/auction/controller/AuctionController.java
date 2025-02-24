@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.team1.keyduck.auction.dto.request.AuctionCreateRequestDto;
 import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
 import org.team1.keyduck.auction.dto.response.AuctionCreateResponseDto;
-import org.team1.keyduck.auction.dto.response.AuctionReadAllResponseDto;
+import org.team1.keyduck.auction.dto.response.AuctionDto;
 import org.team1.keyduck.auction.dto.response.AuctionReadResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionUpdateResponseDto;
 import org.team1.keyduck.auction.service.AuctionService;
@@ -74,12 +74,12 @@ public class AuctionController {
 
     // 경매 다건 조회 API
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<AuctionReadAllResponseDto>>> findAllAuctionAPI(
+    public ResponseEntity<ApiResponse<Page<AuctionDto.SearchResponse>>> findAllAuctionAPI(
             Pageable pageable, @RequestParam(required = false) String keyboardName,
             @RequestParam(required = false) String auctionTitle,
             @RequestParam(required = false) String sellerName) {
 
-        Page<AuctionReadAllResponseDto> response = auctionService.findAllAuction(pageable,
+        Page<AuctionDto.SearchResponse> response = auctionService.findAllAuction(pageable,
                 keyboardName, auctionTitle, sellerName);
 
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.READ_SUCCESS, response),

@@ -1,8 +1,7 @@
 package org.team1.keyduck.auction.dto.response;
 
-import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
-import org.team1.keyduck.keyboard.dto.response.AuctionKeyboardDto;
+import org.team1.keyduck.member.entity.Member;
 
 public class AuctionDto {
 
@@ -11,20 +10,25 @@ public class AuctionDto {
 
     }
 
-    public record SearchResponse(Long auctionId, AuctionKeyboardDto keyboard, String title,
+    public record SearchResponse(Long auctionId, Long keyboardId, String keyboardName,
+                                 String keyboardDescription, String title,
                                  Long currentPrice, Long immediatePurchasePrice,
                                  AuctionStatus auctionStatus, Long winnerId, String winnerName) {
 
-        public SearchResponse(Auction auction) {
+        public SearchResponse(Long auctionId, Long keyboardId, String keyboardName,
+                String keyboardDescription, String title, Long currentPrice,
+                Long immediatePurchasePrice, AuctionStatus auctionStatus, Member member) {
             this(
-                    auction.getId(),
-                    AuctionKeyboardDto.of(auction.getKeyboard()),
-                    auction.getTitle(),
-                    auction.getCurrentPrice(),
-                    auction.getImmediatePurchasePrice(),
-                    auction.getAuctionStatus(),
-                    auction.getMember().getId(),
-                    auction.getMember().getName()
+                    auctionId,
+                    keyboardId,
+                    keyboardName,
+                    keyboardDescription,
+                    title,
+                    currentPrice,
+                    immediatePurchasePrice,
+                    auctionStatus,
+                    member.getId(),
+                    member.getName()
             );
         }
     }

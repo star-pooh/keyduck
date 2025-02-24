@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.dto.request.AuctionCreateRequestDto;
 import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
 import org.team1.keyduck.auction.dto.response.AuctionCreateResponseDto;
-import org.team1.keyduck.auction.dto.response.AuctionReadAllResponseDto;
+import org.team1.keyduck.auction.dto.response.AuctionDto;
 import org.team1.keyduck.auction.dto.response.AuctionReadResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionUpdateResponseDto;
 import org.team1.keyduck.auction.entity.Auction;
@@ -109,17 +109,11 @@ public class AuctionService {
 
     // 경매 다건 조회
     @Transactional(readOnly = true)
-    public Page<AuctionReadAllResponseDto> findAllAuction(Pageable pageable,
+    public Page<AuctionDto.SearchResponse> findAllAuction(Pageable pageable,
             String keyboardName, String auctionTitle, String sellerName) {
 
-        // 전체 경매를 조회하고
         return auctionRepository.findAllAuction(pageable,
                 keyboardName, auctionTitle, sellerName);
-
-        // DTO로 변환 후 반환
-//        return auctions.stream()
-//                .map(AuctionReadAllResponseDto::of)
-//                .toList();
     }
 
     @Transactional
