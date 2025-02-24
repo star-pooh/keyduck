@@ -30,7 +30,7 @@ public class Keyboard extends BaseTime {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String name;
 
     @Column
@@ -38,9 +38,6 @@ public class Keyboard extends BaseTime {
 
     @Column(nullable = false)
     private boolean isDeleted = false;
-
-//    private String imageUrl;
-// TODO 확인해주세요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     @Builder
     public Keyboard(Member member, String name, String description) {
