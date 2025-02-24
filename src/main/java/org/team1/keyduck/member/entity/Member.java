@@ -17,8 +17,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.team1.keyduck.common.entity.BaseTime;
+import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotMatchException;
 import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.Constants;
+import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.dto.request.MemberUpdateRequestDto;
 
 @Entity
@@ -31,10 +34,10 @@ public class Member extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private String name;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, length = 50)
     private String email;
 
     @Column(nullable = false)
@@ -50,17 +53,17 @@ public class Member extends BaseTime {
 
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name = "city", column = @Column(nullable = false)),
-        @AttributeOverride(name = "state", column = @Column(nullable = false)),
-        @AttributeOverride(name = "street", column = @Column(nullable = false)),
-        @AttributeOverride(name = "detailAddress1", column = @Column),
-        @AttributeOverride(name = "detailAddress2", column = @Column)
+            @AttributeOverride(name = "city", column = @Column(nullable = false)),
+            @AttributeOverride(name = "state", column = @Column(nullable = false)),
+            @AttributeOverride(name = "street", column = @Column(nullable = false)),
+            @AttributeOverride(name = "detailAddress1", column = @Column),
+            @AttributeOverride(name = "detailAddress2", column = @Column)
     })
     private Address address;
 
     @Builder
     public Member(String name, String email, String password, MemberRole memberRole,
-        Address address) {
+            Address address) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -73,10 +76,16 @@ public class Member extends BaseTime {
             this.name = requestDto.getName();
         }
         if (requestDto.getEmail() != null) {
-            Pattern pattern = Pattern.compile(
-                "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
+
+            if (this.email.equals(requestDto.getEmail())) {
+                throw new DataInvalidException(ErrorCode.BEFORE_INFO_NOT_AVAILABLE,
+                        ErrorMessageParameter.EMAIL);
+            }
+
+            Pattern pattern = Pattern.compile(Constants.EMAIL_REGEXP);
             if (!(pattern.matcher(requestDto.getEmail()).matches())) {
-                throw new DataNotMatchException(ErrorCode.INVALID_INPUT_VALUE);
+                throw new DataNotMatchException(ErrorCode.INVALID_DATA_VALUE,
+                        ErrorMessageParameter.EMAIL);
             }
             this.email = requestDto.getEmail();
 

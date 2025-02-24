@@ -4,15 +4,16 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.team1.keyduck.common.util.ValidationErrorMessage;
 
 @Getter
 @AllArgsConstructor
 public class KeyboardCreateRequestDto {
 
-    @NotBlank(message = "상품 이름을 입력해주세요.")
+    @NotBlank(message = ValidationErrorMessage.NAME_IS_NOT_NULL)
     private String name;
 
-    @NotBlank(message = "상품 설명을 입력해주세요.")
+    @NotBlank(message = ValidationErrorMessage.DESCRIPTION_IS_NOT_NULL)
     private String description;
 
 
