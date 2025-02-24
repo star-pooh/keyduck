@@ -25,8 +25,6 @@ import org.team1.keyduck.common.util.Constants;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
-import org.team1.keyduck.payment.entity.PaymentDeposit;
-import org.team1.keyduck.payment.repository.PaymentDepositRepository;
 import org.team1.keyduck.payment.service.PaymentDepositService;
 import org.team1.keyduck.payment.service.SaleProfitService;
 
@@ -39,7 +37,6 @@ public class BiddingService {
     private final AuctionRepository auctionRepository;
     private final MemberRepository memberRepository;
     private final PaymentDepositService paymentDepositService;
-    private final PaymentDepositRepository paymentDepositRepository;
     private final SaleProfitService saleProfitService;
 
     //비딩참여가 가능한 상태인지 검증
@@ -84,33 +81,6 @@ public class BiddingService {
 
     }
 
-    //즉구가 입찰시 로직
-    private void instantBuy(Member member, Auction auction, Long price) {
-        //만약 입찰가가 즉시구매가 라면
-        if (price.equals(auction.getImmediatePurchasePrice())) {
-
-            //낙찰자를 제외한 입찰자들의 최고 입찰가를 찾고
-            List<Bidding> biddings = biddingRepository.findAllByIdBiddingMax(auction.getId());
-
-            //경매의 낙찰자 정보에 즉구가를 입력한 유저의 아이디값을 저장하고
-            auction.updateSuccessBiddingMember(member);
-
-            //todo 추후 paymentDepositService로 책임분리 예정 / 책임분리 완료 후 로직 변경예정
-            //낙찰자를 제외한 다른 입찰자들은 낙찰되지 않았으니, 포인트를 반환해주고
-            for (Bidding bidding : biddings) {
-                PaymentDeposit paymentDeposit = paymentDepositRepository.findByMember_Id(
-                                bidding.getMember().getId())
-                        .orElseThrow(
-                                () -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
-                paymentDeposit.updatePaymentDeposit(bidding.getPrice());
-            }
-            //낙찰자의 낙찰금액을 셀러에게 전달해주고
-            saleProfitService.saleProfit(auction.getId());
-            // 경매의 상태를 종료시킨다.
-            auction.updateAuctionStatus(AuctionStatus.CLOSED);
-        }
-    }
-
     //생성 매서드
     @Transactional
     public void createBidding(Long auctionId, Long price, AuthMember authMember) {
@@ -131,18 +101,28 @@ public class BiddingService {
         paymentDepositService.payBiddingPrice(member.getId(), price, previousBiddingInfo);
 
         //입찰내역 생성
-        Bidding newBiddings = Bidding.builder()
+        Bidding newBidding = Bidding.builder()
                 .auction(auction)
                 .member(member)
                 .price(price)
                 .build();
 
         //생성한 입찰내역을 저장
-        biddingRepository.save(newBiddings);
+        biddingRepository.save(newBidding);
         //경매의 현재가 업데이트
         auction.updateCurrentPrice(price);
 
-        instantBuy(member, auction, price);
+        if (price.equals(auction.getImmediatePurchasePrice())) {
+            //낙찰자의 낙찰금액을 셀러에게 전달해주고
+            saleProfitService.saleProfit(auction.getId());
+
+            paymentDepositService.refundPaymentDeposit(auctionId);
+
+            auction.updateSuccessBiddingMember(member);
+            // 경매의 상태를 종료시킨다.
+            auction.updateAuctionStatus(AuctionStatus.CLOSED);
+
+        }
     }
 
 
