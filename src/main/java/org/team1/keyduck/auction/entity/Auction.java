@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.member.entity.Member;
 
@@ -30,7 +31,7 @@ public class Auction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "keyboard_id")
+    @JoinColumn(name = "keyboard_id", nullable = false)
     @OneToOne
     private Keyboard keyboard;
 
@@ -38,7 +39,7 @@ public class Auction {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String title;
 
     @Column(nullable = false)
@@ -54,20 +55,20 @@ public class Auction {
     private int biddingUnit;
 
     @Column(nullable = false)
-    private LocalDateTime biddingStartDate;
+    private LocalDateTime auctionStartDate;
 
     @Column(nullable = false)
-    private LocalDateTime biddingEndDate;
+    private LocalDateTime auctionEndDate;
 
-    @Column
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private AuctionStatus auctionStatus;
 
     @Builder
     public Auction(Keyboard keyboard, Member member, String title, Long startPrice,
-        Long immediatePurchasePrice,
-        Long currentPrice, int biddingUnit, LocalDateTime biddingStartDate,
-        LocalDateTime biddingEndDate, AuctionStatus auctionStatus) {
+            Long immediatePurchasePrice,
+            Long currentPrice, int biddingUnit, LocalDateTime auctionStartDate,
+            LocalDateTime auctionEndDate, AuctionStatus auctionStatus) {
         this.keyboard = keyboard;
         this.member = member;
         this.title = title;
@@ -75,9 +76,31 @@ public class Auction {
         this.immediatePurchasePrice = immediatePurchasePrice;
         this.currentPrice = currentPrice;
         this.biddingUnit = biddingUnit;
-        this.biddingStartDate = biddingStartDate;
-        this.biddingEndDate = biddingEndDate;
+        this.auctionStartDate = auctionStartDate;
+        this.auctionEndDate = auctionEndDate;
         this.auctionStatus = auctionStatus;
+    }
+
+    public void updateAuction(AuctionUpdateRequestDto requestDto) {
+
+        this.title = requestDto.getTitle();
+        this.startPrice = requestDto.getStartPrice();
+        this.immediatePurchasePrice = requestDto.getImmediatePurchasePrice();
+        this.biddingUnit = requestDto.getBiddingUnit();
+        this.auctionStartDate = requestDto.getAuctionStartDate();
+        this.auctionEndDate = requestDto.getAuctionEndDate();
+    }
+
+    public void updateCurrentPrice(Long price) {
+        this.currentPrice = price;
+    }
+
+    public void updateAuctionStatus(AuctionStatus auctionStatus) {
+        this.auctionStatus = auctionStatus;
+    }
+
+    public void updateSuccessBiddingMember(Member member) {
+        this.member = member;
     }
 }
 

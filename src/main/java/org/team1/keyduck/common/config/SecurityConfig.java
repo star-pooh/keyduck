@@ -1,6 +1,7 @@
 package org.team1.keyduck.common.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -29,24 +30,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-            .csrf(AbstractHttpConfigurer::disable)
-            .httpBasic(AbstractHttpConfigurer::disable)
-            .formLogin(AbstractHttpConfigurer::disable)
-            .addFilterBefore(jwtFilter, SecurityContextHolderAwareRequestFilter.class)
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/auctions**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/members").permitAll()
-                .requestMatchers("/api/keyboards**").hasRole("SELLER")
-                .requestMatchers(HttpMethod.POST, "/api/auctions").hasRole("SELLER")
-                .requestMatchers(HttpMethod.PATCH, "/api/auctions/*").hasRole("SELLER")
-                .requestMatchers(HttpMethod.POST, "/api/auctions/*").hasRole("CUSTOMER")
-                .requestMatchers(HttpMethod.GET, "/api/biddings/auctions/**")
-                .hasAnyRole("SELLER", "CUSTOMER")
-                .requestMatchers(HttpMethod.GET, "/api/biddings").hasRole("CUSTOMER")
-                .requestMatchers("/api/members").hasAnyRole("SELLER", "CUSTOMER")
-                .anyRequest().authenticated()
-            )
-            .build();
+                .csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .addFilterBefore(jwtFilter, SecurityContextHolderAwareRequestFilter.class)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/auctions**").permitAll()
+                        .requestMatchers("/api/members**").hasAnyRole("SELLER", "CUSTOMER")
+                        .requestMatchers("/api/keyboards**").hasRole("SELLER")
+                        .requestMatchers(HttpMethod.POST, "/api/auctions").hasRole("SELLER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/auctions/*").hasRole("SELLER")
+                        .requestMatchers(HttpMethod.GET, "/api/biddings/*")
+                        .hasAnyRole("CUSTOMER", "SELLER")
+                        .requestMatchers(HttpMethod.POST, "/api/biddings/*").hasRole("CUSTOMER")
+                        .requestMatchers(HttpMethod.GET, "/api/biddings/success")
+                        .hasRole("CUSTOMER")
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                        .permitAll()
+                        .requestMatchers("/payment_login.html").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .build();
     }
 }

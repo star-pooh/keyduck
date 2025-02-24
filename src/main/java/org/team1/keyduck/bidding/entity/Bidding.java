@@ -33,14 +33,14 @@ public class Bidding {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "auction_id")
+    @JoinColumn(name = "auction_id", nullable = false)
     private Auction auction;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Column
+    @Column(nullable = false)
     private Long price;
 
     @CreatedDate
@@ -48,11 +48,11 @@ public class Bidding {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
+
     @Builder
     public Bidding(Auction auction, Member member, Long price) {
         this.auction = auction;
         this.member = member;
         this.price = price;
     }
-
 }

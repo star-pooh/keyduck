@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.team1.keyduck.common.entity.BaseTime;
+import org.team1.keyduck.keyboard.dto.request.KeyboardUpdateRequestDto;
 import org.team1.keyduck.member.entity.Member;
 
 @Entity
@@ -26,19 +27,32 @@ public class Keyboard extends BaseTime {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Column
+    @Column(nullable = false, length = 50)
     private String name;
 
-//    private String imageUrl;
-// TODO 확인해주세요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    @Column
+    private String description;
+
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 
     @Builder
-    public Keyboard(Member member, String name) {
+    public Keyboard(Member member, String name, String description) {
         this.member = member;
         this.name = name;
+        this.description = description;
+        this.isDeleted = false;
     }
 
+    public void deleteKeyboard() {
+        this.isDeleted = true;
+    }
+
+    public void updateKeyboard(KeyboardUpdateRequestDto requestDto) {
+        this.name = requestDto.getName();
+        this.description = requestDto.getDescription();
+    }
 }

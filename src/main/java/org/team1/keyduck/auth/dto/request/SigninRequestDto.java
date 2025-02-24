@@ -19,6 +19,6 @@ public class SigninRequestDto {
 
     @NotBlank(message = ValidationErrorMessage.PASSWORD_IS_NOT_NULL)
     @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,16}",
-        message = ValidationErrorMessage.PASSWORD_IS_NOT_AVAILABLE)
+            message = ValidationErrorMessage.PASSWORD_IS_NOT_AVAILABLE)
     private String password;
 }

@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.team1.keyduck.testdata.TestData.TEST_EMAIL1;
+import static org.team1.keyduck.testdata.TestData.TEST_PASSWORD1;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,37 +34,36 @@ class AuthServiceTest {
     PasswordEncoder passwordEncoder;
 
     @Test
-    void 멤버_회원가입_성공() {
+    void 고객_회원가입_성공() {
 
         //given
         MemberCreateRequestDto requestDto = mock(MemberCreateRequestDto.class);
         Address address = new Address("서울시", "강남구", "테헤란로", "상세주소", "상세주소");
         Member expectedMember = new Member("hehe", "heehee@naver.com", "1234", MemberRole.CUSTOMER,
-            address);
+                address);
 
-        when(requestDto.getEmail()).thenReturn(expectedMember.getEmail());
+        when(requestDto.getEmail()).thenReturn(TEST_EMAIL1);
         when(memberRepository.existsByEmail(any(String.class))).thenReturn(false);
 
-        when(requestDto.getPassword()).thenReturn(expectedMember.getPassword());
-        when(passwordEncoder.encode(any(String.class))).thenReturn("5678");
+        when(requestDto.getPassword()).thenReturn(TEST_PASSWORD1);
+        when(passwordEncoder.encode(any(String.class))).thenReturn(TEST_PASSWORD1);
 
         when(requestDto.getName()).thenReturn(expectedMember.getName());
-        when(requestDto.getMemberRole()).thenReturn(expectedMember.getMemberRole());
         when(memberRepository.save(any(Member.class))).thenReturn(expectedMember);
 
         Member member = mock(Member.class);
 
         //when
-        authService.joinMember(requestDto);
+        authService.joinMember(requestDto, MemberRole.CUSTOMER);
         Member actualMember = memberRepository.save(member);
 
         //then
         assertThat(actualMember)
-            .usingRecursiveComparison()
-            .ignoringFields("id")
-            .ignoringFields("createdAt")
-            .ignoringFields("modifiedAt")
-            .isEqualTo(expectedMember);
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .ignoringFields("createdAt")
+                .ignoringFields("modifiedAt")
+                .isEqualTo(expectedMember);
 
     }
 
