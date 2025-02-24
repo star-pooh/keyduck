@@ -6,10 +6,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.team1.keyduck.testdata.TestData.TEST_EMAIL1;
+import static org.team1.keyduck.testdata.TestData.TEST_EMAIL2;
 import static org.team1.keyduck.testdata.TestData.TEST_MEMBER1;
 import static org.team1.keyduck.testdata.TestData.TEST_NAME1;
 import static org.team1.keyduck.testdata.TestData.TEST_PASSWORD1;
 
+import java.util.Objects;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,7 +20,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.team1.keyduck.auth.dto.request.MemberCreateRequestDto;
+import org.team1.keyduck.auth.dto.request.SigninRequestDto;
 import org.team1.keyduck.common.exception.DataDuplicateException;
+import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
@@ -35,7 +40,7 @@ class AuthServiceTest {
     PasswordEncoder passwordEncoder;
 
     @Test
-    void 고객_회원가입_성공() {
+    void 판매자_회원가입_성공() {
 
         //given
         MemberCreateRequestDto requestDto = mock(MemberCreateRequestDto.class);
@@ -52,7 +57,7 @@ class AuthServiceTest {
         Member member = mock(Member.class);
 
         //when
-        authService.joinMember(requestDto, MemberRole.CUSTOMER);
+        authService.joinMember(requestDto, MemberRole.SELLER);
         Member actualMember = memberRepository.save(member);
 
         //then
@@ -71,12 +76,31 @@ class AuthServiceTest {
         //given
         MemberCreateRequestDto requestDto = mock(MemberCreateRequestDto.class);
 
-        when(requestDto.getEmail()).thenReturn("heehee@naver.com");
+        when(requestDto.getEmail()).thenReturn(TEST_EMAIL1);
         when(memberRepository.existsByEmail(any(String.class))).thenReturn(true);
 
         //when&then
         assertThrows(DataDuplicateException.class, () -> {
             authService.joinMember(requestDto, MemberRole.CUSTOMER);
         });
+    }
+
+    @Test
+    void 로그인_실패_삭제된_유저() {
+
+        //given
+        SigninRequestDto requestDto = mock(SigninRequestDto.class);
+        Member member = mock(Member.class);
+
+        when(requestDto.getEmail()).thenReturn(TEST_EMAIL2);
+        when(memberRepository.findByEmail(any(String.class))).thenReturn(
+                Optional.ofNullable(member));
+        when(Objects.requireNonNull(member).isDeleted()).thenReturn(true);
+
+        //when&then
+        assertThrows(DataInvalidException.class, () -> {
+            authService.login(requestDto);
+        });
+
     }
 }
