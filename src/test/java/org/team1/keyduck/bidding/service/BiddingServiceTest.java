@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -131,40 +130,6 @@ public class BiddingServiceTest {
     @Test
     @DisplayName("락 없는 입찰 생성")
     public void createBiddingWithoutLock() throws InterruptedException {
-        // when
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
-        CountDownLatch latch = new CountDownLatch(100);
-
-        for (int i = 0; i < 100; i++) {
-            final long biddingPrice = auction.getCurrentPrice() + (i + 1) * 100L;
-            executorService.execute(() -> {
-                try {
-                    biddingService.createBidding(
-                            auction.getId(),
-                            biddingPrice,
-                            new AuthMember(member.getId(), member.getMemberRole())
-                    );
-                } catch (DataInvalidException e) {
-                    // 유저 아이디랑 입찰 금액 표시하기
-                    //System.out.println("유저 ID: " + member.getId() + ", 입찰 금액: " + biddingPrice);
-                    System.out.println(e.getMessage());
-                } finally {
-                    latch.countDown();
-                }
-            });
-        }
-
-        latch.await();
-        executorService.shutdown();
-
-        // then
-        long biddingCount = biddingRepository.findAllByAuctionId(auction.getId()).size();
-        System.out.println("총 입찰 횟수 : " + biddingCount);
-    }
-
-    @Test
-    @DisplayName("락 없는 입찰 생성")
-    public void createBiddingWithoutLock2() throws InterruptedException {
         List<Member> members = memberRepository.findAll(); // 전체 유저를 조회하고
         // customer만 담기
         List<Member> customers = new ArrayList<>();
@@ -175,7 +140,7 @@ public class BiddingServiceTest {
             }
         }
 
-        ExecutorService executorService = Executors.newFixedThreadPool(100);
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
         CountDownLatch latch = new CountDownLatch(100);
 
         for (int i = 0; i < 100; i++) {
@@ -219,38 +184,6 @@ public class BiddingServiceTest {
     @Test
     @DisplayName("비관적 락 이용한 입찰 생성")
     public void createBiddingWithPessimisticLock() throws InterruptedException {
-        // when
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
-        CountDownLatch latch = new CountDownLatch(100);
-
-        for (int i = 0; i < 100; i++) {
-            final long biddingPrice = auction.getCurrentPrice() + (i + 1) * 100L;
-            executorService.execute(() -> {
-                try {
-                    biddingService.createBiddingWithPessimisticLock(
-                            auction.getId(),
-                            biddingPrice,
-                            new AuthMember(member.getId(), member.getMemberRole())
-                    );
-                } catch (Exception e) {
-                    System.out.println("입찰 실패 : " + e.getMessage());
-                } finally {
-                    latch.countDown();
-                }
-            });
-        }
-
-        latch.await();
-        executorService.shutdown();
-
-        // then
-        long biddingCount = biddingRepository.findAllByAuctionId(auction.getId()).size();
-        System.out.println("총 입찰 횟수 : " + biddingCount);
-    }
-
-    @Test
-    @DisplayName("비관적 락 이용한 입찰 생성")
-    public void createBiddingWithPessimisticLock2() throws InterruptedException {
         List<Member> members = memberRepository.findAll(); // 전체 유저를 조회하고
         // customer만 담기
         List<Member> customers = new ArrayList<>();

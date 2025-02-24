@@ -80,8 +80,8 @@ public class BiddingService {
         Member member = memberRepository.findById(authMember.getId())
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
 
-        //validateBiddingAvailability(auction, authMember);
-        //validateBiddingPrice(price, auction);
+        validateBiddingAvailability(auction, authMember);
+        validateBiddingPrice(price, auction);
 
         Long previousBiddingInfo = biddingRepository.findByMember_IdAndAuction_Id(member.getId(),
                 auctionId);
@@ -111,8 +111,8 @@ public class BiddingService {
         Member member = memberRepository.findById(authMember.getId())
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
 
-        //validateBiddingAvailability(auction, authMember);
-        //validateBiddingPrice(price, auction);
+        validateBiddingAvailability(auction, authMember);
+        validateBiddingPrice(price, auction);
 
         Long previousBiddingInfo = biddingRepository.findByMember_IdAndAuction_Id(member.getId(),
                 auctionId);
