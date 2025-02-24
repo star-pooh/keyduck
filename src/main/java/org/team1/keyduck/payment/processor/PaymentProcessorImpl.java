@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.payment.entity.Payment;
 import org.team1.keyduck.payment.entity.PaymentMethod;
@@ -44,7 +45,8 @@ public class PaymentProcessorImpl implements PaymentProcessor {
         try {
             return (JSONObject) PARSER.parse(jsonBody);
         } catch (ParseException e) {
-            throw new DataInvalidException(ErrorCode.INVALID_DATA_TYPE, "JSON");
+            throw new DataInvalidException(ErrorCode.INVALID_DATA_TYPE,
+                    ErrorMessageParameter.JSON_TYPE);
         }
     }
 

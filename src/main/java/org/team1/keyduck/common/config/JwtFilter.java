@@ -18,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.team1.keyduck.auth.entity.AuthMember;
+import org.team1.keyduck.auth.service.JwtBlacklistService;
 import org.team1.keyduck.common.util.ErrorMessage;
 import org.team1.keyduck.member.entity.MemberRole;
 
@@ -27,10 +28,10 @@ import org.team1.keyduck.member.entity.MemberRole;
 public class JwtFilter implements Filter {
 
     private final JwtUtil jwtUtil;
+    private final JwtBlacklistService jwtBlacklistService;
 
     @Override
-    public void doFilter(
-            ServletRequest request, ServletResponse response, FilterChain chain)
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
@@ -50,6 +51,12 @@ public class JwtFilter implements Filter {
             return;
         }
 
+        if (jwtBlacklistService.isBlacklisted(bearerJwt)) {
+            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                    ErrorMessage.NOT_AVAILABLE_TOKEN_DELETE_MEMBER);
+            return;
+        }
+
         String jwt = jwtUtil.substringToken(bearerJwt);
 
         try {
@@ -64,8 +71,7 @@ public class JwtFilter implements Filter {
             Long userId = Long.parseLong(claims.getSubject());
             MemberRole memberRole = MemberRole.valueOf(claims.get("memberRole", String.class));
 
-            AuthMember authMember = new AuthMember(userId,
-                    memberRole);
+            AuthMember authMember = new AuthMember(userId, memberRole);
             SecurityContextHolder.getContext().setAuthentication(
                     new UsernamePasswordAuthenticationToken(authMember, null,
                             authMember.getAuthorities()));

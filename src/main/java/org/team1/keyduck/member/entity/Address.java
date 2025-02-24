@@ -3,18 +3,19 @@ package org.team1.keyduck.member.entity;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import org.team1.keyduck.common.util.ValidationErrorMessage;
 
 @Getter
 @Embeddable
 public class Address {
 
-    @NotBlank(message = "시는 필수 입력 값입니다.")
+    @NotBlank(message = ValidationErrorMessage.CITY_IS_NOT_NULL)
     private String city;
 
-    @NotBlank(message = "군/구는 필수 입력 값입니다.")
+    @NotBlank(message = ValidationErrorMessage.STATE_IS_NOT_NULL)
     private String state;
 
-    @NotBlank(message = "읍/면/동은 필수 입력 값입니다.")
+    @NotBlank(message = ValidationErrorMessage.STREET_IS_NOT_NULL)
     private String street;
 
     private String detailAddress1;
@@ -25,7 +26,7 @@ public class Address {
     }
 
     public Address(String city, String state, String street, String detailAddress1,
-        String detailAddress2) {
+            String detailAddress2) {
         this.city = city;
         this.state = state;
         this.street = street;
