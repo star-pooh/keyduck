@@ -21,7 +21,8 @@ import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
-import org.team1.keyduck.common.util.GlobalConstants;
+import org.team1.keyduck.common.util.Constants;
+import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.team1.keyduck.payment.entity.PaymentDeposit;
@@ -75,7 +76,8 @@ public class BiddingService {
         }
 
         //비딩금액이 최대 입찰 호가 보다 높으면 안됨
-        long maxPrice = auction.getCurrentPrice() + (auction.getBiddingUnit() * 10L);
+        long maxPrice = auction.getCurrentPrice() + (auction.getBiddingUnit()
+                * Constants.MAX_BIDDING_MULTIPLE);
         if (price > maxPrice) {
             throw new DataInvalidException(ErrorCode.BIDDING_PRICE_EXCEEDS_MAX_LIMIT, null);
         }
@@ -112,26 +114,20 @@ public class BiddingService {
     //생성 매서드
     @Transactional
     public void createBidding(Long auctionId, Long price, AuthMember authMember) {
-        // 경매를 찾고 없으면 익셉션
         Auction auction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION, "경매"));
-        // 멤버(입찰자)를 찾고 없으면 익셉션
-        Member member = memberRepository.findById(authMember.getId())
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
+                        ErrorMessageParameter.AUCTION));
 
-        //진행중인 경매인지, 입찰자의 입찰횟수가 10회 미만인지 검증하고
+        Member member = memberRepository.findById(authMember.getId())
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
+                        ErrorMessageParameter.MEMBER));
+
         validateBiddingAvailability(auction, authMember);
-        //입찰금액이 입찰단위의 배수인지 확인, 현재가보다 낮은지 확인, 최대호가(입찰단위의 10배)보다 높은지 확인하고
         validateBiddingPrice(price, auction);
 
-        //입찰자의 이전 입찰내역중 최고가를 찾아오고
         Long previousBiddingInfo = biddingRepository.findByMember_IdAndAuction_Id(member.getId(),
-                auctionId);
-        //이전 입찰내역이 null 이면 0 / 아니면 이전 입찰내역을 previousBiddingInfo에 담기
-        previousBiddingInfo = previousBiddingInfo == null ? 0 : previousBiddingInfo;
+                auctionId).orElse(0L);
 
-        //이전입찰금액이 있다면 새 입찰금액과의 차액을 확인후 소지하고 있는 포인트에서 차감//
-        //포인트가 없다면 익셉션
         paymentDepositService.payBiddingPrice(member.getId(), price, previousBiddingInfo);
 
         //입찰내역 생성
@@ -161,10 +157,11 @@ public class BiddingService {
 
     @Transactional(readOnly = true)
     public Page<SuccessBiddingResponseDto> getSuccessBidding(Long memberId, int page) {
-        Pageable pageable = PageRequest.of(page - 1, GlobalConstants.BIDDING_PAGE_SIZE);
+        Pageable pageable = PageRequest.of(page - 1, Constants.SUCCESS_BIDDING_PAGE_SIZE);
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
+                        ErrorMessageParameter.MEMBER));
 
         List<Auction> auctions = auctionRepository.findAllByMember_IdAndAuctionStatus(
                 member.getId(),

@@ -11,11 +11,14 @@ import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
+import org.team1.keyduck.common.service.CommonService;
+import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.dto.request.MemberUpdatePasswordRequestDto;
 import org.team1.keyduck.member.dto.request.MemberUpdateRequestDto;
 import org.team1.keyduck.member.dto.response.MemberReadResponseDto;
 import org.team1.keyduck.member.dto.response.MemberUpdateResponseDto;
 import org.team1.keyduck.member.entity.Member;
+import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.team1.keyduck.payment.repository.PaymentDepositRepository;
 
@@ -26,14 +29,18 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuctionRepository auctionRepository;
-    private final JwtBlacklistService jwtBlacklistService;
     private final PaymentDepositRepository paymentDepositRepository;
+
+    private final JwtBlacklistService jwtBlacklistService;
+    private final CommonService commonService;
 
     @Transactional
     public MemberUpdateResponseDto updateMember(MemberUpdateRequestDto requestDto, Long id) {
 
+        requestDto.isAllFieldsEmpty();
+
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
-                ErrorCode.NOT_FOUND_MEMBER, "멤버"));
+                ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
 
         member.updateMember(requestDto);
 
@@ -43,15 +50,17 @@ public class MemberService {
     @Transactional
     public void updatePassword(MemberUpdatePasswordRequestDto requestDto, Long id) {
 
-        Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
-                ErrorCode.NOT_FOUND_MEMBER, "멤버"));
-
-        if (!passwordEncoder.matches(requestDto.getBeforePassword(), member.getPassword())) {
-            throw new DataInvalidException(ErrorCode.INVALID_DATA_VALUE, "비밀번호");
+        if (requestDto.getBeforePassword().equals(requestDto.getModifyPassword())) {
+            throw new DataInvalidException(ErrorCode.BEFORE_INFO_NOT_AVAILABLE,
+                    ErrorMessageParameter.PASSWORD);
         }
 
-        String encodedModifyPassword = passwordEncoder.encode(requestDto.getModifyPassword());
+        Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
+                ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
 
+        commonService.comparePassword(requestDto.getBeforePassword(), member.getPassword());
+
+        String encodedModifyPassword = passwordEncoder.encode(requestDto.getModifyPassword());
         member.updatePassword(encodedModifyPassword);
     }
 
@@ -60,11 +69,13 @@ public class MemberService {
         Member member = memberRepository.findByIdAndIsDeleted(id, false);
 
         if (member == null) {
-            throw new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버");
+            throw new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
+                    ErrorMessageParameter.MEMBER);
         }
 
         //현재 진행중인 경매가 있으면 탈퇴 불가능
-        if (auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(id,
+        if (member.getMemberRole().equals(MemberRole.SELLER)
+                && auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(id,
                 AuctionStatus.IN_PROGRESS)) {
             throw new OperationNotAllowedException(ErrorCode.DELETE_FAIL_AUCTION_IN_PROGRESS, null);
         }
@@ -77,7 +88,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberReadResponseDto getMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
-                ErrorCode.NOT_FOUND_MEMBER, "멤버"));
+                ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
 
         Long paymentDeposit = paymentDepositRepository.findPaymentDepositAmountMember_Id(id)
                 .orElse(0L);

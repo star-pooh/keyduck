@@ -11,8 +11,13 @@ public class ValidationErrorMessage {
     public static final String EMAIL_IS_NOT_NULL = "이메일은 필수 입력 값입니다.";
     public static final String EMAIL_IS_NOT_VALID = "유효하지 않은 이메일 입니다.";
 
-    public static final String PASSWORD_IS_NOT_NULL = "비밀번호은(는) 필수 입력 값입니다.";
+    public static final String PASSWORD_IS_NOT_NULL = "비밀번호는 필수 입력 값입니다.";
     public static final String PASSWORD_IS_NOT_AVAILABLE = "유효하지 않은 비밀번호 입니다.";
+
+    public static final String CITY_IS_NOT_NULL = "시는 필수 입력 값입니다.";
+    public static final String STATE_IS_NOT_NULL = "군/구는 필수 입력 값입니다.";
+    public static final String STREET_IS_NOT_NULL = "읍/면/동은 필수 입력 값입니다.";
+
 
     // TODO 멤버 생성 API 분리 후 삭제 가능성 있음
     public static final String MEMBER_ROLE_IS_NOT_NULL = "멤버 권한은 필수 입력 값입니다.";
