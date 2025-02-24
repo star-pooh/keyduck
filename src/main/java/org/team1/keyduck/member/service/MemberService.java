@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.auth.service.JwtBlacklistService;
+import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
@@ -17,6 +18,7 @@ import org.team1.keyduck.member.dto.request.MemberUpdateRequestDto;
 import org.team1.keyduck.member.dto.response.MemberReadResponseDto;
 import org.team1.keyduck.member.dto.response.MemberUpdateResponseDto;
 import org.team1.keyduck.member.entity.Member;
+import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.team1.keyduck.payment.repository.PaymentDepositRepository;
 
@@ -35,6 +37,8 @@ public class MemberService {
     @Transactional
     public MemberUpdateResponseDto updateMember(MemberUpdateRequestDto requestDto, Long id) {
 
+        requestDto.isAllFieldsEmpty();
+
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
                 ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
 
@@ -45,6 +49,11 @@ public class MemberService {
 
     @Transactional
     public void updatePassword(MemberUpdatePasswordRequestDto requestDto, Long id) {
+
+        if (requestDto.getBeforePassword().equals(requestDto.getModifyPassword())) {
+            throw new DataInvalidException(ErrorCode.BEFORE_INFO_NOT_AVAILABLE,
+                    ErrorMessageParameter.PASSWORD);
+        }
 
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
                 ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
@@ -65,7 +74,8 @@ public class MemberService {
         }
 
         //현재 진행중인 경매가 있으면 탈퇴 불가능
-        if (auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(id,
+        if (member.getMemberRole().equals(MemberRole.SELLER)
+                && auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(id,
                 AuctionStatus.IN_PROGRESS)) {
             throw new OperationNotAllowedException(ErrorCode.DELETE_FAIL_AUCTION_IN_PROGRESS, null);
         }
