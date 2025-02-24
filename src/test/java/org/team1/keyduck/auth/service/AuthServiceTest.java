@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.team1.keyduck.testdata.TestData.TEST_EMAIL1;
+import static org.team1.keyduck.testdata.TestData.TEST_MEMBER1;
+import static org.team1.keyduck.testdata.TestData.TEST_NAME1;
 import static org.team1.keyduck.testdata.TestData.TEST_PASSWORD1;
 
 import org.junit.jupiter.api.Test;
@@ -15,8 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.team1.keyduck.auth.dto.request.MemberCreateRequestDto;
-import org.team1.keyduck.common.exception.DuplicateDataException;
-import org.team1.keyduck.member.entity.Address;
+import org.team1.keyduck.common.exception.DataDuplicateException;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
@@ -38,9 +39,6 @@ class AuthServiceTest {
 
         //given
         MemberCreateRequestDto requestDto = mock(MemberCreateRequestDto.class);
-        Address address = new Address("서울시", "강남구", "테헤란로", "상세주소", "상세주소");
-        Member expectedMember = new Member("hehe", "heehee@naver.com", "1234", MemberRole.CUSTOMER,
-                address);
 
         when(requestDto.getEmail()).thenReturn(TEST_EMAIL1);
         when(memberRepository.existsByEmail(any(String.class))).thenReturn(false);
@@ -48,8 +46,8 @@ class AuthServiceTest {
         when(requestDto.getPassword()).thenReturn(TEST_PASSWORD1);
         when(passwordEncoder.encode(any(String.class))).thenReturn(TEST_PASSWORD1);
 
-        when(requestDto.getName()).thenReturn(expectedMember.getName());
-        when(memberRepository.save(any(Member.class))).thenReturn(expectedMember);
+        when(requestDto.getName()).thenReturn(TEST_NAME1);
+        when(memberRepository.save(any(Member.class))).thenReturn(TEST_MEMBER1);
 
         Member member = mock(Member.class);
 
@@ -63,7 +61,7 @@ class AuthServiceTest {
                 .ignoringFields("id")
                 .ignoringFields("createdAt")
                 .ignoringFields("modifiedAt")
-                .isEqualTo(expectedMember);
+                .isEqualTo(TEST_MEMBER1);
 
     }
 
@@ -77,8 +75,8 @@ class AuthServiceTest {
         when(memberRepository.existsByEmail(any(String.class))).thenReturn(true);
 
         //when&then
-        assertThrows(DuplicateDataException.class, () -> {
-            authService.joinMember(requestDto);
+        assertThrows(DataDuplicateException.class, () -> {
+            authService.joinMember(requestDto, MemberRole.CUSTOMER);
         });
     }
 }
