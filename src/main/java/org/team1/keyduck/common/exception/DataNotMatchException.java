@@ -7,8 +7,8 @@ public class DataNotMatchException extends RuntimeException {
 
     private final ErrorCode errorCode;
 
-    public DataNotMatchException(ErrorCode errorCode) {
-        super(errorCode.getMessage());
+    public DataNotMatchException(ErrorCode errorCode, String arg) {
+        super(errorCode.getMessage(arg));
         this.errorCode = errorCode;
     }
 }

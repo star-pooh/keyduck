@@ -31,7 +31,7 @@ public class Auction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "keyboard_id")
+    @JoinColumn(name = "keyboard_id", nullable = false)
     @OneToOne
     private Keyboard keyboard;
 
@@ -39,7 +39,7 @@ public class Auction {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String title;
 
     @Column(nullable = false)
@@ -60,7 +60,7 @@ public class Auction {
     @Column(nullable = false)
     private LocalDateTime auctionEndDate;
 
-    @Column
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private AuctionStatus auctionStatus;
 
@@ -95,5 +95,12 @@ public class Auction {
         this.currentPrice = price;
     }
 
+    public void updateAuctionStatus(AuctionStatus auctionStatus) {
+        this.auctionStatus = auctionStatus;
+    }
+
+    public void updateSuccessBiddingMember(Member member) {
+        this.member = member;
+    }
 }
 

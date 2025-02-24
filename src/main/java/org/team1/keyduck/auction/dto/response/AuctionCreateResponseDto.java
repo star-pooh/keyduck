@@ -4,11 +4,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import org.team1.keyduck.auction.entity.Auction;
+import org.team1.keyduck.keyboard.dto.response.AuctionKeyboardDto;
 
 @Getter
 public class AuctionCreateResponseDto {
 
-    private final Long keyboardId;
+    private final Long auctionId;
+
+    private final AuctionKeyboardDto keyboard;
 
     private final String title;
 
@@ -26,11 +29,11 @@ public class AuctionCreateResponseDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime auctionEndDate;
 
-    private AuctionCreateResponseDto(Long keyboardId, String title, Long startPrice,
-            Long immediatePurchasePrice, Long currentPrice, int biddingUnit,
-            LocalDateTime auctionStartDate,
-            LocalDateTime auctionEndDate) {
-        this.keyboardId = keyboardId;
+    private AuctionCreateResponseDto(Long auctionId, AuctionKeyboardDto keyboard, String title,
+            Long startPrice, Long immediatePurchasePrice, Long currentPrice, int biddingUnit,
+            LocalDateTime auctionStartDate, LocalDateTime auctionEndDate) {
+        this.auctionId = auctionId;
+        this.keyboard = keyboard;
         this.title = title;
         this.startPrice = startPrice;
         this.immediatePurchasePrice = immediatePurchasePrice;
@@ -40,10 +43,13 @@ public class AuctionCreateResponseDto {
         this.auctionEndDate = auctionEndDate;
     }
 
-    //todo 추후 엔티티명 수정시 정적팩토리 메서드 내부 필드명 수정 예정
     public static AuctionCreateResponseDto of(Auction auction) {
+
+        AuctionKeyboardDto keyboardDto = AuctionKeyboardDto.of(auction.getKeyboard());
+
         return new AuctionCreateResponseDto(
-                auction.getKeyboard().getId(),
+                auction.getId(),
+                keyboardDto,
                 auction.getTitle(),
                 auction.getStartPrice(),
                 auction.getImmediatePurchasePrice(),

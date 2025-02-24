@@ -1,9 +1,11 @@
 package org.team1.keyduck.auction.controller;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.team1.keyduck.auction.dto.request.AuctionCreateRequestDto;
 import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
 import org.team1.keyduck.auction.dto.response.AuctionCreateResponseDto;
+import org.team1.keyduck.auction.dto.response.AuctionReadAllResponseDto;
+import org.team1.keyduck.auction.dto.response.AuctionReadResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionUpdateResponseDto;
 import org.team1.keyduck.auction.service.AuctionService;
 import org.team1.keyduck.auth.entity.AuthMember;
@@ -29,7 +33,7 @@ public class AuctionController {
     @PostMapping
     public ResponseEntity<ApiResponse<AuctionCreateResponseDto>> createAuction(
             @AuthenticationPrincipal AuthMember authMember,
-            @RequestBody AuctionCreateRequestDto requestDto) {
+            @Valid @RequestBody AuctionCreateRequestDto requestDto) {
 
         AuctionCreateResponseDto responseDto = auctionService.createAuctionService(
                 authMember.getId(), requestDto);
@@ -51,6 +55,46 @@ public class AuctionController {
         ApiResponse<AuctionUpdateResponseDto> response = ApiResponse.success(
                 SuccessCode.UPDATE_SUCCESS, responseDto);
 
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    // 경매 단건 조회 API
+    @GetMapping("/{auctionId}")
+    public ResponseEntity<ApiResponse<AuctionReadResponseDto>> findAuctionAPI(
+            @PathVariable Long auctionId,
+            @AuthenticationPrincipal AuthMember authMember) {
+
+        AuctionReadResponseDto response = auctionService.findAuction(auctionId);
+
+        return new ResponseEntity<>(ApiResponse.success(SuccessCode.READ_SUCCESS, response),
+                SuccessCode.READ_SUCCESS.getStatus());
+    }
+
+    // 경매 다건 조회 API
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<AuctionReadAllResponseDto>>> findAllAuctionAPI() {
+        List<AuctionReadAllResponseDto> response = auctionService.findAllAuction();
+
+        return new ResponseEntity<>(ApiResponse.success(SuccessCode.READ_SUCCESS, response),
+                SuccessCode.READ_SUCCESS.getStatus());
+    }
+
+    @PatchMapping("/{auctionId}/open")
+    public ResponseEntity<ApiResponse<Void>> openAuction(
+            @AuthenticationPrincipal AuthMember authMember,
+            @PathVariable Long auctionId) {
+        auctionService.openAuction(authMember.getId(), auctionId);
+        ApiResponse<Void> response = ApiResponse.success(SuccessCode.UPDATE_SUCCESS);
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    @PatchMapping("/{auctionId}/close")
+    public ResponseEntity<ApiResponse<Void>> closeAuction(
+        @AuthenticationPrincipal AuthMember authMember,
+        @PathVariable Long auctionId
+    ) {
+        auctionService.closeAuction(authMember.getId(), auctionId);
+        ApiResponse<Void> response = ApiResponse.success(SuccessCode.UPDATE_SUCCESS);
         return new ResponseEntity<>(response, response.getStatus());
     }
 
