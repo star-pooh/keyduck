@@ -3,6 +3,7 @@ package org.team1.keyduck.payment.entity;
 import java.util.Arrays;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.ErrorMessageParameter;
 
 public enum PaymentMethod {
 
@@ -24,6 +25,6 @@ public enum PaymentMethod {
                 .filter(value -> value.paymentType.equals(paymentType))
                 .findFirst()
                 .orElseThrow(() -> new DataNotFoundException(
-                        ErrorCode.NOT_FOUND_PAYMENT_METHOD, "결제 수단"));
+                        ErrorCode.NOT_FOUND_PAYMENT_METHOD, ErrorMessageParameter.PAYMENT_METHOD));
     }
 }

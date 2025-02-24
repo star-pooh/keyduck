@@ -7,6 +7,7 @@ import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.payment.entity.SaleProfit;
 import org.team1.keyduck.payment.repository.SaleProfitRepository;
@@ -22,7 +23,8 @@ public class SaleProfitService {
     public void saleProfit(Long auctionId) {
 
         Auction findAuction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION, "경매"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
+                        ErrorMessageParameter.AUCTION));
 
         Member seller = findAuction.getKeyboard().getMember();
 
