@@ -106,21 +106,15 @@ class KeyboardServiceTest {
     @DisplayName("키보드 생성 메서드 - 성공 케이스")
     public void createKeyboard_success() {
         // give
-        Long memberId = 1L;
-        String name = "키보드";
-        String description = "키보드입니다.";
+        Long memberId = TestData.TEST_ID1;
+        String name = TestData.TEST_KEYBOARD_NAME1;
+        String description = TestData.TEST_KEYBOARD_DESCRIPTION1;
 
-        Member member = mock(Member.class);
+        Member member = TestData.TEST_MEMBER1;
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
 
-        // Keyboard 객체 생성하고
-        Keyboard keyboard = Keyboard.builder()
-                .member(member)
-                .name(name)
-                .description(description)
-                .build();
-        // 키보드 아이디 생성자가 없으니까 ReflectionTestUtils로 키보드 객체 수정
-        ReflectionTestUtils.setField(keyboard, "id", 1L);
+        Keyboard keyboard = new Keyboard(member, name, description);
+        ReflectionTestUtils.setField(keyboard, "id", TestData.TEST_KEYBOARD_ID1);
 
         // any : 어떤값이든 상관없이 그 타입이면 okay
         when(keyboardRepository.save(any(Keyboard.class))).thenReturn(keyboard);
@@ -130,7 +124,6 @@ class KeyboardServiceTest {
         KeyboardCreateResponseDto result = keyboardService.createKeyboard(memberId, requestDto);
 
         // then
-        //assertEquals(result.getId(), keyboard.getId());
         assertEquals(result.getName(), name);
         assertEquals(result.getDescription(), description);
 
@@ -141,9 +134,9 @@ class KeyboardServiceTest {
     void createKeyboard_fail() {
 
         // give
-        Long memberId = 1L;
-        String name = "키보드";
-        String description = "키보드입니다.";
+        Long memberId = TestData.TEST_ID1;
+        String name = TestData.TEST_KEYBOARD_NAME1;
+        String description = TestData.TEST_KEYBOARD_DESCRIPTION1;
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
 
