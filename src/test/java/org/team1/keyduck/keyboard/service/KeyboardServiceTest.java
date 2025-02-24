@@ -26,7 +26,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.team1.keyduck.common.exception.DataNotMatchException;
-import org.team1.keyduck.common.exception.DuplicateDataException;
 import org.team1.keyduck.keyboard.dto.response.KeyboardReadResponseDto;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.keyboard.dto.request.KeyboardCreateRequestDto;
