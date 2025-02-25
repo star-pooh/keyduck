@@ -39,20 +39,7 @@ public class TestData {
     public final static Member TEST_MEMBER2 = new Member(TEST_NAME2, TEST_EMAIL2, TEST_PASSWORD2,
             TEST_MEMBER_ROLE2, TEST_ADDRESS2);
 
-    public final static Long TEST_ID3 = 2L;
-    public final static String TEST_NAME3 = "TestName1";
-    public final static String TEST_EMAIL3 = "TestUser3@email.com";
-    public final static MemberRole TEST_MEMBER_ROLE3 = MemberRole.CUSTOMER;
-    public final static String TEST_CITY3 = "서울특별시";
-    public final static String TEST_STATE3 = "강남구";
-    public final static String TEST_STREET3 = "테헤란로";
-    public final static String TEST_DETAIL_ADDRESS5 = "address1";
-    public final static String TEST_DETAIL_ADDRESS6 = "address2";
-    public final static Address TEST_ADDRESS3 = new Address(TEST_CITY2, TEST_STATE2, TEST_STREET2,
-            TEST_DETAIL_ADDRESS3, TEST_DETAIL_ADDRESS4);
     public final static String TEST_PASSWORD3 = "Qwer123@";
-    public final static Member TEST_MEMBER4 = new Member(TEST_NAME2, TEST_EMAIL2, TEST_PASSWORD2,
-            TEST_MEMBER_ROLE2, TEST_ADDRESS2);
 
 
     //KEYBOARD
