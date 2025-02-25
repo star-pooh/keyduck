@@ -47,7 +47,7 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
                 )
                 .from(auction)
                 .leftJoin(auction.keyboard, keyboard)
-                .leftJoin(keyboard.member, member)
+                .leftJoin(auction.member, member)
                 .where(
                         keyboard(keyboardName),
                         auctionTitle(auctionTitle),
@@ -61,6 +61,13 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
         Long totalCount = Optional.ofNullable(queryFactory.select(
                         Wildcard.count)
                 .from(auction)
+                .leftJoin(auction.keyboard, keyboard)
+                .leftJoin(auction.member, member)
+                .where(
+                        keyboard(keyboardName),
+                        auctionTitle(auctionTitle),
+                        sellerName(sellerName)
+                )
                 .fetchOne()).orElse(0L);
         return new PageImpl<>(auctionList, pageable, totalCount);
     }
