@@ -63,6 +63,14 @@ dependencies {
 
     //  cache
     implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
+
+    // https://mvnrepository.com/artifact/net.datafaker/datafaker
+    implementation 'net.datafaker:datafaker:2.4.2'
+
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    testImplementation 'com.h2database:h2'
+
+
 }
 
 tasks.named('test') {
@@ -88,3 +96,7 @@ clean {
     delete generated
 }
 // Querydsl End
+
+//test {
+//    systemProperty 'spring.profiles.active', 'dev'
+//}

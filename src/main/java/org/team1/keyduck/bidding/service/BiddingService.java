@@ -81,10 +81,10 @@ public class BiddingService {
 
     }
 
-    //생성 매서드
+    //생성 매서드 (락 적용)
     @Transactional
     public void createBidding(Long auctionId, Long price, AuthMember authMember) {
-        Auction auction = auctionRepository.findById(auctionId)
+        Auction auction = auctionRepository.findByIdWithPessimisticLock(auctionId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
                         ErrorMessageParameter.AUCTION));
 
