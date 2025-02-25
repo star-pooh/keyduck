@@ -39,7 +39,7 @@ public class ValidationErrorMessage {
     public static final String AUCTION_END_DATE_IS_NOT_BEFORE_NOW = "경매 종료일은 현재 시각보다 이전일 수 없습니다.";
 
     // 이메일
-    public static final String EMAIL_TITLE_NOT_NULL = "제목은 필수 입력 값입니다.";
-    public static final String EMAIL_CONTENT_NOT_NULL = "내용은 필수 입력 값입니다.";
+    public static final String EMAIL_TITLE_NOT_NULL = "이메일 제목은 필수 입력 값입니다.";
+    public static final String EMAIL_CONTENT_NOT_NULL = "이메일 본문은 필수 입력 값입니다.";
 
 }

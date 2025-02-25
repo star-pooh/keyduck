@@ -1,6 +1,7 @@
 package org.team1.keyduck.email.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,10 +28,12 @@ public class EmailController {
                 SuccessCode.SEND_SUCCESS.getStatus());
     }
 
-    @PostMapping("/sendbymember/{memberId}")
-    public String sendEmailByMemberId(@PathVariable("memberId") Long memberId,
+    @PostMapping("/{memberId}")
+    public ResponseEntity<ApiResponse<Object>> sendEmailByMemberId(
+            @PathVariable("memberId") Long memberId,
             @RequestBody MemberEmailRequestDto memberEmailRequestDto) {
         emailService.sendMemberEmail(memberId, memberEmailRequestDto);
-        return "OK";
+        return new ResponseEntity<>(ApiResponse.success(SuccessCode.SEND_SUCCESS),
+                SuccessCode.SEND_SUCCESS.getStatus());
     }
 }

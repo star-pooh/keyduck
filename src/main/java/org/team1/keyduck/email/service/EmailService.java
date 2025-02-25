@@ -12,6 +12,7 @@ import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.EmailSendErrorException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
@@ -88,16 +89,15 @@ public class EmailService {
 
     public void sendMemberEmail(Long memberId, MemberEmailRequestDto memberEmailRequestDto) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
-
-        String recipientEmail = member.getEmail();
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
+                        ErrorMessageParameter.MEMBER));
 
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-            helper.setFrom(SENDER_EMAIL);
-            helper.setTo(recipientEmail);
+            helper.setFrom(senderEmail);
+            helper.setTo(member.getEmail());
             helper.setSubject(memberEmailRequestDto.getEmailTitle());
 
             Context context = new Context();
@@ -109,9 +109,22 @@ public class EmailService {
 
             mailSender.send(mimeMessage);
             log.info("이메일 전송 완료: '{}'", memberEmailRequestDto.getEmailTitle());
-        } catch (Exception e) {
-            log.error("이메일 전송 실패", e);
+        } catch (MailSendException e) {
+            log.error("이메일 전송 실패 - 네트워크 문제 또는 잘못된 이메일 주소", e);
+            throw new EmailSendErrorException(ErrorCode.EMAIL_SERVER_ERROR,
+                    ErrorMessageParameter.EMAIL_NETWORK_ERROR);
+        } catch (MailAuthenticationException e) {
+            log.error("이메일 전송 실패 - 차단 등 인증 오류");
+            throw new EmailSendErrorException(ErrorCode.EMAIL_SENDING_FORBIDDEN,
+                    ErrorMessageParameter.EMAIL_AUTHENTICATION_ERROR);
+        } catch (MailException e) {
+            log.error("이메일 전송 실패 - SMTP 서버 문제", e);
+            throw new EmailSendErrorException(ErrorCode.EMAIL_SERVER_ERROR,
+                    ErrorMessageParameter.EMAIL_SMTP_SEVER_ERROR);
+        } catch (MessagingException e) {
+            log.error("이메일 전송 실패 - 메세징 서버 오류");
+            throw new EmailSendErrorException(ErrorCode.EMAIL_SERVER_ERROR,
+                    ErrorMessageParameter.EMAIL_MESSAGING_SEVER_ERROR);
         }
     }
-
 }
