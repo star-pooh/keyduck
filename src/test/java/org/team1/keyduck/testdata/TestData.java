@@ -68,6 +68,7 @@ public class TestData {
     public final static String TEST_AUCTION_TITLE1 = "Keyboard_auction1";
     public final static Long START_PRICE1 = 20000L;
     public final static int BIDDING_UNIT1 = 1000;
+    public final static Long CURRENT_PRICE1 = 21000L;
     public final static LocalDateTime START_DATE1 = LocalDateTime.now().plusHours(1);
     public final static LocalDateTime END_DATE1 = LocalDateTime.now().plusDays(1);
     public final static AuctionStatus AUCTION_STATUS1 = AuctionStatus.IN_PROGRESS;
@@ -76,7 +77,7 @@ public class TestData {
             .member(TEST_MEMBER1)
             .title(TEST_AUCTION_TITLE1)
             .startPrice(START_PRICE1)
-            .currentPrice(START_PRICE1)
+            .currentPrice(CURRENT_PRICE1)
             .biddingUnit(BIDDING_UNIT1)
             .auctionStartDate(START_DATE1)
             .auctionEndDate(END_DATE1)
@@ -108,11 +109,22 @@ public class TestData {
     public final static Long KEYBOARD_ID3 = 3L;
     public final static String TEST_AUCTION_TITLE3 = "Keyboard_auction3";
     public final static Long START_PRICE3 = 20000L;
-    public final static Long BIDDING_UNIT3 = 1000L;
-    public final static Long CURRENT_PRICE3 = 21000L;
+    public final static int BIDDING_UNIT3 = 10000;
+    public final static Long CURRENT_PRICE3 = 40000L;
     public final static LocalDateTime START_DATE3 = LocalDateTime.now().plusHours(1);
     public final static LocalDateTime END_DATE3 = LocalDateTime.now().plusDays(1);
     public final static AuctionStatus AUCTION_STATUS3 = AuctionStatus.IN_PROGRESS;
+    public final static Auction TEST_AUCTION3 = Auction.builder()
+            .keyboard(TEST_KEYBOARD3)
+            .member(TEST_MEMBER1)
+            .title(TEST_AUCTION_TITLE3)
+            .startPrice(START_PRICE3)
+            .currentPrice(CURRENT_PRICE3)
+            .biddingUnit(BIDDING_UNIT3)
+            .auctionStartDate(START_DATE3)
+            .auctionEndDate(END_DATE3)
+            .auctionStatus(AUCTION_STATUS3)
+            .build();
 
     //BIDDING
     public final static Long TEST_BIDDING_ID1 = 1L;
