@@ -3,10 +3,13 @@ package org.team1.keyduck.keyboard.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
+import static org.team1.keyduck.testdata.TestData.TEST_AUCTION1;
+import static org.team1.keyduck.testdata.TestData.TEST_AUCTION_ID1;
 import static org.team1.keyduck.testdata.TestData.TEST_ID1;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD1;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD2;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD3;
+import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD_ID1;
 import static org.team1.keyduck.testdata.TestData.TEST_MEMBER1;
 
 import java.util.Collections;
@@ -18,6 +21,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.team1.keyduck.auction.entity.Auction;
+import org.team1.keyduck.auction.repository.AuctionRepository;
+import org.team1.keyduck.keyboard.dto.request.KeyboardUpdateRequestDto;
 import org.team1.keyduck.keyboard.dto.response.KeyboardReadResponseDto;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.keyboard.repository.KeyboardRepository;
@@ -29,6 +35,9 @@ class KeyboardServiceTest {
 
     @Mock
     private KeyboardRepository keyboardRepository;
+
+    @Mock
+    private AuctionRepository auctionRepository;
 
     @InjectMocks
     private KeyboardService keyboardService;
@@ -43,7 +52,8 @@ class KeyboardServiceTest {
         ReflectionTestUtils.setField(member, "id", TEST_ID1);
 
         //when : 수행할 작업(테스트 검증을 위한 준비)
-        when(keyboardRepository.findAllByMemberId(member.getId())).thenReturn(List.of(keyboard));
+        when(keyboardRepository.findAllByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(
+                member.getId())).thenReturn(List.of(keyboard));
         //then : 결과검증
         List<KeyboardReadResponseDto> result = keyboardService.findKeyboardBySellerId(
                 member.getId());
@@ -63,7 +73,8 @@ class KeyboardServiceTest {
                 TEST_KEYBOARD3);
 
         //when : 수행할 작업
-        when(keyboardRepository.findAllByMemberId(member.getId())).thenReturn(keyboardList);
+        when(keyboardRepository.findAllByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(
+                member.getId())).thenReturn(keyboardList);
 
         List<KeyboardReadResponseDto> result = keyboardService.findKeyboardBySellerId(
                 member.getId());
@@ -80,7 +91,8 @@ class KeyboardServiceTest {
         Member member = TEST_MEMBER1;
 
         //when : 수행할 작업
-        when(keyboardRepository.findAllByMemberId(member.getId())).thenReturn(
+        when(keyboardRepository.findAllByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(
+                TEST_MEMBER1.getId())).thenReturn(
                 Collections.emptyList());
 
         //then : 결과검증
@@ -88,4 +100,30 @@ class KeyboardServiceTest {
 
         assertTrue(result.isEmpty());
     }
+
+    @Test
+    @DisplayName("키보드 수정_성공")
+    public void updateKeyboard_success() {
+
+        //given
+        Member member = TEST_MEMBER1;
+        Keyboard keyboard = TEST_KEYBOARD1;
+        Auction auction = TEST_AUCTION1;
+        KeyboardUpdateRequestDto requestDto =
+                new KeyboardUpdateRequestDto("이름변경1", "내용변경1");
+
+        ReflectionTestUtils.setField(member, "id", TEST_ID1);
+        ReflectionTestUtils.setField(keyboard, "id", TEST_KEYBOARD_ID1);
+        ReflectionTestUtils.setField(auction, "id", TEST_AUCTION_ID1);
+
+        //when
+
+        keyboard.updateKeyboard(requestDto);
+
+        assertEquals(keyboard.getName(), "이름변경1");
+        assertEquals(keyboard.getDescription(), "내용변경1");
+
+    }
+
+
 }
