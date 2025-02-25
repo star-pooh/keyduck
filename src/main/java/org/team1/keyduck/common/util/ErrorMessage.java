@@ -10,6 +10,7 @@ public class ErrorMessage {
     public static final String DUPLICATE_USE = "해당 %s은(는) 이미 사용 중입니다.";
     public static final String DUPLICATE_DELETE = "이미 삭제된 %s 입니다.";
     public static final String NOT_FOUND_VALUE = "해당 %s을(를) 찾을 수 없습니다.";
+    public static final String EMAIL_SEND_ERROR = "이메일 전송 실패 - %";
 
     // 중복되지 않는 메시지
     // 400 BAD_REQUEST
@@ -23,6 +24,8 @@ public class ErrorMessage {
     public static final String INVALID_TOKEN = "잘못된 JWT 토큰 입니다.";
     public static final String UNSUPPORTED_TOKEN = "지원되지 않는 JWT 토큰 입니다.";
     public static final String NOT_MODIFIABLE_AND_DELETEABLE = "진행 중이거나 종료된 경매는 수정 및 삭제할 수 없습니다.";
+    public static final String BEFORE_INFO_NOT_AVAILABLE = "이전 정보와 같은 %s로 변경할 수 없습니다.";
+    public static final String EMPTY_REQUEST_BODY = "하나 이상의 수정 내용이 필요합니다.";
 
 
     // 401 UNAUTHORIZED
@@ -39,4 +42,6 @@ public class ErrorMessage {
 
     // 500 INTERNAL_SERVER_ERROR
     public static final String INTERNAL_SERVER_ERROR = "서버 내부 오류가 발생했습니다.";
+
+
 }

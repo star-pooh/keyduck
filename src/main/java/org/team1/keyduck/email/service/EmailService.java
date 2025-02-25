@@ -1,14 +1,20 @@
 package org.team1.keyduck.email.service;
 
 
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailAuthenticationException;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.team1.keyduck.common.exception.DataNotFoundException;
+import org.team1.keyduck.common.exception.EmailSendErrorException;
 import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.email.dto.GeneralEmailRequestDto;
 import org.team1.keyduck.email.dto.MemberEmailRequestDto;
 import org.team1.keyduck.member.entity.Member;
@@ -25,14 +31,11 @@ public class EmailService {
     private final MemberRepository memberRepository;
 
     // 이메일 발신자 주소 설정
-    private static final String SENDER_EMAIL = "qa9377pl@gmail.com";
+    @Value("${spring.mail.username}")
+    private String senderEmail;
+
     private final SpringTemplateEngine templateEngine;
 
-    /*
-     * 이메일을 보내는 메서드
-     * @param recipientEmail 수신자 이메일 주소
-     * @param jobOpeningUrlList 채용 공고 목록
-     */
     public void sendMail(GeneralEmailRequestDto generalEmailRequestDto) {
         try {
             //이메일 정보 가져오기
@@ -45,7 +48,7 @@ public class EmailService {
             //메세지에 정보를 설정할 수 있는 객체
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-            helper.setFrom(SENDER_EMAIL); //발신자
+            helper.setFrom(senderEmail); //발신자
             helper.setTo(recipientEmail); //수신자
             helper.setSubject(emailTitle);
 
@@ -54,7 +57,7 @@ public class EmailService {
             context.setVariable("emailTitle", emailTitle);
             context.setVariable("emailContent", emailContent);
 
-            // ✅ emailContent 값이 Thymeleaf에 정상적으로 들어갔는지 확인하는 로그 추가
+            // emailContent 값이 Thymeleaf에 정상적으로 들어갔는지 확인하는 로그 추가
             log.info("📌 Thymeleaf Context emailContent 확인: '{}'",
                     context.getVariable("emailContent"));
 
@@ -64,8 +67,22 @@ public class EmailService {
             mailSender.send(mimeMessage);
             log.info("📌 emailContent 값 확인: '{}'", emailContent);
             log.info("이메일 전송완료: {}, 내용:{}", recipientEmail, emailContent);
-        } catch (Exception e) {
-            log.error("이메일 전송 실패", e);
+        } catch (MailSendException e) {
+            log.error("이메일 전송 실패 - 네트워크 문제 또는 잘못된 이메일 주소", e);
+            throw new EmailSendErrorException(ErrorCode.EMAIL_SERVER_ERROR,
+                    ErrorMessageParameter.EMAIL_NETWORK_ERROR);
+        } catch (MailAuthenticationException e) {
+            log.error("이메일 전송 실패 - 차단 등 인증 오류");
+            throw new EmailSendErrorException(ErrorCode.EMAIL_SENDING_FORBIDDEN,
+                    ErrorMessageParameter.EMAIL_AUTHENTICATION_ERROR);
+        } catch (MailException e) {
+            log.error("이메일 전송 실패 - SMTP 서버 문제", e);
+            throw new EmailSendErrorException(ErrorCode.EMAIL_SERVER_ERROR,
+                    ErrorMessageParameter.EMAIL_SMTP_SEVER_ERROR);
+        } catch (MessagingException e) {
+            log.error("이메일 전송 실패 - 메세징 서버 오류");
+            throw new EmailSendErrorException(ErrorCode.EMAIL_SERVER_ERROR,
+                    ErrorMessageParameter.EMAIL_MESSAGING_SEVER_ERROR);
         }
     }
 
