@@ -21,10 +21,12 @@ import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
-import org.team1.keyduck.common.util.GlobalConstants;
+import org.team1.keyduck.common.util.Constants;
+import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.team1.keyduck.payment.service.PaymentDepositService;
+import org.team1.keyduck.payment.service.SaleProfitService;
 
 
 @Service
@@ -35,6 +37,7 @@ public class BiddingService {
     private final AuctionRepository auctionRepository;
     private final MemberRepository memberRepository;
     private final PaymentDepositService paymentDepositService;
+    private final SaleProfitService saleProfitService;
 
     //비딩참여가 가능한 상태인지 검증
     private void validateBiddingAvailability(Auction auction, AuthMember authMember) {
@@ -55,6 +58,11 @@ public class BiddingService {
     private void validateBiddingPrice(Long price, Auction auction) {
         // 입찰가가 최소 입찰 단위 금액의 배수만큼 증가해야함
         long priceDifference = price - auction.getStartPrice();
+
+        if (price.equals(auction.getImmediatePurchasePrice())) {
+            return;
+        }
+
         if (priceDifference % auction.getBiddingUnit() != 0) {
             throw new DataInvalidException(ErrorCode.INVALID_BIDDING_PRICE_UNIT, null);
         }
@@ -65,10 +73,12 @@ public class BiddingService {
         }
 
         //비딩금액이 최대 입찰 호가 보다 높으면 안됨
-        long maxPrice = auction.getCurrentPrice() + (auction.getBiddingUnit() * 10L);
+        long maxPrice = auction.getCurrentPrice() + (auction.getBiddingUnit()
+                * Constants.MAX_BIDDING_MULTIPLE);
         if (price > maxPrice) {
             throw new DataInvalidException(ErrorCode.BIDDING_PRICE_EXCEEDS_MAX_LIMIT, null);
         }
+
     }
 
     // 생성 메서드(비관적 락 사용)
@@ -112,10 +122,11 @@ public class BiddingService {
 
     @Transactional(readOnly = true)
     public Page<SuccessBiddingResponseDto> getSuccessBidding(Long memberId, int page) {
-        Pageable pageable = PageRequest.of(page - 1, GlobalConstants.BIDDING_PAGE_SIZE);
+        Pageable pageable = PageRequest.of(page - 1, Constants.SUCCESS_BIDDING_PAGE_SIZE);
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버"));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
+                        ErrorMessageParameter.MEMBER));
 
         List<Auction> auctions = auctionRepository.findAllByMember_IdAndAuctionStatus(
                 member.getId(),
