@@ -70,6 +70,12 @@ dependencies {
 
     //  cache
     implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
+
+    //Mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    //thymeleaf(for email service)
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 }
 
 tasks.named('test') {
