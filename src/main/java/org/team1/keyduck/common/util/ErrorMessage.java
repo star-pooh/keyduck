@@ -24,6 +24,8 @@ public class ErrorMessage {
     public static final String INVALID_TOKEN = "잘못된 JWT 토큰 입니다.";
     public static final String UNSUPPORTED_TOKEN = "지원되지 않는 JWT 토큰 입니다.";
     public static final String NOT_MODIFIABLE_AND_DELETEABLE = "진행 중이거나 종료된 경매는 수정 및 삭제할 수 없습니다.";
+    public static final String BEFORE_INFO_NOT_AVAILABLE = "이전 정보와 같은 %s로 변경할 수 없습니다.";
+    public static final String EMPTY_REQUEST_BODY = "하나 이상의 수정 내용이 필요합니다.";
 
 
     // 401 UNAUTHORIZED
