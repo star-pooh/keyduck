@@ -3,15 +3,15 @@ package org.team1.keyduck.bidding.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -39,6 +39,7 @@ import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.team1.keyduck.payment.service.PaymentDepositService;
+import org.team1.keyduck.testdata.TestData;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -57,102 +58,144 @@ class BiddingServiceTest {
     private BiddingService biddingService;
 
     @Test
-    void createBidding_success() {
-        //given
-        Long auctionId = 1L;
-        Long memberId = 1L;
-        Long price = 40000L;
-        Long myGreateBidding = 20000L;
-        LocalDateTime dateTime = LocalDateTime.now();
+    void createBidding_success_첫번쨰() {
+        // given
+        Long auctionId = TestData.TEST_AUCTION_ID1;
+        Long memberId = TestData.TEST_ID2;
+        Long price = 25000L;
 
-        AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
+        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE2);
 
-        Member member = mock(Member.class);
-        when(member.getId()).thenReturn(memberId);
+        Member member = TestData.TEST_MEMBER2;
+        ReflectionTestUtils.setField(member, "id", memberId);
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
 
-        Auction auction = mock(Auction.class);
-        when(auction.getAuctionStatus()).thenReturn(AuctionStatus.IN_PROGRESS);
-        when(auction.getBiddingUnit()).thenReturn(10000);
-        when(auction.getCurrentPrice()).thenReturn(20000L);
-        // 상태값 설정
+        Auction auction = TestData.TEST_AUCTION1; //  실제 객체 사용
+        ReflectionTestUtils.setField(auction, "id", auctionId);
         when(auctionRepository.findById(auctionId)).thenReturn(Optional.of(auction));
 
-        //기존 최고 입찰가
         when(biddingRepository.findByMember_IdAndAuction_Id(memberId, auctionId)).thenReturn(
-                myGreateBidding);
+                Optional.empty());
 
-        //비딩 객체 생성
+        Long myGreatBidding = 0L;
+
         Bidding bidding = Bidding.builder()
                 .auction(auction)
                 .member(member)
                 .price(price)
                 .build();
-        ReflectionTestUtils.setField(bidding, "id", 1L);
+        ReflectionTestUtils.setField(bidding, "id", 2L);
         when(biddingRepository.save(any(Bidding.class))).thenReturn(bidding);
 
-        //when
+        doNothing().when(paymentDepositService).payBiddingPrice(anyLong(), anyLong(), anyLong());
+
+        // when
         biddingService.createBidding(auctionId, price, authMember);
 
-        //then
+        // then
+        assertEquals(price, auction.getCurrentPrice()); //  현재 가격이 업데이트되었는지 검증
+        assertEquals(price, bidding.getPrice());
+        assertNotNull(bidding);
+
+        verify(paymentDepositService, times(1)).payBiddingPrice(memberId, price, myGreatBidding);
         verify(biddingRepository, times(1)).save(any(Bidding.class));
-        verify(paymentDepositService, times(1)).payBiddingPrice(memberId, price, myGreateBidding);
-        verify(auction, times(1)).updateCurrentPrice(price);
     }
 
     @Test
-    void createBidding_실패1_경매가_진행중이_아님() {
-        //given
-        Long auctionId = 1L;
-        Long memberId = 1L;
-        Long price = 40000L;
-        LocalDateTime dateTime = LocalDateTime.now();
+    void createBidding_success_두번째이상() {
+        // given
+        Long auctionId = TestData.TEST_AUCTION_ID1;
+        Long memberId = TestData.TEST_ID2;
+        Long price = 25000L; //  새로운 입찰가
+        Long myGreatBidding = TestData.TEST_AUCTION1.getCurrentPrice(); //  기존 입찰가
 
-        AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
+        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE2);
 
-        Member member = mock(Member.class);
+        Member member = TestData.TEST_MEMBER2;
+        ReflectionTestUtils.setField(member, "id", memberId);
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
 
-        Auction auction = mock(Auction.class);
-        when(auction.getAuctionStatus()).thenReturn(AuctionStatus.NOT_STARTED);
-        // 상태값 설정
+        Auction auction = TestData.TEST_AUCTION1; //  실제 객체 사용
+        ReflectionTestUtils.setField(auction, "id", auctionId);
         when(auctionRepository.findById(auctionId)).thenReturn(Optional.of(auction));
 
-        //when,then
+        when(biddingRepository.findByMember_IdAndAuction_Id(memberId, auctionId))
+                .thenReturn(Optional.of(myGreatBidding)); //  기존 입찰 내역 존재
+
+        Bidding bidding = Bidding.builder()
+                .auction(auction)
+                .member(member)
+                .price(price)
+                .build();
+        ReflectionTestUtils.setField(bidding, "id", 2L);
+        when(biddingRepository.save(any(Bidding.class))).thenReturn(bidding);
+
+        doNothing().when(paymentDepositService).payBiddingPrice(anyLong(), anyLong(), anyLong());
+
+        // when
+        biddingService.createBidding(auctionId, price, authMember);
+
+        // then
+        assertEquals(price, auction.getCurrentPrice()); //  현재 가격이 업데이트되었는지 검증
+        assertEquals(price, bidding.getPrice());
+        assertNotNull(bidding);
+
+        //  기존 입찰가가 `payBiddingPrice()`에서 정상적으로 반영되었는지 검증
+        verify(paymentDepositService, times(1)).payBiddingPrice(memberId, price, myGreatBidding);
+
+        //  새로운 입찰가로 저장되었는지 검증
+        verify(biddingRepository, times(1)).save(any(Bidding.class));
+    }
+
+
+    @Test
+    void createBidding_실패1_경매가_진행중이_아님() {
+        // given
+        Long auctionId = TestData.TEST_AUCTION_ID2; //  진행 중이 아닌 경매 사용
+        Long memberId = TestData.TEST_ID2;
+        Long price = 40000L;
+
+        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE2);
+
+        Member member = TestData.TEST_MEMBER2;
+        ReflectionTestUtils.setField(member, "id", memberId);
+        when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
+
+        Auction auction = TestData.TEST_AUCTION2; //  실제 객체 사용
+        ReflectionTestUtils.setField(auction, "id", auctionId);
+        when(auctionRepository.findById(auctionId)).thenReturn(Optional.of(auction));
+
+        // when, then
         Exception exception = assertThrows(
-                OperationNotAllowedException.class, // 예외 타입
-                () -> biddingService.createBidding(auctionId, price, authMember) // 실행
+                OperationNotAllowedException.class, //  예외 타입 검증
+                () -> biddingService.createBidding(auctionId, price, authMember) //  실행
         );
 
-        // 예외 메시지 검증
+        //  예외 메시지 검증
         assertEquals(ErrorCode.AUCTION_NOT_IN_PROGRESS,
                 ((OperationNotAllowedException) exception).getErrorCode());
-
     }
 
     @Test
     void createBidding_실패2_비딩_횟수가_10번이상() {
         // given
-        Long auctionId = 1L;
+        Long auctionId = TestData.TEST_AUCTION_ID1;
         Long price = 30000L;
-        Long memberId = 1L;
-        Long myGreatBidding = 20000L;
+        Long memberId = TestData.TEST_ID2;
 
         AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
 
         //mock
-        Member member = mock(Member.class);
-        when(member.getId()).thenReturn(memberId);
+        Member member = TestData.TEST_MEMBER2;
+        ReflectionTestUtils.setField(member, "id", memberId);
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
 
-        Auction auction = mock(Auction.class);
-        when(auction.getAuctionStatus()).thenReturn(AuctionStatus.IN_PROGRESS);
-        when(auction.getBiddingUnit()).thenReturn(10000);
-        when(auction.getCurrentPrice()).thenReturn(20000L);
+        Auction auction = TestData.TEST_AUCTION1;
+        ReflectionTestUtils.setField(auction, "id", auctionId);
         when(auctionRepository.findById(auctionId)).thenReturn(Optional.of(auction));
 
         // 비딩 횟수 초과
-        when(biddingRepository.countByMember_IdAndAuction_Id(anyLong(), anyLong())).thenReturn(12L);
+        when(biddingRepository.countByMember_IdAndAuction_Id(anyLong(), anyLong())).thenReturn(10L);
 
         //when/then
         Exception exception = assertThrows(
@@ -168,21 +211,19 @@ class BiddingServiceTest {
     @Test
     void createBidding_실패3_비딩금액의_단위가_설정된_단위보다_작음() {
         // given
-        Long auctionId = 1L;
-        Long price = 35000L;
-        Long memberId = 1L;
-        Long myGreatBidding = 20000L;
+        Long auctionId = TestData.TEST_AUCTION_ID3;
+        ;
+        Long price = 45000L;
+        Long memberId = TestData.TEST_ID2;
 
         AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
         //mock
-        Member member = mock(Member.class);
-        when(member.getId()).thenReturn(memberId);
+        Member member = TestData.TEST_MEMBER2;
+        ReflectionTestUtils.setField(member, "id", memberId);
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
 
-        Auction auction = mock(Auction.class);
-        when(auction.getAuctionStatus()).thenReturn(AuctionStatus.IN_PROGRESS);
-        when(auction.getBiddingUnit()).thenReturn(10000);
-        when(auction.getCurrentPrice()).thenReturn(20000L);
+        Auction auction = TestData.TEST_AUCTION3;
+        ReflectionTestUtils.setField(auction, "id", auctionId);
         when(auctionRepository.findById(auctionId)).thenReturn(Optional.of(auction));
 
         //when, then
@@ -199,21 +240,18 @@ class BiddingServiceTest {
     @Test
     void createBidding_실패4_현재가보다_낮은_입찰금액() {
         // given
-        Long auctionId = 1L;
-        Long price = 15000L;
-        Long memberId = 1L;
-        Long myGreatBidding = 10000L;
+        Long auctionId = TestData.TEST_AUCTION_ID3;
+        Long price = 30000L;
+        Long memberId = TestData.TEST_ID2;
 
         AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
         //mock
-        Member member = mock(Member.class);
-        when(member.getId()).thenReturn(memberId);
+        Member member = TestData.TEST_MEMBER2;
+        ReflectionTestUtils.setField(member, "id", memberId);
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
 
-        Auction auction = mock(Auction.class);
-        when(auction.getAuctionStatus()).thenReturn(AuctionStatus.IN_PROGRESS);
-        when(auction.getBiddingUnit()).thenReturn(5000);
-        when(auction.getCurrentPrice()).thenReturn(20000L);
+        Auction auction = TestData.TEST_AUCTION3;
+        ReflectionTestUtils.setField(auction, "id", auctionId);
         when(auctionRepository.findById(auctionId)).thenReturn(Optional.of(auction));
 
         //when, then
@@ -230,21 +268,18 @@ class BiddingServiceTest {
     @Test
     void createBidding_실패5_최대호가보다_높은_입찰금액() {
         // given
-        Long auctionId = 1L;
+        Long auctionId = TestData.TEST_AUCTION_ID1;
         Long price = 100000000L;
-        Long memberId = 1L;
-        Long myGreatBidding = 20000L;
+        Long memberId = TestData.TEST_ID2;
 
         AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
         //mock
-        Member member = mock(Member.class);
-        when(member.getId()).thenReturn(memberId);
+        Member member = TestData.TEST_MEMBER2;
+        ReflectionTestUtils.setField(member, "id", memberId);
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
 
-        Auction auction = mock(Auction.class);
-        when(auction.getAuctionStatus()).thenReturn(AuctionStatus.IN_PROGRESS);
-        when(auction.getBiddingUnit()).thenReturn(10000);
-        when(auction.getCurrentPrice()).thenReturn(20000L);
+        Auction auction = TestData.TEST_AUCTION1;
+        ReflectionTestUtils.setField(auction, "id", auctionId);
         when(auctionRepository.findById(auctionId)).thenReturn(Optional.of(auction));
 
         //when, then
