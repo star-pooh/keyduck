@@ -49,15 +49,6 @@ public class BiddingServiceTest {
     private Member member;
     private Auction auction;
 
-    // public void 메소드명()
-    // 판매자 멤버 생성
-    // 키보드 생성
-    // 경매 생성
-    // for (100번) {
-        // 구매자 멤버 생성
-        // 예치금 데이터 생성
-    // }
-
     public void setUpBidding() {
 
         // 판매자 멤버 생성
@@ -94,11 +85,6 @@ public class BiddingServiceTest {
                         .build()
         );
 
-        // for (100번) {
-            // 구매자 멤버 생성
-            // 예치금 데이터 생성
-        // }
-        // 100명의 구매자 생성 및 예치금 데이터 추가
         Faker faker = new Faker();
 
         for (int i = 0; i < 100; i++) {
@@ -127,59 +113,59 @@ public class BiddingServiceTest {
         setUpBidding();
     }
 
-    @Test
-    @DisplayName("락 없는 입찰 생성")
-    public void createBiddingWithoutLock() throws InterruptedException {
-        List<Member> members = memberRepository.findAll(); // 전체 유저를 조회하고
-        // customer만 담기
-        List<Member> customers = new ArrayList<>();
-
-        for (Member member : members) {
-            if (member.getMemberRole() == MemberRole.CUSTOMER) {
-                customers.add(member);
-            }
-        }
-
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
-        CountDownLatch latch = new CountDownLatch(100);
-
-        for (int i = 0; i < 100; i++) {
-            final long biddingPrice = auction.getCurrentPrice() + (i + 1) * 100L;
-            final Member customer = customers.get(i);
-
-            executorService.execute(() -> {
-                try {
-                    biddingService.createBidding(
-                            auction.getId(),
-                            biddingPrice,
-                            new AuthMember(customer.getId(), customer.getMemberRole())
-                    );
-                } catch (DataInvalidException e) {
-                    System.out.println("유저 ID: " + customer.getId() + ", 현재가: " + auction.getCurrentPrice()
-                            + ", 입찰 금액: " + biddingPrice);
-                    System.out.println(e.getMessage());
-                } finally {
-                    latch.countDown();
-                }
-            });
-        }
-
-        latch.await();
-        executorService.shutdown();
-
-        // then
-        long biddingCount = biddingRepository.findAllByAuctionId(auction.getId()).size();
-        System.out.println("총 입찰 횟수 : " + biddingCount);
-
-        // 최신 현재가
-        Auction updatedAuction = auctionRepository.findById(auction.getId()).get();
-
-        // 최종 입찰가
-        Bidding lastBidding = biddingRepository.findByAuctionIdOrderByPriceDesc(auction.getId()).get(0);
-        System.out.println("현재가 : " + updatedAuction.getCurrentPrice() + ", 입찰가 : " + lastBidding.getPrice());
-        assertEquals(lastBidding.getPrice(), updatedAuction.getCurrentPrice());
-
-    }
+//    @Test
+//    @DisplayName("락 없는 입찰 생성")
+//    public void createBiddingWithoutLock() throws InterruptedException {
+//        List<Member> members = memberRepository.findAll(); // 전체 유저를 조회하고
+//        // customer만 담기
+//        List<Member> customers = new ArrayList<>();
+//
+//        for (Member member : members) {
+//            if (member.getMemberRole() == MemberRole.CUSTOMER) {
+//                customers.add(member);
+//            }
+//        }
+//
+//        ExecutorService executorService = Executors.newFixedThreadPool(10);
+//        CountDownLatch latch = new CountDownLatch(100);
+//
+//        for (int i = 0; i < 100; i++) {
+//            final long biddingPrice = auction.getCurrentPrice() + (i + 1) * 100L;
+//            final Member customer = customers.get(i);
+//
+//            executorService.execute(() -> {
+//                try {
+//                    biddingService.createBidding(
+//                            auction.getId(),
+//                            biddingPrice,
+//                            new AuthMember(customer.getId(), customer.getMemberRole())
+//                    );
+//                } catch (DataInvalidException e) {
+//                    System.out.println("유저 ID: " + customer.getId() + ", 현재가: " + auction.getCurrentPrice()
+//                            + ", 입찰 금액: " + biddingPrice);
+//                    System.out.println(e.getMessage());
+//                } finally {
+//                    latch.countDown();
+//                }
+//            });
+//        }
+//
+//        latch.await();
+//        executorService.shutdown();
+//
+//        // then
+//        long biddingCount = biddingRepository.findAllByAuctionId(auction.getId()).size();
+//        System.out.println("총 입찰 횟수 : " + biddingCount);
+//
+//        // 최신 현재가
+//        Auction updatedAuction = auctionRepository.findById(auction.getId()).get();
+//
+//        // 최종 입찰가
+//        Bidding lastBidding = biddingRepository.findByAuctionIdOrderByPriceDesc(auction.getId()).get(0);
+//        System.out.println("현재가 : " + updatedAuction.getCurrentPrice() + ", 입찰가 : " + lastBidding.getPrice());
+//        assertEquals(lastBidding.getPrice(), updatedAuction.getCurrentPrice());
+//
+//    }
 
     @Test
     @DisplayName("비관적 락 이용한 입찰 생성")

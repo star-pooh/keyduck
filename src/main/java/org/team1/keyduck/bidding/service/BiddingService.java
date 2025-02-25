@@ -101,7 +101,6 @@ public class BiddingService {
         auction.updateCurrentPrice(price);
     }
 
-
     // 경매별 입찰 내역 조회
     @Transactional(readOnly = true)
     public List<BiddingResponseDto> getBiddingByAuction(Long auctionId) {
