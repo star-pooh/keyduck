@@ -13,8 +13,10 @@ import org.team1.keyduck.common.config.JwtUtil;
 import org.team1.keyduck.common.exception.DataDuplicateException;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
-import org.team1.keyduck.common.exception.DataNotMatchException;
 import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.exception.OperationNotAllowedException;
+import org.team1.keyduck.common.service.CommonService;
+import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
@@ -26,18 +28,32 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+
     private final JwtBlacklistService jwtBlacklistService;
+    private final CommonService commonService;
 
     public SigninResponseDto login(SigninRequestDto signinRequest) {
-        String bearerToken = createBearerToken(signinRequest.getEmail(),
-                signinRequest.getPassword());
+        Member member = memberRepository.findByEmail(signinRequest.getEmail())
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.LOGIN_FAILED, null));
+
+        if (member.isDeleted()) {
+            throw new DataInvalidException(ErrorCode.DUPLICATE_DELETED,
+                    ErrorMessageParameter.MEMBER);
+        }
+
+        commonService.comparePassword(signinRequest.getPassword(), member.getPassword());
+
+        String bearerToken = jwtUtil.createToken(member.getId(), member.getMemberRole());
+
         return new SigninResponseDto(bearerToken);
     }
 
-    public MemberCreateResponseDto joinMember(MemberCreateRequestDto requestDto, MemberRole memberRole) {
+    public MemberCreateResponseDto joinMember(MemberCreateRequestDto requestDto,
+            MemberRole memberRole) {
 
         if (memberRepository.existsByEmail(requestDto.getEmail())) {
-            throw new DataDuplicateException(ErrorCode.DUPLICATE_EMAIL, "이메일");
+            throw new DataDuplicateException(ErrorCode.DUPLICATE_EMAIL,
+                    ErrorMessageParameter.EMAIL);
         }
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
 
@@ -53,22 +69,22 @@ public class AuthService {
     }
 
     public PaymentFormResponseDto paymentFormLogin(PaymentFormRequestDto dto) {
-        String bearerToken = createBearerToken(dto.getEmail(), dto.getPassword());
-        return new PaymentFormResponseDto(bearerToken, dto.getAmount());
-    }
-
-    private String createBearerToken(String email, String password) {
-        Member member = memberRepository.findByEmail(email)
+        Member member = memberRepository.findByEmailAndIsDeletedFalse(dto.getEmail())
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.LOGIN_FAILED, null));
 
         if (member.isDeleted()) {
-            throw new DataInvalidException(ErrorCode.DUPLICATE_DELETED, "멤버");
+            throw new DataInvalidException(ErrorCode.DUPLICATE_DELETED,
+                    ErrorMessageParameter.MEMBER);
         }
 
-        if (!passwordEncoder.matches(password, member.getPassword())) {
-            throw new DataNotMatchException(ErrorCode.LOGIN_FAILED, null);
+        if (member.getMemberRole().equals(MemberRole.SELLER)) {
+            throw new OperationNotAllowedException(ErrorCode.FORBIDDEN_PAYMENT_LOGIN_FORM, null);
         }
 
-        return jwtUtil.createToken(member.getId(), member.getMemberRole());
+        commonService.comparePassword(dto.getPassword(), member.getPassword());
+
+        String bearerToken = jwtUtil.createToken(member.getId(), member.getMemberRole());
+
+        return new PaymentFormResponseDto(bearerToken, dto.getAmount());
     }
 }

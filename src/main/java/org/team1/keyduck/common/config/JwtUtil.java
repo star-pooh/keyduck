@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.entity.MemberRole;
 
 @Slf4j(topic = "JwtUtil")
@@ -76,7 +77,7 @@ public class JwtUtil {
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(7);
         }
-        throw new DataInvalidException(ErrorCode.INVALID_TOKEN, "토큰");
+        throw new DataInvalidException(ErrorCode.INVALID_TOKEN, ErrorMessageParameter.TOKEN);
     }
 
     public Claims extractClaims(String token) {
