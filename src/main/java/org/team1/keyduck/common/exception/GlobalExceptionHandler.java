@@ -84,7 +84,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse> handleEmailSendErrorException(
             EmailSendErrorException exception) {
         ApiResponse apiResponse = ApiResponse.error(
-                exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
+                exception.getErrorCode(), exception.getMessage());
+        log.info("\n{},{},\n{}", apiResponse.getCode(), getStackTrace(exception.getStackTrace()),
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
