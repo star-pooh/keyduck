@@ -2,13 +2,15 @@ package org.team1.keyduck.auction.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.dto.request.AuctionCreateRequestDto;
 import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
 import org.team1.keyduck.auction.dto.response.AuctionCreateResponseDto;
-import org.team1.keyduck.auction.dto.response.AuctionReadAllResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionReadResponseDto;
+import org.team1.keyduck.auction.dto.response.AuctionSearchResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionUpdateResponseDto;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
@@ -33,7 +35,6 @@ public class AuctionService {
     private final AuctionRepository auctionRepository;
     private final KeyboardRepository keyboardRepository;
     private final BiddingRepository biddingRepository;
-
     private final SaleProfitService saleProfitService;
     private final PaymentDepositService paymentDepositService;
 
@@ -107,15 +108,11 @@ public class AuctionService {
 
     // 경매 다건 조회
     @Transactional(readOnly = true)
-    public List<AuctionReadAllResponseDto> findAllAuction() {
+    public Page<AuctionSearchResponseDto> findAllAuction(Pageable pageable,
+            String keyboardName, String auctionTitle, String sellerName) {
 
-        // 전체 경매를 조회하고
-        List<Auction> auctions = auctionRepository.findAllByOrderByIdDesc();
-
-        // DTO로 변환 후 반환
-        return auctions.stream()
-                .map(AuctionReadAllResponseDto::of)
-                .toList();
+        return auctionRepository.findAllAuction(pageable,
+                keyboardName, auctionTitle, sellerName);
     }
 
     @Transactional
