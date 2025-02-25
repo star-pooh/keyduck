@@ -5,7 +5,6 @@ import static org.team1.keyduck.keyboard.entity.QKeyboard.keyboard;
 import static org.team1.keyduck.member.entity.QMember.member;
 
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -18,8 +17,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
-import org.team1.keyduck.auction.dto.response.AuctionDto;
-import org.team1.keyduck.auction.dto.response.AuctionDto.SearchResponse;
+import org.team1.keyduck.auction.dto.response.AuctionSearchResponseDto;
+import org.team1.keyduck.auction.dto.response.QAuctionSearchResponseDto;
 
 @Repository
 @RequiredArgsConstructor
@@ -28,11 +27,11 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<AuctionDto.SearchResponse> findAllAuction(Pageable pageable,
+    public Page<AuctionSearchResponseDto> findAllAuction(Pageable pageable,
             String keyboardName, String auctionTitle, String sellerName) {
-        List<AuctionDto.SearchResponse> auctionList = queryFactory.select(
-                        Projections.constructor(
-                                SearchResponse.class,
+        List<AuctionSearchResponseDto> auctionList = queryFactory.select(
+
+                        new QAuctionSearchResponseDto(
                                 auction.id,
                                 auction.keyboard.id,
                                 auction.keyboard.name,
@@ -44,6 +43,7 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
                                 auction.member.id,
                                 auction.member.name
                         )
+
                 )
                 .from(auction)
                 .leftJoin(auction.keyboard, keyboard)

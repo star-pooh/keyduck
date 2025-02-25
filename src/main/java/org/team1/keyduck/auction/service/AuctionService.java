@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.dto.request.AuctionCreateRequestDto;
 import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
 import org.team1.keyduck.auction.dto.response.AuctionCreateResponseDto;
-import org.team1.keyduck.auction.dto.response.AuctionDto;
 import org.team1.keyduck.auction.dto.response.AuctionReadResponseDto;
+import org.team1.keyduck.auction.dto.response.AuctionSearchResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionUpdateResponseDto;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
@@ -35,7 +35,6 @@ public class AuctionService {
     private final AuctionRepository auctionRepository;
     private final KeyboardRepository keyboardRepository;
     private final BiddingRepository biddingRepository;
-
     private final SaleProfitService saleProfitService;
     private final PaymentDepositService paymentDepositService;
 
@@ -109,7 +108,7 @@ public class AuctionService {
 
     // 경매 다건 조회
     @Transactional(readOnly = true)
-    public Page<AuctionDto.SearchResponse> findAllAuction(Pageable pageable,
+    public Page<AuctionSearchResponseDto> findAllAuction(Pageable pageable,
             String keyboardName, String auctionTitle, String sellerName) {
 
         return auctionRepository.findAllAuction(pageable,
