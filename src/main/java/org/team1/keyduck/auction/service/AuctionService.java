@@ -19,7 +19,10 @@ import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataUnauthorizedAccessException;
 import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.Constants;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
+import org.team1.keyduck.email.dto.MemberEmailRequestDto;
+import org.team1.keyduck.email.service.EmailService;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.keyboard.repository.KeyboardRepository;
 import org.team1.keyduck.member.entity.Member;
@@ -33,6 +36,7 @@ public class AuctionService {
     private final AuctionRepository auctionRepository;
     private final KeyboardRepository keyboardRepository;
     private final BiddingRepository biddingRepository;
+    private final EmailService emailService;
 
     private final SaleProfitService saleProfitService;
     private final PaymentDepositService paymentDepositService;
@@ -63,6 +67,13 @@ public class AuctionService {
 
         Auction saveAuction = auctionRepository.save(auction);
 
+        MemberEmailRequestDto emailRequestDto = new MemberEmailRequestDto(
+                Constants.AUCTION_CREATED_MAIL_TITLE,
+                String.format(Constants.AUCTION_CREATED_MAIL_CONTENTS,
+                        auction.getKeyboard().getMember().getName(),
+                        auction.getKeyboard().getName(), auction.getTitle())
+        );
+        emailService.sendMemberEmail(auction.getKeyboard().getMember().getId(), emailRequestDto);
         return AuctionCreateResponseDto.of(saveAuction);
 
     }
