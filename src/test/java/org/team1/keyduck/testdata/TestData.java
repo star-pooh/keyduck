@@ -61,4 +61,7 @@ public class TestData {
     public final static Keyboard TEST_KEYBOARD3 = new Keyboard(TEST_MEMBER1, TEST_KEYBOARD_NAME3,
             TEST_KEYBOARD_DESCRIPTION3);
 
+    //token
+    public final static String TEST_TOKEN = "TEST";
+
 }
