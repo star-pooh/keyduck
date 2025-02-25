@@ -1,6 +1,7 @@
 package org.team1.keyduck.auth.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -8,8 +9,10 @@ import static org.mockito.Mockito.when;
 import static org.team1.keyduck.testdata.TestData.TEST_EMAIL1;
 import static org.team1.keyduck.testdata.TestData.TEST_EMAIL2;
 import static org.team1.keyduck.testdata.TestData.TEST_MEMBER1;
+import static org.team1.keyduck.testdata.TestData.TEST_MEMBER_ROLE2;
 import static org.team1.keyduck.testdata.TestData.TEST_NAME1;
 import static org.team1.keyduck.testdata.TestData.TEST_PASSWORD1;
+import static org.team1.keyduck.testdata.TestData.TEST_TOKEN;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -21,8 +24,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.team1.keyduck.auth.dto.request.MemberCreateRequestDto;
 import org.team1.keyduck.auth.dto.request.SigninRequestDto;
+import org.team1.keyduck.auth.dto.response.SigninResponseDto;
+import org.team1.keyduck.common.config.JwtUtil;
 import org.team1.keyduck.common.exception.DataDuplicateException;
 import org.team1.keyduck.common.exception.DataInvalidException;
+import org.team1.keyduck.common.service.CommonService;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
@@ -38,6 +44,12 @@ class AuthServiceTest {
 
     @Mock
     PasswordEncoder passwordEncoder;
+
+    @Mock
+    JwtUtil jwtUtil;
+
+    @Mock
+    CommonService commonService;
 
     @Test
     void 판매자_회원가입_성공() {
@@ -80,9 +92,34 @@ class AuthServiceTest {
         when(memberRepository.existsByEmail(any(String.class))).thenReturn(true);
 
         //when&then
-        assertThrows(DataDuplicateException.class, () -> {
+        DataDuplicateException exception = assertThrows(DataDuplicateException.class, () -> {
             authService.joinMember(requestDto, MemberRole.CUSTOMER);
         });
+
+        assertEquals("해당 이메일은(는) 이미 사용 중입니다.", exception.getMessage());
+
+    }
+
+    @Test
+    void 로그인_성공() {
+        //given
+        SigninRequestDto requestDto = mock(SigninRequestDto.class);
+        Member member = mock(Member.class);
+        SigninResponseDto expectDto = new SigninResponseDto(TEST_TOKEN);
+
+        when(requestDto.getEmail()).thenReturn(TEST_EMAIL2);
+        when(memberRepository.findByEmail(any(String.class))).thenReturn(
+                Optional.ofNullable(member));
+        when(Objects.requireNonNull(member).isDeleted()).thenReturn(false);
+        when(member.getId()).thenReturn(1L);
+        when(member.getMemberRole()).thenReturn(TEST_MEMBER_ROLE2);
+        when(jwtUtil.createToken(any(Long.class), any(MemberRole.class))).thenReturn(TEST_TOKEN);
+
+        //when
+        SigninResponseDto dto = authService.login(requestDto);
+
+        //then
+        assertEquals(expectDto.getBearerToken(), dto.getBearerToken());
     }
 
     @Test
@@ -98,9 +135,11 @@ class AuthServiceTest {
         when(Objects.requireNonNull(member).isDeleted()).thenReturn(true);
 
         //when&then
-        assertThrows(DataInvalidException.class, () -> {
+        DataInvalidException exception = assertThrows(DataInvalidException.class, () -> {
             authService.login(requestDto);
         });
+
+        assertEquals("이미 삭제된 멤버 입니다.", exception.getMessage());
 
     }
 }

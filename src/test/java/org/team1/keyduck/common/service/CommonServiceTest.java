@@ -1,5 +1,6 @@
 package org.team1.keyduck.common.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -29,8 +30,10 @@ class CommonServiceTest {
         when(passwordEncoder.matches(any(CharSequence.class), any(String.class))).thenReturn(false);
 
         // when&then
-        assertThrows(DataInvalidException.class, () -> {
+        DataInvalidException exception = assertThrows(DataInvalidException.class, () -> {
             commonService.comparePassword(TEST_PASSWORD1, TEST_PASSWORD3);
         });
+
+        assertEquals("유효하지 않은 비밀번호 입니다.", exception.getMessage());
     }
 }
