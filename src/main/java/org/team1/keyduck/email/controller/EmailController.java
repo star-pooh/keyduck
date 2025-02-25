@@ -30,7 +30,7 @@ public class EmailController {
     }
 
     @PostMapping("/{memberId}")
-    public ResponseEntity<ApiResponse<Object>> sendEmailByMemberId(
+    public ResponseEntity<ApiResponse<Void>> sendEmailByMemberId(
             @PathVariable("memberId") Long memberId,
             @RequestBody MemberEmailRequestDto memberEmailRequestDto) {
         emailService.sendMemberEmail(memberId, memberEmailRequestDto);
@@ -38,10 +38,11 @@ public class EmailController {
                 SuccessCode.SEND_SUCCESS.getStatus());
     }
 
-    @PostMapping("/sendtomultiple")
-    public String sendEmailToMultiple(
+    @PostMapping("/multiple")
+    public ResponseEntity<ApiResponse<Void>> sendEmailToMultiple(
             @RequestBody MultipleEmailRequestDto multipleEmailRequestDto) {
         emailService.sendMultipleEmails(multipleEmailRequestDto);
-        return "OK";
+        return new ResponseEntity<>(ApiResponse.success(SuccessCode.SEND_SUCCESS),
+                SuccessCode.SEND_SUCCESS.getStatus());
     }
 }

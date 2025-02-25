@@ -3,6 +3,7 @@ package org.team1.keyduck.email.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -142,9 +143,21 @@ public class EmailService {
                 requestDto.getEmailTitle(),
                 requestDto.getEmailContent()
         );
+        List<String> successEmails = new ArrayList<>();
+        List<String> failedEmails = new ArrayList<>();
+
         for (Member member : members) {
-            sendMemberEmail(member.getId(), memberEmailRequestDto);
+            try {
+                sendMemberEmail(member.getId(), memberEmailRequestDto);
+                successEmails.add(member.getEmail());
+            } catch (EmailSendErrorException e) {
+                log.error("이메일 전송실패 -{}", member.getEmail(), e);
+                failedEmails.add(member.getEmail());
+            }
+        }
+        log.info("이메일 전송 완료 - 성공: {}", successEmails);
+        if (!failedEmails.isEmpty()) {
+            log.warn("이메일 전송 실패 - 실패: {}", failedEmails);
         }
     }
-
 }
