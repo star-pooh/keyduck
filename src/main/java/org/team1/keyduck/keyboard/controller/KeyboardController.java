@@ -5,6 +5,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,9 +44,22 @@ public class KeyboardController {
                 SuccessCode.CREATE_SUCCESS.getStatus());
     }
 
+    // 키보드 삭제 API
+    @DeleteMapping("/{keyboardId}")
+    public ResponseEntity<ApiResponse<Void>> deleteKeyboardAPI(
+            @AuthenticationPrincipal AuthMember authMember,
+            @PathVariable Long keyboardId) {
+
+        keyboardService.deleteKeyboard(keyboardId, authMember.getId());
+
+        return new ResponseEntity<>(ApiResponse.success(SuccessCode.DELETE_SUCCESS),
+                SuccessCode.DELETE_SUCCESS.getStatus());
+    }
+
     @GetMapping("/mine")
     public ResponseEntity<ApiResponse<List<KeyboardReadResponseDto>>> findKeyboardBySellerId(
             @AuthenticationPrincipal AuthMember authMember) {
+
         List<KeyboardReadResponseDto> keyboardReadResponseDto = keyboardService.findKeyboardBySellerId(
                 authMember.getId());
 
@@ -68,6 +83,5 @@ public class KeyboardController {
         return new ResponseEntity<>(response, response.getStatus());
 
     }
-
 }
 

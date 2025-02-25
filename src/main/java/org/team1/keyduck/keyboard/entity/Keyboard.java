@@ -30,20 +30,25 @@ public class Keyboard extends BaseTime {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String name;
 
     @Column
     private String description;
 
-//    private String imageUrl;
-// TODO 확인해주세요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 
     @Builder
     public Keyboard(Member member, String name, String description) {
         this.member = member;
         this.name = name;
         this.description = description;
+        this.isDeleted = false;
+    }
+
+    public void deleteKeyboard() {
+        this.isDeleted = true;
     }
 
     public void updateKeyboard(KeyboardUpdateRequestDto requestDto) {

@@ -1,11 +1,13 @@
 package org.team1.keyduck.common.exception;
 
+import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.team1.keyduck.common.dto.ApiResponse;
 
 @Slf4j
@@ -14,47 +16,107 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<ApiResponse> handleDataNotFoundException(
-        DataNotFoundException exception) {
-        ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
-        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-            apiResponse.getMessage());
+            DataNotFoundException exception) {
+        ApiResponse apiResponse = ApiResponse.error(
+                exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
+
+        log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
-    @ExceptionHandler(DuplicateDataException.class)
-    public ResponseEntity<ApiResponse> handleDuplicateDataException(
-        DuplicateDataException exception) {
-        ApiResponse apiResponse = ApiResponse.error(exception.getErrorCode());
-        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-            apiResponse.getMessage());
+    @ExceptionHandler(DataDuplicateException.class)
+    public ResponseEntity<ApiResponse> handleDataDuplicateException(
+            DataDuplicateException exception) {
+        ApiResponse apiResponse = ApiResponse.error(
+                exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
+
+        log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
+    @ExceptionHandler(DataNotMatchException.class)
+    public ResponseEntity<ApiResponse> handleDataNotMatchException(
+            DataNotMatchException exception) {
+        ApiResponse apiResponse = ApiResponse.error(
+                exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
+
+        log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
+                apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+    }
+
+    @ExceptionHandler(DataUnauthorizedAccessException.class)
+    public ResponseEntity<ApiResponse> handleDataUnauthorizedAccessException(
+            DataUnauthorizedAccessException exception) {
+        ApiResponse apiResponse = ApiResponse.error(
+                exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
+
+        log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
+                apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+    }
+
+    @ExceptionHandler(DataInvalidException.class)
+    public ResponseEntity<ApiResponse> handleDataNotValidException(
+            DataInvalidException exception) {
+        ApiResponse apiResponse = ApiResponse.error(
+                exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
+
+        log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
+                apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+    }
+
+    @ExceptionHandler(OperationNotAllowedException.class)
+    public ResponseEntity<ApiResponse> handleOperationNotAllowedException(
+            OperationNotAllowedException exception) {
+        ApiResponse apiResponse = ApiResponse.error(
+                exception.getErrorCode(), exception.getMessage(), exception.getStackTrace());
+
+        log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
+                apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+    }
+
+
+    // @RequestBody를 @Valid 해서 에러가 발생한 경우
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(
-        MethodArgumentNotValidException exception) {
-        CustomValidException customException = new CustomValidException(
-            exception.getParameter(), exception.getBindingResult(), ErrorCode.INVALID_INPUT_VALUE);
+            MethodArgumentNotValidException exception) {
+        RequestBodyValidException customException = new RequestBodyValidException(
+                exception.getParameter(), exception.getBindingResult(),
+                ErrorCode.INVALID_DATA_VALUE);
+
         ApiResponse apiResponse = ApiResponse.error(customException.getErrorCode(),
-            customException.getErrorMessage());
-        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-            apiResponse.getMessage());
+                customException.getErrorMessage(), customException.getStackTrace());
+
+        log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
+                apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+    }
+
+    // @RequestParam를 @Valid 해서 에러가 발생한 경우
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ApiResponse> handleHandlerMethodValidationExceptionException(
+            HandlerMethodValidationException exception) {
+        ApiResponse apiResponse = ApiResponse.error(ErrorCode.INVALID_DATA_VALUE,
+                Arrays.toString(exception.getDetailMessageArguments()),
+                exception.getStackTrace());
+
+        log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
+                apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleException(Exception exception) {
-        ApiResponse apiResponse = ApiResponse.error(ErrorCode.INTERNAL_SERVER_ERROR);
-        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-            exception.getMessage());
-        return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+        ApiResponse apiResponse = ApiResponse.error(
+                ErrorCode.INTERNAL_SERVER_ERROR, exception.getStackTrace());
 
-    @ExceptionHandler(DataMismatchException.class)
-    public ResponseEntity<ApiResponse> handleDataMismatchException(DataMismatchException exception) {
-        ApiResponse apiResponse = ApiResponse.error(ErrorCode.FORBIDDEN_ACCESS);
-        log.info("{}, {}, {}", apiResponse.getCode(), exception.getStackTrace(),
-                apiResponse.getMessage());
-        return new ResponseEntity<>(apiResponse, HttpStatus.FORBIDDEN);
+        log.info("{}, {}, {}", apiResponse.getCode(), apiResponse.getStackTrace(),
+                exception.getMessage());
+        return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
