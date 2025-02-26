@@ -21,6 +21,7 @@ import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.team1.keyduck.payment.repository.PaymentDepositRepository;
+import org.team1.keyduck.payment.repository.SaleProfitRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final AuctionRepository auctionRepository;
     private final PaymentDepositRepository paymentDepositRepository;
+    private final SaleProfitRepository saleProfitRepository;
 
     private final JwtBlacklistService jwtBlacklistService;
     private final CommonService commonService;
@@ -89,6 +91,13 @@ public class MemberService {
     public MemberReadResponseDto getMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
                 ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
+
+        if (member.getMemberRole().equals(MemberRole.SELLER)) {
+
+            Long sellerPoint = saleProfitRepository.findSellerPointByMember_Id(id).orElse(0L);
+
+            return MemberReadResponseDto.of(member, sellerPoint);
+        }
 
         Long paymentDeposit = paymentDepositRepository.findPaymentDepositAmountMember_Id(id)
                 .orElse(0L);
