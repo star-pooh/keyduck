@@ -31,7 +31,6 @@ import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.team1.keyduck.auth.entity.AuthMember;
-import org.team1.keyduck.payment.repository.PaymentDepositRepository;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -97,29 +96,45 @@ public class BiddingServiceTest {
         final int BATCH_SIZE = 100;
         final String PASSWORD = "5678";
 
-        List<Member> customers = new ArrayList<>();
-        List<Object[]> PaymentDeposits = new ArrayList<>();
+        String memberSql = "INSERT INTO member (name, email, password, member_role, city, state, street, detail_address1, detail_address2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        List<Object[]> members = new ArrayList<>();
 
         for (int i = 0; i < MAX_CUSTOMERS; i++) {
-            customers.add(
-                    Member.builder()
-                            .name("구매자" + i)
-                            .email(faker.color().name() + i + "@" + faker.animal() + ".com")
-                            .password(PASSWORD)
-                            .memberRole(MemberRole.CUSTOMER)
-                            .address(new Address("경기도", "안양시", "만안구", "56789", "2층"))
-                            .build()
-            );
+            members.add(new Object[]{
+                    "구매자" + i,
+                    faker.color().name() + i + "@" + faker.animal() + ".com",
+                    PASSWORD,
+                    MemberRole.CUSTOMER.name(),
+                    "경기도", "안양시", "만안구", "56789", "2층"
+            });
         }
-        memberRepository.saveAll(customers);
 
-        // 저장된 customers에서 아이디를 다시 가져와 보증금 데이터 추가
+        jdbcTemplate.batchUpdate(memberSql, members, BATCH_SIZE,
+                (ps, param) -> {
+                    ps.setString(1, (String) param[0]);
+                    ps.setString(2, (String) param[1]);
+                    ps.setString(3, (String) param[2]);
+                    ps.setString(4, (String) param[3]);
+                    ps.setString(5, (String) param[4]);
+                    ps.setString(6, (String) param[5]);
+                    ps.setString(7, (String) param[6]);
+                    ps.setString(8, (String) param[7]);
+                    ps.setString(9, (String) param[8]);
+                });
+
+
+        List<Member> customers = memberRepository.findAll().stream()
+                .filter(m -> m.getMemberRole() == MemberRole.CUSTOMER)
+                .toList();
+
+        String depositSql = "INSERT INTO payment_deposit (member_id, deposit_amount) VALUES (?, ?)";
+        List<Object[]> paymentDeposits = new ArrayList<>();
+
         for (Member customer : customers) {
-            PaymentDeposits.add(new Object[]{customer.getId(), 1_000_000L});
+            paymentDeposits.add(new Object[]{customer.getId(), 1_000_000L});
         }
 
-        String sql = "INSERT INTO payment_deposit (member_id, deposit_amount) VALUES (?, ?)";
-        jdbcTemplate.batchUpdate(sql, PaymentDeposits, BATCH_SIZE,
+        jdbcTemplate.batchUpdate(depositSql, paymentDeposits, BATCH_SIZE,
                 (ps, param) -> {
                     ps.setLong(1, (Long) param[0]);
                     ps.setLong(2, (Long) param[1]);
@@ -172,9 +187,6 @@ public class BiddingServiceTest {
         executorService.shutdown();
 
         // then
-        long biddingCount = biddingRepository.findAllByAuctionId(auction.getId()).size();
-        System.out.println("총 입찰 횟수 : " + biddingCount);
-
         // 최신 현재가
         Auction updatedAuction = auctionRepository.findById(auction.getId()).get();
 
