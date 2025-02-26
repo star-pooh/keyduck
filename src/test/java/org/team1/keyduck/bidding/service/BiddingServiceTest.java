@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
@@ -32,8 +31,6 @@ import org.team1.keyduck.member.entity.Address;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
-import org.team1.keyduck.payment.service.PaymentDepositService;
-import org.team1.keyduck.payment.service.SaleProfitService;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -51,12 +48,6 @@ public class BiddingServiceTest {
     private KeyboardRepository keyboardRepository;
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    @MockitoBean
-    private PaymentDepositService paymentDepositService;
-
-    @MockitoBean
-    private SaleProfitService saleProfitService;
 
 
     private Member member;
