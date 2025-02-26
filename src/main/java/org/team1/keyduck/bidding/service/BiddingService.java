@@ -59,7 +59,8 @@ public class BiddingService {
         // 입찰가가 최소 입찰 단위 금액의 배수만큼 증가해야함
         long priceDifference = price - auction.getStartPrice();
 
-        if (price.equals(auction.getImmediatePurchasePrice())) {
+        if (price.equals(auction.getImmediatePurchasePrice())
+                && price > auction.getCurrentPrice()) {
             return;
         }
 
@@ -152,4 +153,5 @@ public class BiddingService {
 
         return new PageImpl<>(biddingResponseList, pageable, biddingResponseList.size());
     }
+
 }
