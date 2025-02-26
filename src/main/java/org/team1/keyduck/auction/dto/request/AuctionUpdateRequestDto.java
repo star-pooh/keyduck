@@ -22,7 +22,7 @@ public class AuctionUpdateRequestDto {
     private Long immediatePurchasePrice;
 
     @NotNull(message = ValidationErrorMessage.BIDDING_UNIT_IS_NOT_NULL)
-    private int biddingUnit;
+    private Long biddingUnit;
 
     @NotNull(message = ValidationErrorMessage.AUCTION_START_DATE_IS_NOT_NULL)
     @Future(message = ValidationErrorMessage.AUCTION_START_DATE_IS_NOT_BEFORE_NOW)
