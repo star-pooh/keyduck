@@ -15,16 +15,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Gradle 캐싱
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: Linux-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            Linux-gradle-
-
       - name: Make .env file from GitHub Secrets
         run: |
           echo "${{ secrets.ENV_SECRET }}" > .env
