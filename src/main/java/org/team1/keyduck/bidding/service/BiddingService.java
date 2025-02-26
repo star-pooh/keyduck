@@ -130,6 +130,13 @@ public class BiddingService {
     // 경매별 입찰 내역 조회
     @Transactional(readOnly = true)
     public List<BiddingResponseDto> getBiddingByAuction(Long auctionId) {
+
+        boolean exists = auctionRepository.existsById(auctionId);
+        if (!exists) {
+            throw new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
+                    ErrorMessageParameter.AUCTION);
+        }
+
         List<Bidding> biddings = biddingRepository.findByAuctionIdOrderByPriceDesc(auctionId);
 
         return biddings.stream().map(BiddingResponseDto::of).toList();
