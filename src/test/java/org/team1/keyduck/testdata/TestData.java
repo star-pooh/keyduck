@@ -67,5 +67,6 @@ public class TestData {
             .orderId(TestData.TEST_ORDER_ID1)
             .amount(TestData.TEST_PAYMENT_AMOUNT1)
             .build();
+    public final static Long TEST_PAYMENT_AMOUNT2 = 2000L;
 
 }
