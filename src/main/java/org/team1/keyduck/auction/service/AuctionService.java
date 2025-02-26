@@ -56,10 +56,6 @@ public class AuctionService {
         if (!findKeyboard.getMember().getId().equals(sellerId)) {
             throw new DataUnauthorizedAccessException(ErrorCode.FORBIDDEN_ACCESS, null);
         }
-        System.out.println("findKeyboard.getMember(): " + findKeyboard.getMember());
-        System.out.println("findKeyboard.getMember().getId(): " + (findKeyboard.getMember() != null
-                ? findKeyboard.getMember().getId() : "NULL"));
-        System.out.println("sellerId: " + sellerId);
 
         Auction auction = Auction.builder()
                 .keyboard(findKeyboard)
