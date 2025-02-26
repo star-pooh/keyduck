@@ -1,7 +1,6 @@
 package org.team1.keyduck.auction.service;
 
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,9 +41,7 @@ public class AuctionService {
 
     public AuctionCreateResponseDto createAuctionService(Long sellerId,
             AuctionCreateRequestDto requestDto) {
-        Optional<Auction> existingAuction = auctionRepository.findByKeyboardId(
-                requestDto.getKeyboardId());
-        if (existingAuction.isPresent()) {
+        if (auctionRepository.existsByKeyboard_Id(requestDto.getKeyboardId())) {
             throw new DataDuplicateException(ErrorCode.DUPLICATE_KEYBOARD, null);
         }
 
