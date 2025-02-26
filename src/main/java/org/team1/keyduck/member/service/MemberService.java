@@ -93,15 +93,12 @@ public class MemberService {
                 ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
 
         if (member.getMemberRole().equals(MemberRole.SELLER)) {
-
             Long sellerPoint = saleProfitRepository.findSellerPointByMember_Id(id).orElse(0L);
-
             return MemberReadResponseDto.of(member, sellerPoint);
+        } else {
+            Long paymentDeposit = paymentDepositRepository.findPaymentDepositAmountMember_Id(id)
+                    .orElse(0L);
+            return MemberReadResponseDto.of(member, paymentDeposit);
         }
-
-        Long paymentDeposit = paymentDepositRepository.findPaymentDepositAmountMember_Id(id)
-                .orElse(0L);
-
-        return MemberReadResponseDto.of(member, paymentDeposit);
     }
 }
