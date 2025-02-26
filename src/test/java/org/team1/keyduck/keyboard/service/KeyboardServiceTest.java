@@ -2,6 +2,7 @@ package org.team1.keyduck.keyboard.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.team1.keyduck.testdata.TestData.TEST_AUCTION1;
 import static org.team1.keyduck.testdata.TestData.TEST_AUCTION_ID1;
@@ -14,6 +15,7 @@ import static org.team1.keyduck.testdata.TestData.TEST_MEMBER1;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +24,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.team1.keyduck.auction.entity.Auction;
+import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.keyboard.dto.request.KeyboardUpdateRequestDto;
 import org.team1.keyduck.keyboard.dto.response.KeyboardReadResponseDto;
@@ -118,10 +121,21 @@ class KeyboardServiceTest {
 
         //when
 
-        keyboard.updateKeyboard(requestDto);
+        when(keyboardRepository.findById(any(Long.class))).thenReturn(Optional.of(keyboard));
+        when(auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(TEST_KEYBOARD_ID1,
+                AuctionStatus.NOT_STARTED)).thenReturn(true);
 
+        keyboardService.keyboardModification(TEST_ID1, TEST_KEYBOARD_ID1, requestDto);
+
+        //then
         assertEquals(keyboard.getName(), "이름변경1");
         assertEquals(keyboard.getDescription(), "내용변경1");
+
+    }
+
+    @Test
+    @DisplayName("키보드 수정_실패_키보드 정보 없음")
+    public void updateKeyboard_fail_Not_Found_Keyboard() {
 
     }
 
