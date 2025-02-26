@@ -1,7 +1,9 @@
 package org.team1.keyduck.payment.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -50,8 +52,11 @@ public class TempPaymentServiceTest {
                 Optional.of(TestData.TEST_TEMP_PAYMENT1));
 
         // then
-        tempPaymentService.validPaymentAmount(TestData.TEST_ID1, TestData.TEST_ORDER_ID1,
+        boolean actualResult = tempPaymentService.validPaymentAmount(TestData.TEST_ID1,
+                TestData.TEST_ORDER_ID1,
                 TestData.TEST_PAYMENT_AMOUNT1);
+
+        assertTrue(actualResult);
     }
 
     @Test
@@ -81,8 +86,11 @@ public class TempPaymentServiceTest {
                 Optional.of(TestData.TEST_TEMP_PAYMENT1));
 
         // then
-        tempPaymentService.validPaymentAmount(TestData.TEST_ID2, TestData.TEST_ORDER_ID1,
+        boolean actualResult = tempPaymentService.validPaymentAmount(TestData.TEST_ID2,
+                TestData.TEST_ORDER_ID1,
                 TestData.TEST_PAYMENT_AMOUNT1);
+
+        assertFalse(actualResult);
     }
 
     @Test
@@ -94,7 +102,10 @@ public class TempPaymentServiceTest {
                 Optional.of(TestData.TEST_TEMP_PAYMENT1));
 
         // then
-        tempPaymentService.validPaymentAmount(TestData.TEST_ID1, TestData.TEST_ORDER_ID1,
+        boolean actualResult = tempPaymentService.validPaymentAmount(TestData.TEST_ID1,
+                TestData.TEST_ORDER_ID1,
                 TestData.TEST_PAYMENT_AMOUNT2);
+
+        assertFalse(actualResult);
     }
 }
