@@ -18,7 +18,7 @@ public class AuctionReadResponseDto {
     private Long startPrice;
     private Long currentPrice;
     private Long immediatePurchasePrice;
-    private int biddingUnit;
+    private Long biddingUnit;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime auctionStartDate;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -30,7 +30,7 @@ public class AuctionReadResponseDto {
 
 
     private AuctionReadResponseDto(Long auctionId, AuctionKeyboardDto keyboard, String title,
-            Long startPrice, Long currentPrice, Long immediatePurchasePrice, int biddingUnit,
+            Long startPrice, Long currentPrice, Long immediatePurchasePrice, Long biddingUnit,
             LocalDateTime auctionStartDate, LocalDateTime auctionEndDate,
             AuctionStatus auctionStatus, Long winnerId, String winnerName,
             List<BiddingResponseDto> biddings) {
