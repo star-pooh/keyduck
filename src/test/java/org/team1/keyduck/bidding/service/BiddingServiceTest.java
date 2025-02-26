@@ -8,13 +8,15 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.sql.DataSource;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
@@ -29,7 +31,6 @@ import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.team1.keyduck.auth.entity.AuthMember;
-import org.team1.keyduck.payment.entity.PaymentDeposit;
 import org.team1.keyduck.payment.repository.PaymentDepositRepository;
 
 @SpringBootTest
@@ -47,10 +48,13 @@ public class BiddingServiceTest {
     @Autowired
     private KeyboardRepository keyboardRepository;
     @Autowired
-    private PaymentDepositRepository paymentDepositRepository;
+    private JdbcTemplate jdbcTemplate;
+
 
     private Member member;
     private Auction auction;
+
+    private static final Logger log = LoggerFactory.getLogger(BiddingServiceTest.class);
 
     public void setUpBidding() {
 
@@ -89,29 +93,40 @@ public class BiddingServiceTest {
         );
 
         Faker faker = new Faker();
+        final int MAX_CUSTOMERS = 100;
+        final int BATCH_SIZE = 100;
+        final String PASSWORD = "5678";
 
-        for (int i = 0; i < 100; i++) {
-            Member customer = memberRepository.save(
+        List<Member> customers = new ArrayList<>();
+        List<Object[]> PaymentDeposits = new ArrayList<>();
+
+        for (int i = 0; i < MAX_CUSTOMERS; i++) {
+            customers.add(
                     Member.builder()
                             .name("구매자" + i)
                             .email(faker.color().name() + i + "@" + faker.animal() + ".com")
-                            .password("5678")
+                            .password(PASSWORD)
                             .memberRole(MemberRole.CUSTOMER)
                             .address(new Address("경기도", "안양시", "만안구", "56789", "2층"))
                             .build()
             );
-
-            paymentDepositRepository.save(
-                    PaymentDeposit.builder()
-                            .member(customer)
-                            .depositAmount(1_000_000L)
-                            .build()
-            );
         }
+        memberRepository.saveAll(customers);
+
+        // 저장된 customers에서 아이디를 다시 가져와 보증금 데이터 추가
+        for (Member customer : customers) {
+            PaymentDeposits.add(new Object[]{customer.getId(), 1_000_000L});
+        }
+
+        String sql = "INSERT INTO payment_deposit (member_id, deposit_amount) VALUES (?, ?)";
+        jdbcTemplate.batchUpdate(sql, PaymentDeposits, BATCH_SIZE,
+                (ps, param) -> {
+                    ps.setLong(1, (Long) param[0]);
+                    ps.setLong(2, (Long) param[1]);
+                });
     }
 
     @BeforeEach
-    // 메소드명()
     public void setUp() {
         setUpBidding();
     }
@@ -145,9 +160,8 @@ public class BiddingServiceTest {
                             new AuthMember(customer.getId(), customer.getMemberRole())
                     );
                 } catch (DataInvalidException e) {
-                    System.out.println("유저 ID: " + customer.getId() + ", 현재가: " + auction.getCurrentPrice()
-                            + ", 입찰 금액: " + biddingPrice);
-                    System.out.println(e.getMessage());
+                    log.info("입찰 실패 - 유저 ID: {}, 현재가: {}, 입찰 금액: {}", customer.getId(), auction.getCurrentPrice(), biddingPrice);
+                    log.info("예외 메시지: {}", e.getMessage());
                 } finally {
                     latch.countDown();
                 }
@@ -166,7 +180,6 @@ public class BiddingServiceTest {
 
         // 최종 입찰가
         Bidding lastBidding = biddingRepository.findByAuctionIdOrderByPriceDesc(auction.getId()).get(0);
-        System.out.println("현재가 : " + updatedAuction.getCurrentPrice() + ", 입찰가 : " + lastBidding.getPrice());
         assertEquals(lastBidding.getPrice(), updatedAuction.getCurrentPrice());
 
     }
