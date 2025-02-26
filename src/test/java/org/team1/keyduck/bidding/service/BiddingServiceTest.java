@@ -18,9 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
+import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.bidding.entity.Bidding;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
 import org.team1.keyduck.common.exception.DataInvalidException;
@@ -30,7 +32,8 @@ import org.team1.keyduck.member.entity.Address;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
-import org.team1.keyduck.auth.entity.AuthMember;
+import org.team1.keyduck.payment.service.PaymentDepositService;
+import org.team1.keyduck.payment.service.SaleProfitService;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -48,6 +51,12 @@ public class BiddingServiceTest {
     private KeyboardRepository keyboardRepository;
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @MockitoBean
+    private PaymentDepositService paymentDepositService;
+
+    @MockitoBean
+    private SaleProfitService saleProfitService;
 
 
     private Member member;
@@ -122,7 +131,6 @@ public class BiddingServiceTest {
                     ps.setString(9, (String) param[8]);
                 });
 
-
         List<Member> customers = memberRepository.findAll().stream()
                 .filter(m -> m.getMemberRole() == MemberRole.CUSTOMER)
                 .toList();
@@ -175,7 +183,8 @@ public class BiddingServiceTest {
                             new AuthMember(customer.getId(), customer.getMemberRole())
                     );
                 } catch (DataInvalidException e) {
-                    log.info("입찰 실패 - 유저 ID: {}, 현재가: {}, 입찰 금액: {}", customer.getId(), auction.getCurrentPrice(), biddingPrice);
+                    log.info("입찰 실패 - 유저 ID: {}, 현재가: {}, 입찰 금액: {}", customer.getId(),
+                            auction.getCurrentPrice(), biddingPrice);
                     log.info("예외 메시지: {}", e.getMessage());
                 } finally {
                     latch.countDown();
@@ -191,7 +200,8 @@ public class BiddingServiceTest {
         Auction updatedAuction = auctionRepository.findById(auction.getId()).get();
 
         // 최종 입찰가
-        Bidding lastBidding = biddingRepository.findByAuctionIdOrderByPriceDesc(auction.getId()).get(0);
+        Bidding lastBidding = biddingRepository.findByAuctionIdOrderByPriceDesc(auction.getId())
+                .get(0);
         assertEquals(lastBidding.getPrice(), updatedAuction.getCurrentPrice());
 
     }
