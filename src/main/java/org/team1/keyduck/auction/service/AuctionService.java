@@ -1,6 +1,7 @@
 package org.team1.keyduck.auction.service;
 
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,7 @@ import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
+import org.team1.keyduck.common.exception.DataDuplicateException;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataUnauthorizedAccessException;
@@ -40,6 +42,11 @@ public class AuctionService {
 
     public AuctionCreateResponseDto createAuctionService(Long sellerId,
             AuctionCreateRequestDto requestDto) {
+        Optional<Auction> existingAuction = auctionRepository.findByKeyboardId(
+                requestDto.getKeyboardId());
+        if (existingAuction.isPresent()) {
+            throw new DataDuplicateException(ErrorCode.DUPLICATE_KEYBOARD, null);
+        }
 
         Keyboard findKeyboard = keyboardRepository
                 .findByIdAndIsDeletedFalse(requestDto.getKeyboardId())
@@ -49,6 +56,10 @@ public class AuctionService {
         if (!findKeyboard.getMember().getId().equals(sellerId)) {
             throw new DataUnauthorizedAccessException(ErrorCode.FORBIDDEN_ACCESS, null);
         }
+        System.out.println("findKeyboard.getMember(): " + findKeyboard.getMember());
+        System.out.println("findKeyboard.getMember().getId(): " + (findKeyboard.getMember() != null
+                ? findKeyboard.getMember().getId() : "NULL"));
+        System.out.println("sellerId: " + sellerId);
 
         Auction auction = Auction.builder()
                 .keyboard(findKeyboard)
