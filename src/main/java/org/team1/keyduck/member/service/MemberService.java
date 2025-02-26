@@ -70,11 +70,6 @@ public class MemberService {
                 .orElseThrow(() -> new DataNotFoundException(
                         ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
 
-        if (member == null) {
-            throw new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
-                    ErrorMessageParameter.MEMBER);
-        }
-
         //현재 진행중인 경매가 있으면 탈퇴 불가능
         if (member.getMemberRole().equals(MemberRole.SELLER)
                 && auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(id,
