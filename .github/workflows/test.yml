@@ -8,8 +8,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      SPRING_PROFILES_ACTIVE: test
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,6 +21,11 @@ jobs:
           key: Linux-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             Linux-gradle-
+
+      - name: Make .env file from GitHub Secrets
+        run: |
+          echo "${{ secrets.ENV_SECRET }}" > .env
+        shell: bash
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
