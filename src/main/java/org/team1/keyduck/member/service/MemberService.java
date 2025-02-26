@@ -66,12 +66,9 @@ public class MemberService {
 
     @Transactional
     public void deleteMember(Long id, String token) {
-        Member member = memberRepository.findByIdAndIsDeleted(id, false);
-
-        if (member == null) {
-            throw new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
-                    ErrorMessageParameter.MEMBER);
-        }
+        Member member = memberRepository.findByIdAndIsDeleted(id, false)
+                .orElseThrow(() -> new DataNotFoundException(
+                        ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
 
         //현재 진행중인 경매가 있으면 탈퇴 불가능
         if (member.getMemberRole().equals(MemberRole.SELLER)
