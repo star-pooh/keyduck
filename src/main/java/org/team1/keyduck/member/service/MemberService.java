@@ -66,7 +66,9 @@ public class MemberService {
 
     @Transactional
     public void deleteMember(Long id, String token) {
-        Member member = memberRepository.findByIdAndIsDeleted(id, false);
+        Member member = memberRepository.findByIdAndIsDeleted(id, false)
+                .orElseThrow(() -> new DataNotFoundException(
+                        ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
 
         if (member == null) {
             throw new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
