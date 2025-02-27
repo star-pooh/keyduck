@@ -67,7 +67,7 @@ public class TestData {
     public final static String TEST_AUCTION_TITLE = "keyboard 1 auction";
     public final static Long TEST_AUCTION_START_PRICE1 = 50000L;
     public final static Long TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE1 = 500000L;
-    public final static int TEST_AUCTION_BIDDING_UNIT1 = 5000;
+    public final static Long TEST_AUCTION_BIDDING_UNIT1 = 5000L;
     public final static LocalDateTime TEST_AUCTION_START_DATE1 = LocalDateTime.of(2025, 12, 25, 12,
             30);
     public final static LocalDateTime TEST_AUCTION_END_DATE1 = LocalDateTime.of(2025, 12, 30, 12,
