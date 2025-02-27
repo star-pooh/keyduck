@@ -17,7 +17,8 @@ public interface AuctionRepository extends JpaRepository<Auction, Long>, Auction
 
     boolean existsByKeyboard_Member_IdAndAuctionStatus(Long id, AuctionStatus auctionStatus);
 
-    boolean existsByKeyboard_Member_Id(Long memberId);
+    @Query("SELECT COUNT(a) > 0 FROM Auction a WHERE a.keyboard.member.id = :memberId AND a.auctionStatus IN :statuses")
+    boolean existsByMember_IdAndAuctionStatus(Long memberId, List<AuctionStatus> statuses);
 
     List<Auction> findAllByOrderByIdDesc();
 

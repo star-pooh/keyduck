@@ -101,21 +101,28 @@ public class KeyboardService {
             throw new DataUnauthorizedAccessException(ErrorCode.FORBIDDEN_ACCESS, null);
         }
 
-        // 키보드에 대한 경매가 존재하는지 확인
-        boolean auctionExists = auctionRepository.existsByKeyboard_Member_Id(sellerId);
-
-        // 경매가 존재하는 경우, 경매가 진행 중이거나 종료된 키보드 수정 요청 -> 예외 발생
-        if (auctionExists) {
-            if (!auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(sellerId,
-                    AuctionStatus.NOT_STARTED)) {
-                throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_MODIFIABLE_AND_DELETEABLE,
-                        null);
-            }
+        // 삭제된 키보드 수정 요청 -> 에외 발생
+        if (findKeyboard.isDeleted()) {
+            throw new OperationNotAllowedException(ErrorCode.NOT_MODIFIABLE_DELETED_KEYBOARD,
+                    ErrorMessageParameter.KEYBOARD);
         }
 
+        // 경매가 진행 중이거나 종료된 키보드 수정 요청 -> 예외 발생
+        List<AuctionStatus> auctionStatuses = List.of(AuctionStatus.IN_PROGRESS, AuctionStatus.CLOSED);
+        boolean auctionRestricted = auctionRepository.existsByMember_IdAndAuctionStatus(sellerId, auctionStatuses);
+
+        if (auctionRestricted) {
+            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_MODIFIABLE_AND_DELETEABLE, null);
+        }
         findKeyboard.updateKeyboard(requestDto);
 
         return KeyboardUpdateResponseDto.of(findKeyboard);
     }
 }
+
+
+
+
+
+
 
