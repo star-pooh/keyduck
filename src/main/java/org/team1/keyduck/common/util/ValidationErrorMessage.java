@@ -30,7 +30,9 @@ public class ValidationErrorMessage {
     // 경매
     public static final String TITLE_IS_NOT_NULL = "제목은 필수 입력 값입니다.";
     public static final String START_PRICE_IS_NOT_NULL = "경매 시작가는 필수 입력 값입니다.";
+    public static final String START_PRICE_IS_NOT_VALID = "경매 시작가는 최소 1000원이어야 합니다.";
     public static final String BIDDING_UNIT_IS_NOT_NULL = "입찰 단위는 필수 입력 값입니다.";
+    public static final String BIDDING_UNIT_IS_NOT_VALID = "입찰 단위는 최소 10원이어야 합니다.";
 
     public static final String AUCTION_START_DATE_IS_NOT_NULL = "경매 시작일은 필수 입력 값입니다.";
     public static final String AUCTION_START_DATE_IS_NOT_BEFORE_NOW = "경매 시작일은 현재 시각보다 이전일 수 없습니다.";
@@ -41,5 +43,7 @@ public class ValidationErrorMessage {
     // 이메일
     public static final String EMAIL_TITLE_NOT_NULL = "이메일 제목은 필수 입력 값입니다.";
     public static final String EMAIL_CONTENT_NOT_NULL = "이메일 본문은 필수 입력 값입니다.";
+
+    public static final String IMMEDIATE_PURCHASE_PRICE_IS_NOT_VALID = "즉시 구매가는 최소 1000원이어야 합니다.";
 
 }
