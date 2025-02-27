@@ -14,17 +14,17 @@ import org.team1.keyduck.member.entity.Address;
 public class MemberCreateRequestDto {
 
     @NotBlank(message = ValidationErrorMessage.NAME_IS_NOT_NULL)
-    String name;
+    private String name;
 
     @NotBlank(message = ValidationErrorMessage.EMAIL_IS_NOT_NULL)
     @Pattern(regexp = Constants.EMAIL_REGEXP, message = ValidationErrorMessage.EMAIL_IS_NOT_VALID)
-    String email;
+    private String email;
 
     @NotBlank(message = ValidationErrorMessage.PASSWORD_IS_NOT_NULL)
     @Pattern(regexp = Constants.PASSWORD_REGEXP, message = ValidationErrorMessage.PASSWORD_IS_NOT_AVAILABLE)
-    String password;
+    private String password;
 
     @NotNull(message = ValidationErrorMessage.ADDRESS_IS_NOT_NULL)
     @Valid
-    Address address;
+    private Address address;
 }
