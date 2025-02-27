@@ -108,11 +108,14 @@ public class KeyboardService {
         }
 
         // 경매가 진행 중이거나 종료된 키보드 수정 요청 -> 예외 발생
-        List<AuctionStatus> auctionStatuses = List.of(AuctionStatus.IN_PROGRESS, AuctionStatus.CLOSED);
-        boolean isRestricted = auctionRepository.existsByMember_IdAndAuctionStatus(sellerId, auctionStatuses);
+        List<AuctionStatus> auctionStatuses = List.of(AuctionStatus.IN_PROGRESS,
+                AuctionStatus.CLOSED);
+        boolean isRestricted = auctionRepository.existsByMember_IdAndAuctionStatus(sellerId,
+                keyboardId, auctionStatuses);
 
         if (isRestricted) {
-            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_MODIFIABLE_AND_DELETEABLE, null);
+            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_MODIFIABLE_AND_DELETEABLE,
+                    null);
         }
         findKeyboard.updateKeyboard(requestDto);
 
