@@ -59,7 +59,8 @@ public class BiddingService {
         // 입찰가가 최소 입찰 단위 금액의 배수만큼 증가해야함
         long priceDifference = price - auction.getStartPrice();
 
-        if (price.equals(auction.getImmediatePurchasePrice())) {
+        if (price.equals(auction.getImmediatePurchasePrice())
+                && price > auction.getCurrentPrice()) {
             return;
         }
 
@@ -81,10 +82,10 @@ public class BiddingService {
 
     }
 
-    //생성 매서드
+    //생성 매서드 (락 적용)
     @Transactional
     public void createBidding(Long auctionId, Long price, AuthMember authMember) {
-        Auction auction = auctionRepository.findById(auctionId)
+        Auction auction = auctionRepository.findByIdWithPessimisticLock(auctionId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
                         ErrorMessageParameter.AUCTION));
 
@@ -129,6 +130,13 @@ public class BiddingService {
     // 경매별 입찰 내역 조회
     @Transactional(readOnly = true)
     public List<BiddingResponseDto> getBiddingByAuction(Long auctionId) {
+
+        boolean exists = auctionRepository.existsById(auctionId);
+        if (!exists) {
+            throw new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
+                    ErrorMessageParameter.AUCTION);
+        }
+
         List<Bidding> biddings = biddingRepository.findByAuctionIdOrderByPriceDesc(auctionId);
 
         return biddings.stream().map(BiddingResponseDto::of).toList();
@@ -152,4 +160,5 @@ public class BiddingService {
 
         return new PageImpl<>(biddingResponseList, pageable, biddingResponseList.size());
     }
+
 }
