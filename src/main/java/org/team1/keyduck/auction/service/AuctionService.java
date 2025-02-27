@@ -17,6 +17,7 @@ import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
+import org.team1.keyduck.common.exception.DataDuplicateException;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataUnauthorizedAccessException;
@@ -40,6 +41,9 @@ public class AuctionService {
 
     public AuctionCreateResponseDto createAuctionService(Long sellerId,
             AuctionCreateRequestDto requestDto) {
+        if (auctionRepository.existsByKeyboard_Id(requestDto.getKeyboardId())) {
+            throw new DataDuplicateException(ErrorCode.DUPLICATE_KEYBOARD, null);
+        }
 
         Keyboard findKeyboard = keyboardRepository
                 .findByIdAndIsDeletedFalse(requestDto.getKeyboardId())

@@ -10,10 +10,10 @@ import org.team1.keyduck.common.util.ValidationErrorMessage;
 public class MemberUpdatePasswordRequestDto {
 
     @NotBlank(message = ValidationErrorMessage.PASSWORD_IS_NOT_NULL)
-    String beforePassword;
+    private String beforePassword;
 
     @NotBlank(message = ValidationErrorMessage.PASSWORD_IS_NOT_NULL)
     @Pattern(regexp = Constants.PASSWORD_REGEXP, message = ValidationErrorMessage.PASSWORD_IS_NOT_AVAILABLE)
-    String modifyPassword;
+    private String modifyPassword;
 
 }
