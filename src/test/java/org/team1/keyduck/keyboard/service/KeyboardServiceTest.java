@@ -6,14 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.team1.keyduck.testdata.TestData.TEST_AUCTION1;
-import static org.team1.keyduck.testdata.TestData.TEST_AUCTION_ID1;
 import static org.team1.keyduck.testdata.TestData.TEST_ID1;
 import static org.team1.keyduck.testdata.TestData.TEST_ID2;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD1;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD2;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD3;
+import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD_DESCRIPTION1;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD_ID1;
+import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD_NAME1;
 import static org.team1.keyduck.testdata.TestData.TEST_MEMBER1;
 
 import java.util.Collections;
@@ -26,7 +26,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.common.exception.DataNotFoundException;
@@ -115,22 +114,18 @@ class KeyboardServiceTest {
     public void updateKeyboard_success() {
 
         //given
-        Member member = TEST_MEMBER1;
-        Keyboard keyboard = TEST_KEYBOARD1;
-        Auction auction = TEST_AUCTION1;
+        Member member = mock(Member.class);
+        Keyboard keyboard = new Keyboard(member, TEST_KEYBOARD_NAME1, TEST_KEYBOARD_DESCRIPTION1);
         KeyboardUpdateRequestDto requestDto =
                 new KeyboardUpdateRequestDto("이름변경1", "내용변경1");
-
-        ReflectionTestUtils.setField(member, "id", TEST_ID1);
-        ReflectionTestUtils.setField(keyboard, "id", TEST_KEYBOARD_ID1);
-        ReflectionTestUtils.setField(auction, "id", TEST_AUCTION_ID1);
+        ReflectionTestUtils.setField(keyboard, "id", TEST_ID1);
 
         //when
-
         List<AuctionStatus> auctionStatuses = List.of(AuctionStatus.IN_PROGRESS,
                 AuctionStatus.CLOSED);
 
         when(keyboardRepository.findById(any(Long.class))).thenReturn(Optional.of(keyboard));
+        when(member.getId()).thenReturn(TEST_ID1);
         when(auctionRepository.existsByMember_IdAndAuctionStatus(TEST_KEYBOARD_ID1,
                 auctionStatuses)).thenReturn(false);
 
