@@ -151,9 +151,11 @@ class KeyboardServiceTest {
 
         when(keyboardRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 
-        assertThrows(DataNotFoundException.class,
+        DataNotFoundException e = assertThrows(DataNotFoundException.class,
                 () -> keyboardService.keyboardModification(TEST_ID1, TEST_KEYBOARD_ID1,
                         requestDto));
+
+        assertEquals("해당 키보드을(를) 찾을 수 없습니다.", e.getMessage());
     }
 
     @Test
@@ -172,9 +174,11 @@ class KeyboardServiceTest {
 
         when(keyboardRepository.findById(any(Long.class))).thenReturn(Optional.of(mockKeyboard));
 
-        assertThrows(DataUnauthorizedAccessException.class,
+        DataUnauthorizedAccessException e = assertThrows(DataUnauthorizedAccessException.class,
                 () -> keyboardService.keyboardModification(TEST_ID2, mockKeyboard.getId(),
                         requestDto));
+
+        assertEquals("접근 권한이 없습니다.", e.getMessage());
     }
 
     @Test
@@ -196,15 +200,40 @@ class KeyboardServiceTest {
 
         when(mockKeyboard.isDeleted()).thenReturn(true);
 
-        assertThrows(OperationNotAllowedException.class,
+        OperationNotAllowedException e = assertThrows(OperationNotAllowedException.class,
                 () -> keyboardService.keyboardModification(TEST_ID1, mockKeyboard.getId(),
                         requestDto));
+
+        assertEquals("삭제된 키보드는 수정할 수 없습니다.", e.getMessage());
 
     }
 
     @Test
     @DisplayName("키보드 수정_실패_경매가 시작되었거나, 종료된 키보드")
     public void updateKeyboard_fail_Auction_Status_block() {
+        Keyboard mockKeyboard = mock(Keyboard.class);
+        Member mockMember = mock(Member.class);
+
+        KeyboardUpdateRequestDto requestDto =
+                new KeyboardUpdateRequestDto("이름변경1", "내용변경1");
+
+        when(mockKeyboard.getMember()).thenReturn(mockMember);
+
+        when(mockMember.getId()).thenReturn(TEST_ID1);
+
+        when(keyboardRepository.findById(mockKeyboard.getId())).thenReturn(
+                Optional.of(mockKeyboard));
+
+        when(mockKeyboard.isDeleted()).thenReturn(false);
+        when(auctionRepository.existsByMember_IdAndAuctionStatus(any(Long.class),
+                any())).thenReturn(true);
+
+        OperationNotAllowedException e = assertThrows(OperationNotAllowedException.class,
+                () -> keyboardService.keyboardModification(TEST_ID1, mockKeyboard.getId(),
+                        requestDto));
+
+        assertEquals("진행 중이거나 종료된 경매는 수정 및 삭제할 수 없습니다.", e.getMessage());
+
     }
 
 }
