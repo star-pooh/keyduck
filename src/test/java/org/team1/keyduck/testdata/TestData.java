@@ -1,5 +1,8 @@
 package org.team1.keyduck.testdata;
 
+import java.time.LocalDateTime;
+import org.team1.keyduck.auction.entity.Auction;
+import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.member.entity.Address;
 import org.team1.keyduck.member.entity.Member;
@@ -57,5 +60,34 @@ public class TestData {
     public final static String TEST_KEYBOARD_DESCRIPTION3 = "짱짱";
     public final static Keyboard TEST_KEYBOARD3 = new Keyboard(TEST_MEMBER1, TEST_KEYBOARD_NAME3,
             TEST_KEYBOARD_DESCRIPTION3);
+
+    //AUCTION
+    public final static Long TEST_AUCTION_ID1 = 1L;
+    public final static String TEST_AUCTION_TITLE = "keyboard 1 auction";
+    public final static Long TEST_AUCTION_START_PRICE1 = 50000L;
+    public final static Long TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE1 = 500000L;
+    public final static Long TEST_AUCTION_BIDDING_UNIT1 = 5000L;
+    public final static LocalDateTime TEST_AUCTION_START_DATE1 = LocalDateTime.of(2025, 12, 25, 12,
+            30);
+    public final static LocalDateTime TEST_AUCTION_END_DATE1 = LocalDateTime.of(2025, 12, 30, 12,
+            30);
+    public final static Auction TEST_AUCTION1 = new Auction(TEST_KEYBOARD1, null,
+            TEST_AUCTION_TITLE, TEST_AUCTION_START_PRICE1, TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE1,
+            TEST_AUCTION_START_PRICE1, TEST_AUCTION_BIDDING_UNIT1, TEST_AUCTION_START_DATE1,
+            TEST_AUCTION_END_DATE1, AuctionStatus.NOT_STARTED);
+
+    public final static Long TEST_AUCTION_ID2 = 2L;
+    public final static String TEST_AUCTION_TITLE2 = "keyboard 2 auction";
+    public final static Long TEST_AUCTION_START_PRICE2 = 30000L;
+    public final static Long TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE2 = 300000L;
+    public final static Long TEST_AUCTION_BIDDING_UNIT2 = 5000L;
+    public final static LocalDateTime TEST_AUCTION_START_DATE2 = LocalDateTime.of(2025, 12, 25, 12,
+            30);
+    public final static LocalDateTime TEST_AUCTION_END_DATE2 = LocalDateTime.of(2025, 12, 30, 12,
+            30);
+    public final static Auction TEST_AUCTION2 = new Auction(TEST_KEYBOARD2, null,
+            TEST_AUCTION_TITLE2, TEST_AUCTION_START_PRICE2, TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE2,
+            TEST_AUCTION_START_PRICE2, TEST_AUCTION_BIDDING_UNIT2, TEST_AUCTION_START_DATE2,
+            TEST_AUCTION_END_DATE2, AuctionStatus.NOT_STARTED);
 
 }
