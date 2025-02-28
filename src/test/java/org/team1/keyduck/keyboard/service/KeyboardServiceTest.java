@@ -126,7 +126,7 @@ class KeyboardServiceTest {
 
         when(keyboardRepository.findById(any(Long.class))).thenReturn(Optional.of(keyboard));
         when(member.getId()).thenReturn(TEST_ID1);
-        when(auctionRepository.existsByMember_IdAndAuctionStatus(TEST_KEYBOARD_ID1,
+        when(auctionRepository.existsByKeyboard_IdAndAuctionStatus(TEST_KEYBOARD_ID1,
                 auctionStatuses)).thenReturn(false);
 
         keyboardService.keyboardModification(TEST_ID1, TEST_KEYBOARD_ID1, requestDto);
@@ -224,7 +224,7 @@ class KeyboardServiceTest {
                 Optional.of(mockKeyboard));
 
         when(mockKeyboard.isDeleted()).thenReturn(false);
-        when(auctionRepository.existsByMember_IdAndAuctionStatus(any(Long.class),
+        when(auctionRepository.existsByKeyboard_IdAndAuctionStatus(any(Long.class),
                 any())).thenReturn(true);
 
         //when&then
