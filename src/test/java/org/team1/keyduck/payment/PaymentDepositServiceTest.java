@@ -1,7 +1,7 @@
 package org.team1.keyduck.payment;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -99,7 +99,7 @@ public class PaymentDepositServiceTest {
 
         // then
         verify(paymentDepositRepository, times(1)).findByMember_Id(any(Long.class));
-        assertEquals(3000L, paymentDeposit.getDepositAmount());
+        assertThat(3000L).isEqualTo(paymentDeposit.getDepositAmount());
     }
 
     @Test
@@ -118,7 +118,7 @@ public class PaymentDepositServiceTest {
 
         // then
         verify(paymentDepositRepository, times(1)).findByMember_Id(any(Long.class));
-        assertEquals(4000L, paymentDeposit.getDepositAmount());
+        assertThat(4000L).isEqualTo(paymentDeposit.getDepositAmount());
     }
 
     @Test
@@ -136,7 +136,7 @@ public class PaymentDepositServiceTest {
                         newBiddingPrice, lastBiddingPrice));
 
         // then
-        assertEquals("해당 멤버을(를) 찾을 수 없습니다.", exception.getMessage());
+        assertThat("해당 멤버을(를) 찾을 수 없습니다.").isEqualTo(exception.getMessage());
     }
 
     @Test
@@ -156,7 +156,7 @@ public class PaymentDepositServiceTest {
                         newBiddingPrice, lastBiddingPrice));
 
         // then
-        assertEquals("입찰 가능한 예치금이 부족합니다.", exception.getMessage());
+        assertThat("입찰 가능한 예치금이 부족합니다.").isEqualTo(exception.getMessage());
     }
 
     @Test
@@ -209,8 +209,8 @@ public class PaymentDepositServiceTest {
         verify(paymentDepositRepository, times(1)).findByMember_Id(member1.getId());
         verify(paymentDepositRepository, times(1)).findByMember_Id(member2.getId());
 
-        assertEquals(6000L, paymentDeposit1.getDepositAmount());
-        assertEquals(7500L, paymentDeposit2.getDepositAmount());
+        assertThat(6000L).isEqualTo(paymentDeposit1.getDepositAmount());
+        assertThat(7500L).isEqualTo(paymentDeposit2.getDepositAmount());
     }
 
     @Test
@@ -246,6 +246,6 @@ public class PaymentDepositServiceTest {
                 () -> paymentDepositService.refundPaymentDeposit(auctionId));
 
         // then
-        assertEquals("해당 멤버을(를) 찾을 수 없습니다.", exception.getMessage());
+        assertThat("해당 멤버을(를) 찾을 수 없습니다.").isEqualTo(exception.getMessage());
     }
 }
