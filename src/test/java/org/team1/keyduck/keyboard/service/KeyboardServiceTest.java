@@ -145,12 +145,13 @@ class KeyboardServiceTest {
     @Test
     @DisplayName("키보드 수정_실패_키보드 정보 없음")
     public void updateKeyboard_fail_Not_Found_Keyboard() {
-
+        //given
         KeyboardUpdateRequestDto requestDto =
                 new KeyboardUpdateRequestDto("이름변경1", "내용변경1");
 
         when(keyboardRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 
+        //when&then
         DataNotFoundException e = assertThrows(DataNotFoundException.class,
                 () -> keyboardService.keyboardModification(TEST_ID1, TEST_KEYBOARD_ID1,
                         requestDto));
@@ -161,7 +162,7 @@ class KeyboardServiceTest {
     @Test
     @DisplayName("키보드 수정_실패_키보드를 등록한 셀러가 아님")
     public void updateKeyboard_fail_Unauthorized() {
-
+        //given
         Keyboard mockKeyboard = mock(Keyboard.class);
         Member mockMember = mock(Member.class);
 
@@ -174,6 +175,7 @@ class KeyboardServiceTest {
 
         when(keyboardRepository.findById(any(Long.class))).thenReturn(Optional.of(mockKeyboard));
 
+        //when&then
         DataUnauthorizedAccessException e = assertThrows(DataUnauthorizedAccessException.class,
                 () -> keyboardService.keyboardModification(TEST_ID2, mockKeyboard.getId(),
                         requestDto));
@@ -184,7 +186,7 @@ class KeyboardServiceTest {
     @Test
     @DisplayName("키보드 수정_실패_삭제된 키보드")
     public void updateKeyboard_fail_is_Deleted_Keyboard() {
-
+        //given
         Keyboard mockKeyboard = mock(Keyboard.class);
         Member mockMember = mock(Member.class);
 
@@ -200,6 +202,7 @@ class KeyboardServiceTest {
 
         when(mockKeyboard.isDeleted()).thenReturn(true);
 
+        //when&then
         OperationNotAllowedException e = assertThrows(OperationNotAllowedException.class,
                 () -> keyboardService.keyboardModification(TEST_ID1, mockKeyboard.getId(),
                         requestDto));
@@ -211,6 +214,7 @@ class KeyboardServiceTest {
     @Test
     @DisplayName("키보드 수정_실패_경매가 시작되었거나, 종료된 키보드")
     public void updateKeyboard_fail_Auction_Status_block() {
+        //given
         Keyboard mockKeyboard = mock(Keyboard.class);
         Member mockMember = mock(Member.class);
 
@@ -228,6 +232,7 @@ class KeyboardServiceTest {
         when(auctionRepository.existsByMember_IdAndAuctionStatus(any(Long.class),
                 any())).thenReturn(true);
 
+        //when&then
         OperationNotAllowedException e = assertThrows(OperationNotAllowedException.class,
                 () -> keyboardService.keyboardModification(TEST_ID1, mockKeyboard.getId(),
                         requestDto));
