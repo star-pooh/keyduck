@@ -63,10 +63,6 @@ public class JwtUtil {
 
         // payment_login.html
         if (hasCookie) {
-//            return httpRequest.getCookies().length > 1
-//                    ? httpRequest.getCookies()[1].getValue()
-//                    : httpRequest.getCookies()[0].getValue();
-
             return httpRequest.getCookies()[0].getValue();
         }
 
