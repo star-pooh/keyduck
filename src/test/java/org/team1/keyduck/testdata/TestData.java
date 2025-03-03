@@ -4,6 +4,7 @@ import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.member.entity.Address;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
+import org.team1.keyduck.payment.entity.PaymentDeposit;
 
 public class TestData {
 
@@ -57,5 +58,15 @@ public class TestData {
     public final static String TEST_KEYBOARD_DESCRIPTION3 = "짱짱";
     public final static Keyboard TEST_KEYBOARD3 = new Keyboard(TEST_MEMBER1, TEST_KEYBOARD_NAME3,
             TEST_KEYBOARD_DESCRIPTION3);
+
+    public final static Long TEST_DEPOSIT_AMOUNT = 5000L;
+    public final static PaymentDeposit TEST_PAYMENT_DEPOSIT1 = PaymentDeposit.builder()
+            .member(TestData.TEST_MEMBER1)
+            .depositAmount(TestData.TEST_DEPOSIT_AMOUNT)
+            .build();
+    public final static PaymentDeposit TEST_PAYMENT_DEPOSIT2 = PaymentDeposit.builder()
+            .member(TestData.TEST_MEMBER2)
+            .depositAmount(TestData.TEST_DEPOSIT_AMOUNT)
+            .build();
 
 }
