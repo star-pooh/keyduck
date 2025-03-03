@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.auth.service.JwtBlacklistService;
+import org.team1.keyduck.common.util.Constants;
 import org.team1.keyduck.common.util.ErrorMessage;
 import org.team1.keyduck.member.entity.MemberRole;
 
@@ -38,12 +39,12 @@ public class JwtFilter implements Filter {
 
         String url = httpRequest.getRequestURI();
 
-        if (url.startsWith("/api/auth") || url.endsWith(".html") || url.endsWith(".css")) {
+        if (Constants.WHITE_LIST.stream().anyMatch(url::startsWith)) {
             chain.doFilter(request, response);
             return;
         }
 
-        String bearerJwt = jwtUtil.getToken(httpRequest);
+        String bearerJwt = httpRequest.getHeader("Authorization");
 
         if (bearerJwt == null) {
             // 토큰이 없는 경우 400을 반환합니다.
