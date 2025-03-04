@@ -8,10 +8,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.team1.keyduck.testdata.TestData.TEST_ID1;
+import static org.team1.keyduck.testdata.TestData.TEST_ID2;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD1;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD2;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD3;
 import static org.team1.keyduck.testdata.TestData.TEST_MEMBER1;
+import static org.team1.keyduck.testdata.TestData.TEST_MEMBER2;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,8 +26,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.team1.keyduck.keyboard.dto.response.KeyboardReadResponseDto;
+import org.team1.keyduck.auction.entity.AuctionStatus;
+import org.team1.keyduck.auction.repository.AuctionRepository;
+import org.team1.keyduck.common.exception.DataDuplicateException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
+import org.team1.keyduck.common.exception.DataUnauthorizedAccessException;
+import org.team1.keyduck.common.exception.OperationNotAllowedException;
 import org.team1.keyduck.keyboard.dto.request.KeyboardCreateRequestDto;
 import org.team1.keyduck.keyboard.dto.response.KeyboardCreateResponseDto;
 import org.team1.keyduck.keyboard.entity.Keyboard;
@@ -146,4 +152,97 @@ class KeyboardServiceTest {
 
         assertEquals("해당 멤버을(를) 찾을 수 없습니다.", exception.getMessage());
     }
+
+    @Test
+    @DisplayName("키보드 삭제 - 성공 케이스")
+    void deleteKeyboard_success() {
+        // given
+        Member member = TEST_MEMBER1;
+        Keyboard keyboard = TEST_KEYBOARD1;
+
+        ReflectionTestUtils.setField(member, "id", TEST_ID1);
+        // false가 삭제되지 않은 상태
+        ReflectionTestUtils.setField(keyboard, "isDeleted", false);
+
+        // 키보드 조회하면 설정한 키보드 반환
+        when(keyboardRepository.findById(keyboard.getId())).thenReturn(Optional.of(keyboard));
+
+        // when
+        keyboardService.deleteKeyboard(keyboard.getId(), member.getId());
+
+        // then
+        assertTrue(keyboard.isDeleted());
+    }
+
+    @Test
+    @DisplayName("키보드 삭제 - 실패 케이스(이미 삭제된 키보드)")
+    void deleteKeyboard_fail_true() {
+        // given
+        Member member = TEST_MEMBER1;
+        Keyboard keyboard = TEST_KEYBOARD1;
+
+        // true가 이미 삭제된 상태
+        ReflectionTestUtils.setField(keyboard, "isDeleted", true);
+
+        when(keyboardRepository.findById(keyboard.getId())).thenReturn(Optional.of(keyboard));
+
+        // when
+        // then
+        assertThrows(DataDuplicateException.class, () -> {
+            keyboardService.deleteKeyboard(keyboard.getId(), member.getId());
+        });
+    }
+//
+    @Test
+    @DisplayName("키보드 삭제 - 실패 케이스(생성 유저와 삭제를 하려는 유저가 동일하지 않음)")
+    void deleteKeyboard_fail_not_same_member() {
+        // given
+        Member member1 = TEST_MEMBER1;
+        Member member2 = TEST_MEMBER2;
+        Keyboard keyboard = TEST_KEYBOARD1;
+
+        ReflectionTestUtils.setField(member1, "id", TEST_ID1);
+        ReflectionTestUtils.setField(member2, "id", TEST_ID2);
+
+        // false가 삭제되지 않은 상태
+        ReflectionTestUtils.setField(keyboard, "isDeleted", false);
+
+        // 키보드1의 작성자를 member2로 설정
+        ReflectionTestUtils.setField(keyboard, "member", member2);
+
+        when(keyboardRepository.findById(keyboard.getId())).thenReturn(Optional.of(keyboard));
+
+        // when
+        // then
+        assertThrows(DataUnauthorizedAccessException.class, () -> {
+            keyboardService.deleteKeyboard(keyboard.getId(), member1.getId());
+        });
+    }
+
+    @Mock
+    private AuctionRepository auctionRepository;
+
+    @Test
+    @DisplayName("키보드 삭제 - 실패 케이스(경매 진행 중인 키보드 삭제 요청)")
+    void deleteKeyboard_fail_auction_in_Progress() {
+        // given
+        Member member = TestData.TEST_MEMBER1;
+        Keyboard keyboard = TestData.TEST_KEYBOARD1;
+
+        ReflectionTestUtils.setField(member, "id", TEST_ID1);
+        ReflectionTestUtils.setField(keyboard, "id", TEST_ID2);
+
+        ReflectionTestUtils.setField(keyboard, "isDeleted", false);
+
+        when(keyboardRepository.findById(keyboard.getId())).thenReturn(Optional.of(keyboard));
+        when(auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(
+                keyboard.getId(), AuctionStatus.IN_PROGRESS)).thenReturn(true);
+
+        // when
+        // then
+        assertThrows(OperationNotAllowedException.class, () ->
+                keyboardService.deleteKeyboard(keyboard.getId(), member.getId())
+        );
+    }
+
 }
