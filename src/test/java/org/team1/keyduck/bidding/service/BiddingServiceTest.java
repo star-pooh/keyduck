@@ -1,39 +1,43 @@
 package org.team1.keyduck.bidding.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import net.datafaker.Faker;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.platform.commons.logging.Logger;
+import org.junit.platform.commons.logging.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ActiveProfiles;
 import org.team1.keyduck.auction.entity.Auction;
-import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.bidding.entity.Bidding;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
 import org.team1.keyduck.common.exception.DataInvalidException;
-import org.team1.keyduck.keyboard.entity.Keyboard;
+import org.team1.keyduck.common.exception.OperationNotAllowedException;
 import org.team1.keyduck.keyboard.repository.KeyboardRepository;
-import org.team1.keyduck.member.entity.Address;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
+import org.team1.keyduck.payment.repository.PaymentDepositRepository;
+import org.team1.keyduck.payment.service.PaymentDepositService;
+import org.team1.keyduck.testdata.TestData;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BiddingServiceTest {
 
     @Autowired
@@ -48,152 +52,151 @@ public class BiddingServiceTest {
     private KeyboardRepository keyboardRepository;
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
-
-    private Member member;
-    private Auction auction;
+    @Autowired
+    private PaymentDepositService paymentDepositService;
 
     private static final Logger log = LoggerFactory.getLogger(BiddingServiceTest.class);
-
-    public void setUpBidding() {
-
-        // 판매자 멤버 생성
-        member = memberRepository.save(
-                Member.builder()
-                        .name("판매자")
-                        .email("email@example.com")
-                        .password("1234")
-                        .memberRole(MemberRole.SELLER)
-                        .address(new Address("경기도", "안양시", "동안구", "12345", "1층"))
-                        .build()
-        );
-
-        // 키보드 생성
-        Keyboard keyboard = keyboardRepository.save(
-                Keyboard.builder()
-                        .member(member)
-                        .name("키보드")
-                        .description("키보드입니다.")
-                        .build()
-        );
-
-        // 경매 생성
-        auction = auctionRepository.save(
-                Auction.builder()
-                        .title("키보드 경매")
-                        .keyboard(keyboard)
-                        .startPrice(1000L)
-                        .currentPrice(1000L)
-                        .biddingUnit(100L)
-                        .auctionStartDate(LocalDateTime.now())
-                        .auctionEndDate(LocalDateTime.now().plusDays(1))
-                        .auctionStatus(AuctionStatus.IN_PROGRESS)
-                        .build()
-        );
-
-        Faker faker = new Faker();
-        final int MAX_CUSTOMERS = 100;
-        final int BATCH_SIZE = 100;
-        final String PASSWORD = "5678";
-
-        String memberSql = "INSERT INTO member (name, email, password, member_role, city, state, street, detail_address1, detail_address2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        List<Object[]> members = new ArrayList<>();
-
-        for (int i = 0; i < MAX_CUSTOMERS; i++) {
-            members.add(new Object[]{
-                    "구매자" + i,
-                    faker.color().name() + i + "@" + faker.animal() + ".com",
-                    PASSWORD,
-                    MemberRole.CUSTOMER.name(),
-                    "경기도", "안양시", "만안구", "56789", "2층"
-            });
-        }
-
-        jdbcTemplate.batchUpdate(memberSql, members, BATCH_SIZE,
-                (ps, param) -> {
-                    ps.setString(1, (String) param[0]);
-                    ps.setString(2, (String) param[1]);
-                    ps.setString(3, (String) param[2]);
-                    ps.setString(4, (String) param[3]);
-                    ps.setString(5, (String) param[4]);
-                    ps.setString(6, (String) param[5]);
-                    ps.setString(7, (String) param[6]);
-                    ps.setString(8, (String) param[7]);
-                    ps.setString(9, (String) param[8]);
-                });
-
-        List<Member> customers = memberRepository.findAll().stream()
-                .filter(m -> m.getMemberRole() == MemberRole.CUSTOMER)
-                .toList();
-
-        String depositSql = "INSERT INTO payment_deposit (member_id, deposit_amount) VALUES (?, ?)";
-        List<Object[]> paymentDeposits = new ArrayList<>();
-
-        for (Member customer : customers) {
-            paymentDeposits.add(new Object[]{customer.getId(), 1_000_000L});
-        }
-
-        jdbcTemplate.batchUpdate(depositSql, paymentDeposits, BATCH_SIZE,
-                (ps, param) -> {
-                    ps.setLong(1, (Long) param[0]);
-                    ps.setLong(2, (Long) param[1]);
-                });
-    }
+    @Autowired
+    private PaymentDepositRepository paymentDepositRepository;
 
     @BeforeEach
-    public void setUp() {
-        setUpBidding();
+    public void setup() {
+        setUpTestData();
     }
 
+    private void setUpTestData() {
+        memberRepository.save(TestData.TEST_MEMBER1);
+        memberRepository.save(TestData.TEST_MEMBER2);
+        memberRepository.save(TestData.TEST_MEMBER3);
+        keyboardRepository.save(TestData.TEST_KEYBOARD1);
+        keyboardRepository.save(TestData.TEST_KEYBOARD2);
+        keyboardRepository.save(TestData.TEST_KEYBOARD3);
+        keyboardRepository.save(TestData.TEST_KEYBOARD4);
+        auctionRepository.save(TestData.TEST_AUCTION1);
+        auctionRepository.save(TestData.TEST_AUCTION2);
+        auctionRepository.save(TestData.TEST_AUCTION3);
+        auctionRepository.save(TestData.TEST_AUCTION4);
+        biddingRepository.save(TestData.TEST_BIDDING1);
+        paymentDepositRepository.save(TestData.TEST_PAYMENT_DEPOSIT1);
+        paymentDepositRepository.save(TestData.TEST_PAYMENT_DEPOSIT2);
+    }
 
     @Test
+    @Commit
     @DisplayName("비관적 락 이용한 입찰 생성")
-    public void createBiddingWithPessimisticLock() throws InterruptedException {
-        List<Member> members = memberRepository.findAll(); // 전체 유저를 조회하고
-        // customer만 담기
-        List<Member> customers = new ArrayList<>();
+    public void createBidding_success() throws InterruptedException {
+        Long auctionId = TestData.TEST_AUCTION4.getId();
+        Long memberId = TestData.TEST_MEMBER2.getId();
+        Long price = 50000L;
+        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE2);
 
-        for (Member member : members) {
-            if (member.getMemberRole() == MemberRole.CUSTOMER) {
-                customers.add(member);
-            }
-        }
-
+        biddingService.createBidding(auctionId, price, authMember);
         ExecutorService executorService = Executors.newFixedThreadPool(10);
-        CountDownLatch latch = new CountDownLatch(100);
+        CountDownLatch countDownLatch = new CountDownLatch(10);
 
-        for (int i = 0; i < 100; i++) {
-            final long biddingPrice = auction.getCurrentPrice() + (i + 1) * 100L;
-            final Member customer = customers.get(i);
+        // 전체 유저 목록에서 CUSTOMER 역할의 멤버들만 필터링
+        List<Member> members = memberRepository.findAll();
+        List<Member> customers = members.stream()
+                .filter(m -> m.getMemberRole() == MemberRole.CUSTOMER)
+                .collect(Collectors.toList());
 
+        for (int i = 0; i < 10; i++) {
+            final long biddingPrice = price + (i + 1) * 1000L;
             executorService.execute(() -> {
                 try {
                     biddingService.createBidding(
-                            auction.getId(),
+                            auctionId,
                             biddingPrice,
-                            new AuthMember(customer.getId(), customer.getMemberRole())
-                    );
+                            new AuthMember(TestData.TEST_ID2, TestData.TEST_MEMBER_ROLE2));
                 } catch (DataInvalidException e) {
-                    log.info("입찰 실패 - 유저 ID: {}, 현재가: {}, 입찰 금액: {}", customer.getId(),
-                            auction.getCurrentPrice(), biddingPrice);
-                    log.info("예외 메시지: {}", e.getMessage());
-                } finally {
-                    latch.countDown();
                 }
             });
         }
-
-        latch.await();
         executorService.shutdown();
 
-        // then
-        // 최신 현재가
-        Auction updatedAuction = auctionRepository.findById(auction.getId()).get();
-
-        // 최종 입찰가
-        Bidding lastBidding = biddingRepository.findByAuctionIdOrderByPriceDesc(auction.getId())
-                .get(0);
+        Auction updatedAuction = auctionRepository.findById(auctionId).get();
+        Bidding lastBidding = biddingRepository.findByAuctionIdOrderByPriceDesc(auctionId).get(0);
         assertEquals(lastBidding.getPrice(), updatedAuction.getCurrentPrice());
+    }
 
+    @Test
+    @DisplayName("진행중인 경매가 아닐때")
+    public void createBidding_fail_Auction_Not_Inprogress() {
+        Long auctionId = TestData.TEST_AUCTION2.getId();
+        Long memberId = TestData.TEST_MEMBER2.getId();
+        Long price = 25000L;
+        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE2);
+
+        OperationNotAllowedException exception1 = assertThrows(
+                OperationNotAllowedException.class,
+                () -> biddingService.createBidding(auctionId, price, authMember)
+        );
+        assertEquals("진행 중인 경매가 아닙니다.", exception1.getErrorCode().getMessage());
+    }
+
+    @Test
+    @DisplayName("비딩횟수 초과")
+    public void createBidding_fail_bids_exceeded() {
+        Long auctionId = TestData.TEST_AUCTION3.getId();
+        Long memberId = TestData.TEST_MEMBER2.getId();
+        Long price = 25000L;
+        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE2);
+
+        // 실제 DB에 10개의 비딩 추가
+        for (int i = 0; i < 10; i++) {
+            biddingRepository.save(Bidding.builder()
+                    .auction(TestData.TEST_AUCTION3)
+                    .member(TestData.TEST_MEMBER2)
+                    .price(price + (i * 100L))
+                    .build());
+        }
+        OperationNotAllowedException exception2 = assertThrows(
+                OperationNotAllowedException.class,
+                () -> biddingService.createBidding(auctionId, price, authMember)
+        );
+        assertEquals("입찰은 10번까지만 가능합니다.", exception2.getErrorCode().getMessage());
+    }
+
+    @Test
+    @DisplayName("입찰단위에 맞지 않는 입찰")
+    public void createBidding_fail_bid_not_fit_unit() {
+        Long auctionId = TestData.TEST_AUCTION1.getId();
+        Long memberId = TestData.TEST_MEMBER2.getId();
+        Long price = 25100L;
+        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE2);
+
+        DataInvalidException exception3 = assertThrows(DataInvalidException.class,
+                () -> biddingService.createBidding(auctionId, price, authMember)
+        );
+        assertEquals("최소 입찰 금액 단위의 배수가 아닙니다.", exception3.getErrorCode().getMessage());
+    }
+
+    @Test
+    @DisplayName("현재가보다 낮은 입찰금액")
+    public void createBidding_fail_lower_than_current_price() {
+        Long auctionId = TestData.TEST_AUCTION1.getId();
+        Long memberId = TestData.TEST_MEMBER2.getId();
+        Long price = 20000L;
+        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE2);
+
+        DataInvalidException exception4 = assertThrows(DataInvalidException.class,
+                () -> biddingService.createBidding(auctionId, price, authMember)
+        );
+        assertEquals("입찰가가 현재가보다 작습니다.", exception4.getErrorCode().getMessage());
+    }
+
+    @Test
+    @DisplayName("최대호가보다 높은 입찰금액")
+    public void createBidding_fail_higher_than_max_price() {
+        Long auctionId = TestData.TEST_AUCTION1.getId();
+        Long memberId = TestData.TEST_MEMBER2.getId();
+        Long price = 100000L;
+        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE2);
+
+        DataInvalidException exception5 = assertThrows(DataInvalidException.class,
+                () -> biddingService.createBidding(auctionId, price, authMember)
+        );
+        assertEquals("입찰가가 1회 입찰 시 가능한 최대 금액(최소 입찰 금액 단위의 10배)을 초과하였습니다.",
+                exception5.getErrorCode().getMessage());
     }
 }
