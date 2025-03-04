@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter, SecurityContextHolderAwareRequestFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/auctions**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/auctions/**").permitAll()
                         .requestMatchers("/api/members**").hasAnyRole("SELLER", "CUSTOMER")
                         .requestMatchers("/api/keyboards**").hasRole("SELLER")
                         .requestMatchers(HttpMethod.POST, "/api/auctions").hasRole("SELLER")
@@ -49,6 +49,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/biddings/success")
                         .hasRole("CUSTOMER")
                         .requestMatchers("/payment_login.html", "/style.css", "/token_verify.js")
+                        .permitAll()
+                        .requestMatchers("/login.html", "/main.html", "/payment_process.html")
                         .permitAll()
                         .requestMatchers("/api/payment/**").permitAll()
                         .anyRequest().authenticated()

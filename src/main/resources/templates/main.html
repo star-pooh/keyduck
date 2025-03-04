@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <link rel="icon" href="https://static.toss.im/icons/png/4x/icon-toss-logo.png"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>메인 페이지</title>
+</head>
+<body>
+<h2>메인입니다.</h2>
+
+<table>
+  <thead>
+  <tr>
+    <th>경매 ID</th>
+    <th>경매 제목</th>
+    <th>키보드 이름</th>
+    <th>현재가</th>
+    <th>즉시 구매가</th>
+    <th>진행 상태</th>
+    <th>낙찰자 이름</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="auction : ${auctions}">
+    <td th:text="${auction.auctionId}"></td>
+    <td th:text="${auction.title}"></td>
+    <td th:text="${auction.keyboardName}"></td>
+    <td th:text="${#numbers.formatInteger(auction.currentPrice, 3, 'COMMA') + '원'}"></td>
+    <td th:text="${#numbers.formatInteger(auction.immediatePurchasePrice, 3, 'COMMA') + '원'}"></td>
+    <td th:text="${auction.auctionStatus}"></td>
+    <td th:text="${auction.winnerName != null ? auction.winnerName : '-'}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<div>
+  <label for="amount">충전 금액:</label>
+  <input type="number" id="amount" name="amount" required/>
+  <br/>
+  <button id="payment">경매 포인트 충전하기</button>
+</div>
+
+<script src="/token_verify.js"></script>
+<script>
+  const button = document.getElementById("payment");
+
+  button.addEventListener("click", function () {
+    const amount = document.getElementById("amount").value;
+
+    if (!amount || amount <= 0) {
+      alert("충전 금액을 입력하세요.");
+      return;
+    }
+
+    window.location.href = `/payment_process.html?amount=` + amount;
+  });
+</script>
+</body>
+</html>

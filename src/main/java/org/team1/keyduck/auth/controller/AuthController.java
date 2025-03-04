@@ -76,4 +76,17 @@ public class AuthController {
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.TOKEN_VERIFY_SUCCESS),
                 SuccessCode.TOKEN_VERIFY_SUCCESS.getStatus());
     }
+
+    @PostMapping("/form/login")
+    public ResponseEntity<ApiResponse<Void>> formLogin(
+            @Valid @RequestBody SigninRequestDto dto, HttpServletResponse httpServletResponse) {
+        SigninResponseDto responseDto = authService.login(dto);
+        String bearerToken = URLEncoder.encode(responseDto.getBearerToken(),
+                StandardCharsets.UTF_8);
+
+        httpServletResponse.setHeader("Authorization", bearerToken);
+
+        return new ResponseEntity<>(ApiResponse.success(SuccessCode.LOGIN_SUCCESS),
+                SuccessCode.LOGIN_SUCCESS.getStatus());
+    }
 }
