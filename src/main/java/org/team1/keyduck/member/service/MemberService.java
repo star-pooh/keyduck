@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.auth.service.JwtBlacklistService;
+import org.team1.keyduck.common.exception.DataDuplicateException;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
@@ -21,6 +22,7 @@ import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.team1.keyduck.payment.repository.PaymentDepositRepository;
+import org.team1.keyduck.payment.repository.SaleProfitRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final AuctionRepository auctionRepository;
     private final PaymentDepositRepository paymentDepositRepository;
+    private final SaleProfitRepository saleProfitRepository;
 
     private final JwtBlacklistService jwtBlacklistService;
     private final CommonService commonService;
@@ -41,6 +44,10 @@ public class MemberService {
 
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
                 ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
+
+        if (memberRepository.existsByEmail(requestDto.getEmail())) {
+            throw new DataDuplicateException(ErrorCode.DUPLICATE_EMAIL, ErrorMessageParameter.EMAIL);
+        }
 
         member.updateMember(requestDto);
 
@@ -66,12 +73,9 @@ public class MemberService {
 
     @Transactional
     public void deleteMember(Long id, String token) {
-        Member member = memberRepository.findByIdAndIsDeleted(id, false);
-
-        if (member == null) {
-            throw new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
-                    ErrorMessageParameter.MEMBER);
-        }
+        Member member = memberRepository.findByIdAndIsDeleted(id, false)
+                .orElseThrow(() -> new DataNotFoundException(
+                        ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
 
         //현재 진행중인 경매가 있으면 탈퇴 불가능
         if (member.getMemberRole().equals(MemberRole.SELLER)
@@ -90,9 +94,13 @@ public class MemberService {
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
                 ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
 
-        Long paymentDeposit = paymentDepositRepository.findPaymentDepositAmountMember_Id(id)
-                .orElse(0L);
-
-        return MemberReadResponseDto.of(member, paymentDeposit);
+        if (member.getMemberRole().equals(MemberRole.SELLER)) {
+            Long sellerPoint = saleProfitRepository.findSellerPointByMember_Id(id).orElse(0L);
+            return MemberReadResponseDto.of(member, sellerPoint);
+        } else {
+            Long paymentDeposit = paymentDepositRepository.findPaymentDepositAmountMember_Id(id)
+                    .orElse(0L);
+            return MemberReadResponseDto.of(member, paymentDeposit);
+        }
     }
 }

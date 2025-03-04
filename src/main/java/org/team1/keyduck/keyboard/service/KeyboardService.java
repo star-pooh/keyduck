@@ -68,10 +68,9 @@ public class KeyboardService {
             throw new DataUnauthorizedAccessException(ErrorCode.FORBIDDEN_ACCESS, null);
         }
 
-        // 경매 진행 중인 키보드 삭제 요청 -> 예외 발생
-        if (auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(
-                keyboardId, AuctionStatus.IN_PROGRESS)) {
-            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_MODIFIABLE_AND_DELETEABLE,
+        // 경매가 생성된 키보드 삭제 요청 -> 예외 발생
+        if (auctionRepository.existsAuctionByKeyboardId(keyboardId)) {
+            throw new OperationNotAllowedException(ErrorCode.NOT_DELETABLE_KEYBOARD_DUE_TO_AUCTION,
                     null);
         }
 
@@ -101,16 +100,24 @@ public class KeyboardService {
             throw new DataUnauthorizedAccessException(ErrorCode.FORBIDDEN_ACCESS, null);
         }
 
-        // 경매가 진행 중이거나 종료된 키보드 수정 요청 -> 예외 발생
-        if (!auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(keyboardId,
-                AuctionStatus.NOT_STARTED)) {
-            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_MODIFIABLE_AND_DELETEABLE,
-                    null);
+        // 삭제된 키보드 수정 요청 -> 에외 발생
+        if (findKeyboard.isDeleted()) {
+            throw new OperationNotAllowedException(ErrorCode.NOT_MODIFIABLE_DELETED_KEYBOARD,
+                    ErrorMessageParameter.KEYBOARD);
         }
 
+        // 경매가 진행 중이거나 종료된 키보드 수정 요청 -> 예외 발생
+        List<AuctionStatus> auctionStatuses = List.of(AuctionStatus.IN_PROGRESS,
+                AuctionStatus.CLOSED);
+        boolean isRestricted = auctionRepository.existsByKeyboard_IdAndAuctionStatus(keyboardId,
+                auctionStatuses);
+
+        if (isRestricted) {
+            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_MODIFIABLE_AND_DELETABLE,
+                    null);
+        }
         findKeyboard.updateKeyboard(requestDto);
 
         return KeyboardUpdateResponseDto.of(findKeyboard);
     }
 }
-

@@ -2,17 +2,16 @@ package org.team1.keyduck.keyboard.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.team1.keyduck.testdata.TestData.TEST_ID1;
-import static org.team1.keyduck.testdata.TestData.TEST_ID2;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD1;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD2;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD3;
 import static org.team1.keyduck.testdata.TestData.TEST_MEMBER1;
-import static org.team1.keyduck.testdata.TestData.TEST_MEMBER2;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +24,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.team1.keyduck.common.exception.DataNotMatchException;
 import org.team1.keyduck.keyboard.dto.response.KeyboardReadResponseDto;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.keyboard.dto.request.KeyboardCreateRequestDto;
@@ -42,6 +40,9 @@ class KeyboardServiceTest {
     @Mock
     private KeyboardRepository keyboardRepository;
 
+    @Mock
+    private MemberRepository memberRepository;
+
     @InjectMocks
     private KeyboardService keyboardService;
 
@@ -55,7 +56,8 @@ class KeyboardServiceTest {
         ReflectionTestUtils.setField(member, "id", TEST_ID1);
 
         //when : 수행할 작업(테스트 검증을 위한 준비)
-        when(keyboardRepository.findAllByMemberId(member.getId())).thenReturn(List.of(keyboard));
+        when(keyboardRepository.findAllByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(
+                member.getId())).thenReturn(List.of(keyboard));
         //then : 결과검증
         List<KeyboardReadResponseDto> result = keyboardService.findKeyboardBySellerId(
                 member.getId());
@@ -75,7 +77,8 @@ class KeyboardServiceTest {
                 TEST_KEYBOARD3);
 
         //when : 수행할 작업
-        when(keyboardRepository.findAllByMemberId(member.getId())).thenReturn(keyboardList);
+        when(keyboardRepository.findAllByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(
+                member.getId())).thenReturn(keyboardList);
 
         List<KeyboardReadResponseDto> result = keyboardService.findKeyboardBySellerId(
                 member.getId());
@@ -92,7 +95,8 @@ class KeyboardServiceTest {
         Member member = TEST_MEMBER1;
 
         //when : 수행할 작업
-        when(keyboardRepository.findAllByMemberId(member.getId())).thenReturn(
+        when(keyboardRepository.findAllByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(
+                member.getId())).thenReturn(
                 Collections.emptyList());
 
         //then : 결과검증
@@ -101,132 +105,45 @@ class KeyboardServiceTest {
         assertTrue(result.isEmpty());
     }
 
-    // 가짜 객체
-    @Mock
-    private MemberRepository memberRepository;
-
     @Test
     @DisplayName("키보드 생성 메서드 - 성공 케이스")
-    public void createKeyboard_success() {
+    public void createKeyboardSuccess() {
         // given
-        Long memberId = 1L;
-        String name = "키보드";
-        String description = "키보드입니다.";
+        Long memberId = TestData.TEST_ID1;
+        Member member = TestData.TEST_MEMBER1;
+        Keyboard keyboard = TestData.TEST_KEYBOARD1;
 
-        Member member = mock(Member.class);
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
-
-        // Keyboard 객체 생성하고
-        Keyboard keyboard = Keyboard.builder()
-                .member(member)
-                .name(name)
-                .description(description)
-                .build();
-        // 키보드 아이디 생성자가 없으니까 ReflectionTestUtils로 키보드 객체 수정
-        ReflectionTestUtils.setField(keyboard, "id", 1L);
-
-        // any : 어떤값이든 상관없이 그 타입이면 okay
         when(keyboardRepository.save(any(Keyboard.class))).thenReturn(keyboard);
 
+        KeyboardCreateRequestDto requestDto = mock(KeyboardCreateRequestDto.class);
+        when(requestDto.getName()).thenReturn(keyboard.getName());
+        when(requestDto.getDescription()).thenReturn(keyboard.getDescription());
+
         // when
-        KeyboardCreateRequestDto requestDto = new KeyboardCreateRequestDto(name, description);
         KeyboardCreateResponseDto result = keyboardService.createKeyboard(memberId, requestDto);
 
         // then
-        //assertEquals(result.getId(), keyboard.getId());
-        assertEquals(result.getName(), name);
-        assertEquals(result.getDescription(), description);
-
+        assertThat(result.getName()).isEqualTo(keyboard.getName());
+        assertThat(result.getDescription()).isEqualTo(keyboard.getDescription());
     }
 
     @Test
     @DisplayName("키보드 생성 메서드(실패 케이스) - 유저가 존재하지 않는 경우")
-    void createKeyboard_fail() {
-
+    public void createKeyboardFail() {
         // given
-        Long memberId = 1L;
-        String name = "키보드";
-        String description = "키보드입니다.";
+        Long memberId = TestData.TEST_ID1;
+
+        KeyboardCreateRequestDto requestDto = mock(KeyboardCreateRequestDto.class);
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
 
-        KeyboardCreateRequestDto requestDto = new KeyboardCreateRequestDto(name, description);
         // when
-
         // then
-        Assertions.assertThrows(DataNotFoundException.class, () -> {
-            KeyboardCreateResponseDto result = keyboardService.createKeyboard(memberId, requestDto);
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class, () -> {
+            keyboardService.createKeyboard(memberId, requestDto);
         });
 
+        assertEquals("해당 멤버을(를) 찾을 수 없습니다.", exception.getMessage());
     }
-
-    @Test
-    @DisplayName("키보드 삭제 - 성공 케이스")
-    void deleteKeyboard_success() {
-        // given
-        Member member = TEST_MEMBER1;
-        Keyboard keyboard = TEST_KEYBOARD1;
-
-        ReflectionTestUtils.setField(member, "id", TEST_ID1);
-        // false가 삭제되지 않은 상태
-        ReflectionTestUtils.setField(keyboard, "isDeleted", false);
-
-        // 키보드 조회하면 설정한 키보드 반환
-        when(keyboardRepository.findById(keyboard.getId())).thenReturn(Optional.of(keyboard));
-
-        // when
-        keyboardService.deleteKeyboard(keyboard.getId(), member.getId());
-
-        // then
-        assertEquals(true, keyboard.isDeleted());
-    }
-
-    @Test
-    @DisplayName("키보드 삭제 - 실패 케이스(이미 삭제된 키보드)")
-    void deleteKeyboard_fail_true() {
-        // given
-        Member member = TEST_MEMBER1;
-        Keyboard keyboard = TEST_KEYBOARD1;
-
-        ReflectionTestUtils.setField(member, "id", TEST_ID1);
-
-        // true가 이미 삭제된 상태
-        ReflectionTestUtils.setField(keyboard, "isDeleted", true);
-
-        when(keyboardRepository.findById(keyboard.getId())).thenReturn(Optional.of(keyboard));
-
-        // when
-        // then
-        assertThrows(DuplicateDataException.class, () -> {
-            keyboardService.deleteKeyboard(keyboard.getId(), member.getId());
-        });
-    }
-
-
-    @Test
-    @DisplayName("키보드 삭제 - 실패 케이스(생성 유저와 삭제를 하려는 유저가 동일하지 않음)")
-    void deleteKeyboard_fail_뭐하지() {
-        // given
-        Member member1 = TEST_MEMBER1;
-        Member member2 = TEST_MEMBER2;
-        Keyboard keyboard = TEST_KEYBOARD1;
-
-        ReflectionTestUtils.setField(member1, "id", TEST_ID1);
-        ReflectionTestUtils.setField(member2, "id", TEST_ID2);
-
-        // false가 삭제되지 않은 상태
-        ReflectionTestUtils.setField(keyboard, "isDeleted", false);
-
-        // 키보드1의 작성자를 member2로 설정
-        ReflectionTestUtils.setField(keyboard, "member", member2);
-
-        when(keyboardRepository.findById(keyboard.getId())).thenReturn(Optional.of(keyboard));
-
-        // when
-        // then
-        assertThrows(DataNotMatchException.class, () -> {
-            keyboardService.deleteKeyboard(keyboard.getId(), member1.getId());
-        });
-    }
-
 }

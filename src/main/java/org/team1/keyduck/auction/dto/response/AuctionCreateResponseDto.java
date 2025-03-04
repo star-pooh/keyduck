@@ -21,7 +21,7 @@ public class AuctionCreateResponseDto {
 
     private final Long currentPrice;
 
-    private final int biddingUnit;
+    private final Long biddingUnit;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime auctionStartDate;
@@ -30,7 +30,7 @@ public class AuctionCreateResponseDto {
     private final LocalDateTime auctionEndDate;
 
     private AuctionCreateResponseDto(Long auctionId, AuctionKeyboardDto keyboard, String title,
-            Long startPrice, Long immediatePurchasePrice, Long currentPrice, int biddingUnit,
+            Long startPrice, Long immediatePurchasePrice, Long currentPrice, Long biddingUnit,
             LocalDateTime auctionStartDate, LocalDateTime auctionEndDate) {
         this.auctionId = auctionId;
         this.keyboard = keyboard;
