@@ -24,8 +24,8 @@ public class TestData {
             TEST_MEMBER_ROLE1, TEST_ADDRESS1);
 
     public final static Long TEST_ID2 = 2L;
-    public final static String TEST_NAME2 = "TestName1";
-    public final static String TEST_EMAIL2 = "TestUser1@email.com";
+    public final static String TEST_NAME2 = "TestName2";
+    public final static String TEST_EMAIL2 = "TestUser2@email.com";
     public final static MemberRole TEST_MEMBER_ROLE2 = MemberRole.CUSTOMER;
     public final static String TEST_CITY2 = "서울특별시";
     public final static String TEST_STATE2 = "강남구";
@@ -37,6 +37,8 @@ public class TestData {
     public final static String TEST_PASSWORD2 = "Password123!";
     public final static Member TEST_MEMBER2 = new Member(TEST_NAME2, TEST_EMAIL2, TEST_PASSWORD2,
             TEST_MEMBER_ROLE2, TEST_ADDRESS2);
+
+    public final static String TEST_PASSWORD3 = "Qwer123@";
 
 
     //KEYBOARD
@@ -57,5 +59,8 @@ public class TestData {
     public final static String TEST_KEYBOARD_DESCRIPTION3 = "짱짱";
     public final static Keyboard TEST_KEYBOARD3 = new Keyboard(TEST_MEMBER1, TEST_KEYBOARD_NAME3,
             TEST_KEYBOARD_DESCRIPTION3);
+
+    //token
+    public final static String TEST_TOKEN = "TEST";
 
 }
