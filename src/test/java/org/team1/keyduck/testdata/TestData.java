@@ -7,6 +7,7 @@ import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.member.entity.Address;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
+import org.team1.keyduck.payment.entity.PaymentDeposit;
 
 public class TestData {
 
@@ -27,8 +28,8 @@ public class TestData {
             TEST_MEMBER_ROLE1, TEST_ADDRESS1);
 
     public final static Long TEST_ID2 = 2L;
-    public final static String TEST_NAME2 = "TestName1";
-    public final static String TEST_EMAIL2 = "TestUser1@email.com";
+    public final static String TEST_NAME2 = "TestName2";
+    public final static String TEST_EMAIL2 = "TestUser2@email.com";
     public final static MemberRole TEST_MEMBER_ROLE2 = MemberRole.CUSTOMER;
     public final static String TEST_CITY2 = "서울특별시";
     public final static String TEST_STATE2 = "강남구";
@@ -40,6 +41,8 @@ public class TestData {
     public final static String TEST_PASSWORD2 = "Password123!";
     public final static Member TEST_MEMBER2 = new Member(TEST_NAME2, TEST_EMAIL2, TEST_PASSWORD2,
             TEST_MEMBER_ROLE2, TEST_ADDRESS2);
+
+    public final static String TEST_PASSWORD3 = "Qwer123@";
 
 
     //KEYBOARD
@@ -70,19 +73,17 @@ public class TestData {
             .description(TEST_KEYBOARD_DESCRIPTION3)
             .build();
 
+    public final static Long TEST_DEPOSIT_AMOUNT = 5000L;
+    public final static PaymentDeposit TEST_PAYMENT_DEPOSIT1 = PaymentDeposit.builder()
+            .member(TestData.TEST_MEMBER1)
+            .depositAmount(TestData.TEST_DEPOSIT_AMOUNT)
+            .build();
+    public final static PaymentDeposit TEST_PAYMENT_DEPOSIT2 = PaymentDeposit.builder()
+            .member(TestData.TEST_MEMBER2)
+            .depositAmount(TestData.TEST_DEPOSIT_AMOUNT)
+            .build();
 
-    //AUCTION
-    public final static Long TEST_AUCTION_ID1 = 1L;
-    public final static String TEST_AUCTION_TITLE = "keyboard 1 auction";
-    public final static Long TEST_AUCTION_START_PRICE1 = 50000L;
-    public final static Long TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE1 = 500000L;
-    public final static Long TEST_AUCTION_BIDDING_UNIT1 = 5000L;
-    public final static LocalDateTime TEST_AUCTION_START_DATE1 = LocalDateTime.of(2025, 12, 25, 12,
-            30);
-    public final static LocalDateTime TEST_AUCTION_END_DATE1 = LocalDateTime.of(2025, 12, 30, 12,
-            30);
-    public final static Auction TEST_AUCTION1 = new Auction(TEST_KEYBOARD1, null,
-            TEST_AUCTION_TITLE, TEST_AUCTION_START_PRICE1, TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE1,
-            TEST_AUCTION_START_PRICE1, TEST_AUCTION_BIDDING_UNIT1, TEST_AUCTION_START_DATE1,
-            TEST_AUCTION_END_DATE1, AuctionStatus.NOT_STARTED);
+    //token
+    public final static String TEST_TOKEN = "TEST";
+
 }
