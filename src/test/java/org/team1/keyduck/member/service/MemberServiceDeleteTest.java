@@ -2,6 +2,7 @@ package org.team1.keyduck.member.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -13,6 +14,8 @@ import static org.team1.keyduck.testdata.TestData.TEST_NAME1;
 import static org.team1.keyduck.testdata.TestData.TEST_PASSWORD1;
 import static org.team1.keyduck.testdata.TestData.TEST_TOKEN;
 
+import java.util.Objects;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,13 +52,14 @@ public class MemberServiceDeleteTest {
         Member member = new Member(TEST_NAME1, TEST_EMAIL1, TEST_PASSWORD1, TEST_MEMBER_ROLE1,
                 TEST_ADDRESS1);
 
-        when(memberRepository.findByIdAndIsDeleted(any(Long.class), eq(false))).thenReturn(member);
+        when(memberRepository.findByIdAndIsDeleted(any(Long.class), eq(false))).thenReturn(
+                Optional.of(member));
         when(auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(any(Long.class),
                 eq(AuctionStatus.IN_PROGRESS))).thenReturn(false);
 
         memberService.deleteMember(1L, TEST_TOKEN);
 
-        assertEquals(true, member.isDeleted());
+        assertTrue(member.isDeleted());
     }
 
     @Test
@@ -63,8 +67,9 @@ public class MemberServiceDeleteTest {
     void memberDeleteFailInProgressAuction() {
         Member member = mock(Member.class);
 
-        when(memberRepository.findByIdAndIsDeleted(any(Long.class), eq(false))).thenReturn(member);
-        when(member.getMemberRole()).thenReturn(MemberRole.SELLER);
+        when(memberRepository.findByIdAndIsDeleted(any(Long.class), eq(false))).thenReturn(
+                Optional.ofNullable(member));
+        when(Objects.requireNonNull(member).getMemberRole()).thenReturn(MemberRole.SELLER);
         when(auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(any(Long.class),
                 eq(AuctionStatus.IN_PROGRESS))).thenReturn(true);
 

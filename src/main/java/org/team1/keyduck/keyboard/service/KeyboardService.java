@@ -109,7 +109,7 @@ public class KeyboardService {
         // 경매가 진행 중이거나 종료된 키보드 수정 요청 -> 예외 발생
         List<AuctionStatus> auctionStatuses = List.of(AuctionStatus.IN_PROGRESS,
                 AuctionStatus.CLOSED);
-        boolean isRestricted = auctionRepository.existsByMember_IdAndAuctionStatus(sellerId,
+        boolean isRestricted = auctionRepository.existsByKeyboard_IdAndAuctionStatus(sellerId,
                 auctionStatuses);
 
         if (isRestricted) {
