@@ -46,20 +46,29 @@ public class TestData {
     public final static Long TEST_KEYBOARD_ID1 = 1L;
     public final static String TEST_KEYBOARD_NAME1 = "keyboard";
     public final static String TEST_KEYBOARD_DESCRIPTION1 = "짱짱맨";
-    public final static Keyboard TEST_KEYBOARD1 = new Keyboard(TEST_MEMBER1, TEST_KEYBOARD_NAME1,
-            TEST_KEYBOARD_DESCRIPTION1);
+    public final static Keyboard TEST_KEYBOARD1 = Keyboard.builder()
+            .member(TEST_MEMBER1)
+            .name(TEST_KEYBOARD_NAME1)
+            .description(TEST_KEYBOARD_DESCRIPTION1)
+            .build();
 
     public final static Long TEST_KEYBOARD_ID2 = 2L;
     public final static String TEST_KEYBOARD_NAME2 = "keyboard!!!";
     public final static String TEST_KEYBOARD_DESCRIPTION2 = "짱짱걸";
-    public final static Keyboard TEST_KEYBOARD2 = new Keyboard(TEST_MEMBER1, TEST_KEYBOARD_NAME2,
-            TEST_KEYBOARD_DESCRIPTION2);
+    public final static Keyboard TEST_KEYBOARD2 = Keyboard.builder()
+            .member(TEST_MEMBER1)
+            .name(TEST_KEYBOARD_NAME2)
+            .description(TEST_KEYBOARD_DESCRIPTION2)
+            .build();
 
     public final static Long TEST_KEYBOARD_ID3 = 3L;
     public final static String TEST_KEYBOARD_NAME3 = "keyboard!!!";
     public final static String TEST_KEYBOARD_DESCRIPTION3 = "짱짱";
-    public final static Keyboard TEST_KEYBOARD3 = new Keyboard(TEST_MEMBER1, TEST_KEYBOARD_NAME3,
-            TEST_KEYBOARD_DESCRIPTION3);
+    public final static Keyboard TEST_KEYBOARD3 = Keyboard.builder()
+            .member(TEST_MEMBER1)
+            .name(TEST_KEYBOARD_NAME3)
+            .description(TEST_KEYBOARD_DESCRIPTION3)
+            .build();
 
 
     //AUCTION

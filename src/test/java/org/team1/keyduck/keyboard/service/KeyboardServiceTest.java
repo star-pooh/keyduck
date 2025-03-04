@@ -11,9 +11,7 @@ import static org.team1.keyduck.testdata.TestData.TEST_ID2;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD1;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD2;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD3;
-import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD_DESCRIPTION1;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD_ID1;
-import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD_NAME1;
 import static org.team1.keyduck.testdata.TestData.TEST_MEMBER1;
 
 import java.util.Collections;
@@ -52,27 +50,28 @@ class KeyboardServiceTest {
 
     @Test
     @DisplayName("키보드 조회_성공_키보드가 1개일때")
-    public void findKeyboard_success_one() {
+    public void findKeyboardSuccessOne() {
         //given : 설정(테스트준비)
         Member member = TEST_MEMBER1;
         Keyboard keyboard = TEST_KEYBOARD1;
 
         ReflectionTestUtils.setField(member, "id", TEST_ID1);
 
-        //when : 수행할 작업(테스트 검증을 위한 준비)
         when(keyboardRepository.findAllByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(
                 member.getId())).thenReturn(List.of(keyboard));
-        //then : 결과검증
+
+        //when : 수행할 작업(테스트 검증을 위한 준비)
         List<KeyboardReadResponseDto> result = keyboardService.findKeyboardBySellerId(
                 member.getId());
 
+        //then : 결과검증
         assertEquals(1, result.size());
         assertEquals(keyboard.getId(), result.get(0).getId());
     }
 
     @Test
     @DisplayName("키보드 조회_성공_키보드가 여러개일때")
-    public void findKeyboard_success_many() {
+    public void findKeyboardSuccessMany() {
 
         //given : 설정
         Member member = TEST_MEMBER1;
@@ -92,8 +91,8 @@ class KeyboardServiceTest {
     }
 
     @Test
-    @DisplayName("키보드 조회_키보드가 없을때")
-    public void findKeyboard_empty() {
+    @DisplayName("키보드 조회_성공_키보드가 없을때")
+    public void findKeyboardEmpty() {
 
         //given : 설정
         Member member = TEST_MEMBER1;
@@ -103,29 +102,33 @@ class KeyboardServiceTest {
                 TEST_MEMBER1.getId())).thenReturn(
                 Collections.emptyList());
 
-        //then : 결과검증
         List<KeyboardReadResponseDto> result = keyboardService.findKeyboardBySellerId(TEST_ID1);
 
+        //then : 결과검증
         assertTrue(result.isEmpty());
     }
 
     @Test
     @DisplayName("키보드 수정_성공")
-    public void updateKeyboard_success() {
+    public void updateKeyboardSuccess() {
 
         //given
-        Member member = mock(Member.class);
-        Keyboard keyboard = new Keyboard(member, TEST_KEYBOARD_NAME1, TEST_KEYBOARD_DESCRIPTION1);
+        Keyboard keyboard = Keyboard.builder()
+                .name(TestData.TEST_KEYBOARD_NAME1)
+                .description(TestData.TEST_KEYBOARD_DESCRIPTION1)
+                .build();
+
         KeyboardUpdateRequestDto requestDto =
                 new KeyboardUpdateRequestDto("이름변경1", "내용변경1");
-        ReflectionTestUtils.setField(keyboard, "id", TEST_ID1);
+
+        ReflectionTestUtils.setField(keyboard, "member", TEST_MEMBER1);
+        ReflectionTestUtils.setField(TEST_MEMBER1, "id", TEST_ID1);
 
         //when
         List<AuctionStatus> auctionStatuses = List.of(AuctionStatus.IN_PROGRESS,
                 AuctionStatus.CLOSED);
 
         when(keyboardRepository.findById(any(Long.class))).thenReturn(Optional.of(keyboard));
-        when(member.getId()).thenReturn(TEST_ID1);
         when(auctionRepository.existsByKeyboard_IdAndAuctionStatus(TEST_KEYBOARD_ID1,
                 auctionStatuses)).thenReturn(false);
 
@@ -139,7 +142,7 @@ class KeyboardServiceTest {
 
     @Test
     @DisplayName("키보드 수정_실패_키보드 정보 없음")
-    public void updateKeyboard_fail_Not_Found_Keyboard() {
+    public void updateKeyboardFailNotFoundKeyboard() {
         //given
         KeyboardUpdateRequestDto requestDto =
                 new KeyboardUpdateRequestDto("이름변경1", "내용변경1");
@@ -156,23 +159,24 @@ class KeyboardServiceTest {
 
     @Test
     @DisplayName("키보드 수정_실패_키보드를 등록한 셀러가 아님")
-    public void updateKeyboard_fail_Unauthorized() {
+    public void updateKeyboardFailUnauthorized() {
         //given
-        Keyboard mockKeyboard = mock(Keyboard.class);
-        Member mockMember = mock(Member.class);
+        Keyboard keyboard = mock(Keyboard.class);
+        Member member = mock(Member.class);
 
-        KeyboardUpdateRequestDto requestDto =
-                new KeyboardUpdateRequestDto("이름변경1", "내용변경1");
+        KeyboardUpdateRequestDto requestDto = mock(KeyboardUpdateRequestDto.class);
 
-        when(mockKeyboard.getMember()).thenReturn(mockMember);
+        when(keyboard.getMember()).thenReturn(member);
 
-        when(mockMember.getId()).thenReturn(TEST_ID1);
+        when(member.getId()).thenReturn(TEST_ID1);
 
-        when(keyboardRepository.findById(any(Long.class))).thenReturn(Optional.of(mockKeyboard));
+        when(keyboard.getId()).thenReturn(TEST_KEYBOARD_ID1);
+
+        when(keyboardRepository.findById(any(Long.class))).thenReturn(Optional.of(keyboard));
 
         //when&then
         DataUnauthorizedAccessException e = assertThrows(DataUnauthorizedAccessException.class,
-                () -> keyboardService.keyboardModification(TEST_ID2, mockKeyboard.getId(),
+                () -> keyboardService.keyboardModification(TEST_ID2, keyboard.getId(),
                         requestDto));
 
         assertEquals("접근 권한이 없습니다.", e.getMessage());
@@ -180,26 +184,27 @@ class KeyboardServiceTest {
 
     @Test
     @DisplayName("키보드 수정_실패_삭제된 키보드")
-    public void updateKeyboard_fail_is_Deleted_Keyboard() {
+    public void updateKeyboardFailIsDeletedKeyboard() {
         //given
-        Keyboard mockKeyboard = mock(Keyboard.class);
-        Member mockMember = mock(Member.class);
+        Keyboard keyboard = mock(Keyboard.class);
+        Member member = mock(Member.class);
 
-        KeyboardUpdateRequestDto requestDto =
-                new KeyboardUpdateRequestDto("이름변경1", "내용변경1");
+        KeyboardUpdateRequestDto requestDto = mock(KeyboardUpdateRequestDto.class);
 
-        when(mockKeyboard.getMember()).thenReturn(mockMember);
+        when(keyboard.getMember()).thenReturn(member);
 
-        when(mockMember.getId()).thenReturn(TEST_ID1);
+        when(member.getId()).thenReturn(TEST_ID1);
 
-        when(keyboardRepository.findById(mockKeyboard.getId())).thenReturn(
-                Optional.of(mockKeyboard));
+        when(keyboard.getId()).thenReturn(TEST_KEYBOARD_ID1);
 
-        when(mockKeyboard.isDeleted()).thenReturn(true);
+        when(keyboardRepository.findById(keyboard.getId())).thenReturn(
+                Optional.of(keyboard));
+
+        when(keyboard.isDeleted()).thenReturn(true);
 
         //when&then
         OperationNotAllowedException e = assertThrows(OperationNotAllowedException.class,
-                () -> keyboardService.keyboardModification(TEST_ID1, mockKeyboard.getId(),
+                () -> keyboardService.keyboardModification(TEST_ID1, keyboard.getId(),
                         requestDto));
 
         assertEquals("삭제된 키보드는 수정할 수 없습니다.", e.getMessage());
@@ -208,28 +213,29 @@ class KeyboardServiceTest {
 
     @Test
     @DisplayName("키보드 수정_실패_경매가 시작되었거나, 종료된 키보드")
-    public void updateKeyboard_fail_Auction_Status_block() {
+    public void updateKeyboardFailAuctionStatusWithInProgressAndClosed() {
         //given
-        Keyboard mockKeyboard = mock(Keyboard.class);
-        Member mockMember = mock(Member.class);
+        Keyboard keyboard = mock(Keyboard.class);
+        Member member = mock(Member.class);
 
-        KeyboardUpdateRequestDto requestDto =
-                new KeyboardUpdateRequestDto("이름변경1", "내용변경1");
+        KeyboardUpdateRequestDto requestDto = mock(KeyboardUpdateRequestDto.class);
 
-        when(mockKeyboard.getMember()).thenReturn(mockMember);
+        when(keyboard.getMember()).thenReturn(member);
 
-        when(mockMember.getId()).thenReturn(TEST_ID1);
+        when(member.getId()).thenReturn(TEST_ID1);
 
-        when(keyboardRepository.findById(mockKeyboard.getId())).thenReturn(
-                Optional.of(mockKeyboard));
+        when(keyboard.getId()).thenReturn(TEST_KEYBOARD_ID1);
 
-        when(mockKeyboard.isDeleted()).thenReturn(false);
+        when(keyboardRepository.findById(keyboard.getId())).thenReturn(
+                Optional.of(keyboard));
+
+        when(keyboard.isDeleted()).thenReturn(false);
         when(auctionRepository.existsByKeyboard_IdAndAuctionStatus(any(Long.class),
                 any())).thenReturn(true);
 
         //when&then
         OperationNotAllowedException e = assertThrows(OperationNotAllowedException.class,
-                () -> keyboardService.keyboardModification(TEST_ID1, mockKeyboard.getId(),
+                () -> keyboardService.keyboardModification(TEST_ID1, keyboard.getId(),
                         requestDto));
 
         assertEquals("진행 중이거나 종료된 경매는 수정 및 삭제할 수 없습니다.", e.getMessage());
