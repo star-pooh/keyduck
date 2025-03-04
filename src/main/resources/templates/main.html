@@ -8,8 +8,6 @@
   <title>메인 페이지</title>
 </head>
 <body>
-<h2>메인입니다.</h2>
-
 <table>
   <thead>
   <tr>
@@ -37,17 +35,40 @@
 
 <div>
   <label for="amount">충전 금액:</label>
-  <input type="number" id="amount" name="amount" required/>
+  <input type="text" id="amount" name="amount" required/>
   <br/>
   <button id="payment">경매 포인트 충전하기</button>
 </div>
 
 <script src="/token_verify.js"></script>
 <script>
+  const amountInput = document.getElementById("amount");
   const button = document.getElementById("payment");
 
+  function formatAmount(value) {
+    // 숫자 외의 문자는 제거
+    let formattedValue = value.replace(/[^\d]/g, '');
+
+    if (formattedValue) {
+      return Number(formattedValue).toLocaleString();
+    }
+    return '';
+  }
+
+  amountInput.addEventListener("input", function () {
+    let value = amountInput.value;
+    value = formatAmount(value);
+
+    // 값이 "0"만 입력된 경우 입력을 방지
+    if (value === '0') {
+      value = '';
+    }
+
+    amountInput.value = value;
+  });
+
   button.addEventListener("click", function () {
-    const amount = document.getElementById("amount").value;
+    const amount = amountInput.value.replace(/[^\d]/g, '');
 
     if (!amount || amount <= 0) {
       alert("충전 금액을 입력하세요.");
