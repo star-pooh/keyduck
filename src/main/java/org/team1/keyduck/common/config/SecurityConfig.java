@@ -1,7 +1,6 @@
 package org.team1.keyduck.common.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -49,9 +48,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/biddings/*").hasRole("CUSTOMER")
                         .requestMatchers(HttpMethod.GET, "/api/biddings/success")
                         .hasRole("CUSTOMER")
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                        .requestMatchers("/payment_login.html", "/style.css", "/token_verify.js")
                         .permitAll()
-                        .requestMatchers("/payment_login.html", "/style.css").permitAll()
+                        .requestMatchers("/api/payment/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();
