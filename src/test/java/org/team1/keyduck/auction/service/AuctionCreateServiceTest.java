@@ -102,6 +102,9 @@ class AuctionCreateServiceTest {
 
         when(request.getKeyboardId()).thenReturn(TEST_KEYBOARD_ID1);
         when(auctionRepository.existsByKeyboard_Id(any(Long.class))).thenReturn(false);
+        when(request.getKeyboardId()).thenReturn(TEST_KEYBOARD_ID1);
+        when(keyboardRepository.findByIdAndIsDeletedFalse(any(Long.class))).thenReturn(
+                Optional.empty());
 
         //when&then
         DataNotFoundException e = assertThrows(DataNotFoundException.class, () -> {
