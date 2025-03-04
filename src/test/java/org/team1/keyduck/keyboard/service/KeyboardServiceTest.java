@@ -103,7 +103,7 @@ class KeyboardServiceTest {
 
     @Test
     @DisplayName("키보드 생성 메서드 - 성공 케이스")
-    public void createKeyboard_success() {
+    public void createKeyboardSuccess() {
         // given
         Long memberId = TestData.TEST_ID1;
         Member member = TestData.TEST_MEMBER1;
@@ -120,15 +120,14 @@ class KeyboardServiceTest {
         KeyboardCreateResponseDto result = keyboardService.createKeyboard(memberId, requestDto);
 
         // then
-        assertEquals(result.getName(), result.getName());
-        assertEquals(result.getDescription(), result.getDescription());
-
+        assertEquals(result.getName(), keyboard.getName());
+        assertEquals(result.getDescription(), keyboard.getDescription());
     }
 
     @Test
     @DisplayName("키보드 생성 메서드(실패 케이스) - 유저가 존재하지 않는 경우")
-    void createKeyboard_fail() {
-        // give
+    public void createKeyboardFail() {
+        // given
         Long memberId = TestData.TEST_ID1;
 
         KeyboardCreateRequestDto requestDto = mock(KeyboardCreateRequestDto.class);
