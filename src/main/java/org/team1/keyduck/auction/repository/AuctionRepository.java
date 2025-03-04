@@ -22,10 +22,10 @@ public interface AuctionRepository extends JpaRepository<Auction, Long>, Auction
     @Query("SELECT COUNT(a) > 0 FROM Auction a WHERE a.keyboard.member.id = :memberId AND a.auctionStatus IN :statuses")
     boolean existsByMember_IdAndAuctionStatus(Long memberId, List<AuctionStatus> statuses);
 
-    List<Auction> findAllByOrderByIdDesc();
-
     // 비관적 락 적용
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT a FROM Auction a WHERE a.id = :auctionId")
     Optional<Auction> findByIdWithPessimisticLock(@Param("auctionId") Long auctionId);
+
+    boolean existsAuctionByKeyboardId(Long keyboardId);
 }
