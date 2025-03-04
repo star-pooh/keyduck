@@ -53,7 +53,7 @@ class MemberServiceTest {
 
     @Test
     @DisplayName(value = "멤버 업데이트 성공")
-    void member_update_success() {
+    void memberUpdateSuccess() {
 
         //given
         MemberUpdateRequestDto requestDto = mock(MemberUpdateRequestDto.class);
@@ -82,7 +82,7 @@ class MemberServiceTest {
 
     @Test
     @DisplayName(value = "멤버 업데이트 실패 : 이메일 형식 불일치")
-    void member_update_fail_email_invalid() {
+    void memberUpdateFailEmailInvalid() {
 
         //given
         MemberUpdateRequestDto requestDto = mock(MemberUpdateRequestDto.class);
@@ -101,7 +101,7 @@ class MemberServiceTest {
 
     @Test
     @DisplayName(value = "멤버 업데이트 실패 : 이전 이메일과 동일한 이메일로 변경")
-    void member_update_fail_duplicate_email() {
+    void memberUpdateFailDuplicateEmail() {
 
         //given
         MemberUpdateRequestDto requestDto = mock(MemberUpdateRequestDto.class);
@@ -121,7 +121,7 @@ class MemberServiceTest {
 
     @Test
     @DisplayName(value = "멤버 업데이트 실패 : 모든 필드가 비어있을 경우")
-    void member_update_fail_all_field_empty() {
+    void memberUpdateFailAllFieldEmpty() {
 
         //given
         MemberUpdateRequestDto requestDto = new MemberUpdateRequestDto();
@@ -137,7 +137,7 @@ class MemberServiceTest {
 
     @Test
     @DisplayName(value = "멤버 비밀번호 업데이트 성공")
-    void member_password_update_success() {
+    void memberPasswordUpdateSuccess() {
 
         //given
         Member beforeMember = TEST_MEMBER1;
@@ -159,7 +159,7 @@ class MemberServiceTest {
 
     @Test
     @DisplayName(value = "멤버 비밀번호 업데이트 실패 : 수정하려는 비밀번호가 이전 비밀번호와 동일함")
-    void member_password_update_fail_modify_password_same() {
+    void memberPasswordUpdateFailModifyPasswordAndBeforePasswordIsSame() {
 
         //given
         Member beforeMember = TEST_MEMBER1;

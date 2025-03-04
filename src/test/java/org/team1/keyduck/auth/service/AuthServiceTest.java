@@ -54,7 +54,7 @@ class AuthServiceTest {
 
     @Test
     @DisplayName(value = "회원가입 성공")
-    void member_join_success() {
+    void memberJoinSuccess() {
 
         //given
         MemberCreateRequestDto requestDto = mock(MemberCreateRequestDto.class);
@@ -86,7 +86,7 @@ class AuthServiceTest {
 
     @Test
     @DisplayName(value = "멤버 회원가입 실패 : 이메일 중복")
-    void member_join_fail_email_duplicate() {
+    void memberJoinFailEmailDuplicate() {
 
         //given
         MemberCreateRequestDto requestDto = mock(MemberCreateRequestDto.class);
@@ -105,7 +105,7 @@ class AuthServiceTest {
 
     @Test
     @DisplayName(value = "로그인 성공")
-    void login_success() {
+    void loginSuccess() {
         //given
         SigninRequestDto requestDto = mock(SigninRequestDto.class);
         Member member = mock(Member.class);
@@ -128,7 +128,7 @@ class AuthServiceTest {
 
     @Test
     @DisplayName(value = "로그인 실패 : 삭제된 멤버")
-    void login_fail_deleted_member() {
+    void loginFailDeletedMember() {
 
         //given
         SigninRequestDto requestDto = mock(SigninRequestDto.class);

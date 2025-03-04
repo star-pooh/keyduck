@@ -44,7 +44,7 @@ public class MemberServiceDeleteTest {
 
     @Test
     @DisplayName(value = "멤버 삭제 성공")
-    void member_delete_success() {
+    void memberDeleteSuccess() {
 
         Member member = new Member(TEST_NAME1, TEST_EMAIL1, TEST_PASSWORD1, TEST_MEMBER_ROLE1,
                 TEST_ADDRESS1);
@@ -60,7 +60,7 @@ public class MemberServiceDeleteTest {
 
     @Test
     @DisplayName(value = "멤버 삭제 실패 : 진행 중인 경매가 있음")
-    void member_delete_fail_in_progress_auction() {
+    void memberDeleteFailInProgressAuction() {
         Member member = mock(Member.class);
 
         when(memberRepository.findByIdAndIsDeleted(any(Long.class), eq(false))).thenReturn(member);

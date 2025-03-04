@@ -27,7 +27,7 @@ class CommonServiceTest {
 
     @Test
     @DisplayName(value = "비밀번호 비교시 일치하지 않음")
-    void password_matches_inconsistency() {
+    void passwordMatchesInconsistency() {
         // given
         when(passwordEncoder.matches(any(CharSequence.class), any(String.class))).thenReturn(false);
 
