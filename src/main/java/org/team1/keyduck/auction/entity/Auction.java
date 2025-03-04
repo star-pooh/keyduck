@@ -52,7 +52,7 @@ public class Auction {
     private Long currentPrice;
 
     @Column(nullable = false)
-    private int biddingUnit;
+    private Long biddingUnit;
 
     @Column(nullable = false)
     private LocalDateTime auctionStartDate;
@@ -67,7 +67,7 @@ public class Auction {
     @Builder
     public Auction(Keyboard keyboard, Member member, String title, Long startPrice,
             Long immediatePurchasePrice,
-            Long currentPrice, int biddingUnit, LocalDateTime auctionStartDate,
+            Long currentPrice, Long biddingUnit, LocalDateTime auctionStartDate,
             LocalDateTime auctionEndDate, AuctionStatus auctionStatus) {
         this.keyboard = keyboard;
         this.member = member;
