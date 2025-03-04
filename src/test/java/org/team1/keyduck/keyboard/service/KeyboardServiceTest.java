@@ -3,6 +3,7 @@ package org.team1.keyduck.keyboard.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -120,8 +121,8 @@ class KeyboardServiceTest {
         KeyboardCreateResponseDto result = keyboardService.createKeyboard(memberId, requestDto);
 
         // then
-        assertEquals(result.getName(), keyboard.getName());
-        assertEquals(result.getDescription(), keyboard.getDescription());
+        assertThat(result.getName()).isEqualTo(keyboard.getName());
+        assertThat(result.getDescription()).isEqualTo(keyboard.getDescription());
     }
 
     @Test
