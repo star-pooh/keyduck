@@ -49,7 +49,7 @@ class AuctionCreateServiceTest {
 
     @Test
     @DisplayName("경매 생성 성공")
-    public void createAuction_success() {
+    public void createAuctionSuccess() {
         //given
         AuctionCreateRequestDto request = new AuctionCreateRequestDto(TEST_KEYBOARD_ID1,
                 TEST_AUCTION_TITLE1, START_PRICE1, null, BIDDING_UNIT1, START_DATE1, END_DATE1);
@@ -79,7 +79,7 @@ class AuctionCreateServiceTest {
 
     @Test
     @DisplayName("경매 생성 실패 : 해당 키보드로 이미 생성된 경매가 있을 때")
-    public void createAuction_fail_already_auction_keyboard() {
+    public void createAuctionFailAlreadyAuctionKeyboard() {
         //given
         AuctionCreateRequestDto request = mock(AuctionCreateRequestDto.class);
 
@@ -96,13 +96,12 @@ class AuctionCreateServiceTest {
 
     @Test
     @DisplayName("경매 생성 실패 : 해당 키보드가 없을 경우")
-    public void createAuction_fail_not_found_keyboard() {
+    public void createAuctionFailNotFoundKeyboard() {
         //given
         AuctionCreateRequestDto request = mock(AuctionCreateRequestDto.class);
 
         when(request.getKeyboardId()).thenReturn(TEST_KEYBOARD_ID1);
         when(auctionRepository.existsByKeyboard_Id(any(Long.class))).thenReturn(false);
-        when(request.getKeyboardId()).thenReturn(TEST_KEYBOARD_ID1);
         when(keyboardRepository.findByIdAndIsDeletedFalse(any(Long.class))).thenReturn(
                 Optional.empty());
 
@@ -115,7 +114,7 @@ class AuctionCreateServiceTest {
 
     @Test
     @DisplayName("경매 생성 실패 : 본인이 생성한 키보드가 아닐 경우")
-    public void createAuction_fail_not_my_keyboard() {
+    public void createAuctionFailNotMyKeyboard() {
         //given
         AuctionCreateRequestDto request = mock(AuctionCreateRequestDto.class);
 
