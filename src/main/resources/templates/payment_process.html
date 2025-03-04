@@ -79,7 +79,6 @@
     // @docs https://docs.tosspayments.com/sdk/v2/js#widgetsrequestpayment
     button.addEventListener("click", async function () {
       const token = sessionStorage.getItem("Authorization");
-      console.log(token);
       const orderId = generateRandomString();
 
       // 결제를 요청하기 전에 orderId, amount를 서버에 저장하세요.
