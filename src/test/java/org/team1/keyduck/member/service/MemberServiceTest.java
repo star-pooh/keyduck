@@ -162,11 +162,10 @@ class MemberServiceTest {
     void memberPasswordUpdateFailModifyPasswordAndBeforePasswordIsSame() {
 
         //given
-        Member beforeMember = TEST_MEMBER1;
 
         MemberUpdatePasswordRequestDto requestDto = mock(MemberUpdatePasswordRequestDto.class);
 
-        when(requestDto.getBeforePassword()).thenReturn(beforeMember.getPassword());
+        when(requestDto.getBeforePassword()).thenReturn(TEST_MEMBER1.getPassword());
         when(requestDto.getModifyPassword()).thenReturn(TEST_PASSWORD1);
 
         //when&then

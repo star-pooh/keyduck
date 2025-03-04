@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.team1.keyduck.member.dto.response.MemberReadResponseDto;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.team1.keyduck.payment.repository.PaymentDepositRepository;
+import org.team1.keyduck.payment.repository.SaleProfitRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceGetTest {
@@ -29,12 +30,14 @@ public class MemberServiceGetTest {
     @Mock
     PaymentDepositRepository paymentDepositRepository;
 
+    @Mock
+    SaleProfitRepository saleProfitRepository;
 
     @Test
     @DisplayName("멤버 조회 성공")
     void memberGetSuccess() {
         //given
-        MemberReadResponseDto expectMember = MemberReadResponseDto.of(TEST_MEMBER1, TEST_ID1);
+        MemberReadResponseDto expectMember = MemberReadResponseDto.of(TEST_MEMBER1, 0L);
 
         when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(TEST_MEMBER1));
 
