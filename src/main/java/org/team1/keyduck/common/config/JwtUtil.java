@@ -54,6 +54,7 @@ public class JwtUtil {
 
     public String getToken(HttpServletRequest httpRequest) {
         boolean hasAuthorizationHeader = httpRequest.getHeader("Authorization") != null;
+        boolean hasCookie = httpRequest.getCookies() != null;
 
         // postman request
         if (hasAuthorizationHeader) {
@@ -61,11 +62,11 @@ public class JwtUtil {
         }
 
         // payment_login.html
-        if (httpRequest.getCookies().length > 1) {
-            return httpRequest.getCookies()[1].getValue();
-        } else {
+        if (hasCookie) {
             return httpRequest.getCookies()[0].getValue();
         }
+
+        return null;
     }
 
     public String substringToken(String tokenValue) {

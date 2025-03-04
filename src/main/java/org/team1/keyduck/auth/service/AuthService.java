@@ -34,7 +34,8 @@ public class AuthService {
 
     public SigninResponseDto login(SigninRequestDto signinRequest) {
         Member member = memberRepository.findByEmail(signinRequest.getEmail())
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.LOGIN_FAILED, null));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.INVALID_DATA_VALUE,
+                        ErrorMessageParameter.EMAIL));
 
         if (member.isDeleted()) {
             throw new DataInvalidException(ErrorCode.DUPLICATE_DELETED,

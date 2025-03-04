@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+  cache:
+    type: caffeine
+    caffeine:
+      spec: expireAfterWrite=6h
+
+  config:
+    import: optional:file:.env[.properties]
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+
+payment:
+  toss:
+    test-client-api-key: ${PAYMENT_CLIENT_API_KEY}
+    test-secret-api-key: ${PAYMENT_SECRET_API_KEY}
+    payment-url: ${PAYMENT_URL}
