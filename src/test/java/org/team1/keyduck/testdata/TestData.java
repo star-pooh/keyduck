@@ -4,7 +4,11 @@ import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.member.entity.Address;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
+<<<<<<< HEAD
 import org.team1.keyduck.payment.entity.TempPayment;
+=======
+import org.team1.keyduck.payment.entity.PaymentDeposit;
+>>>>>>> 027ccf761a5405d2026b8f52311ae38a45dae9af
 
 public class TestData {
 
@@ -25,8 +29,8 @@ public class TestData {
             TEST_MEMBER_ROLE1, TEST_ADDRESS1);
 
     public final static Long TEST_ID2 = 2L;
-    public final static String TEST_NAME2 = "TestName1";
-    public final static String TEST_EMAIL2 = "TestUser1@email.com";
+    public final static String TEST_NAME2 = "TestName2";
+    public final static String TEST_EMAIL2 = "TestUser2@email.com";
     public final static MemberRole TEST_MEMBER_ROLE2 = MemberRole.CUSTOMER;
     public final static String TEST_CITY2 = "서울특별시";
     public final static String TEST_STATE2 = "강남구";
@@ -38,6 +42,8 @@ public class TestData {
     public final static String TEST_PASSWORD2 = "Password123!";
     public final static Member TEST_MEMBER2 = new Member(TEST_NAME2, TEST_EMAIL2, TEST_PASSWORD2,
             TEST_MEMBER_ROLE2, TEST_ADDRESS2);
+
+    public final static String TEST_PASSWORD3 = "Qwer123@";
 
 
     //KEYBOARD
@@ -62,11 +68,24 @@ public class TestData {
     // TEMP PAYMENT
     public final static String TEST_ORDER_ID1 = "orderId1";
     public final static Long TEST_PAYMENT_AMOUNT1 = 1000L;
+    public final static Long TEST_PAYMENT_AMOUNT2 = 2000L;
     public final static TempPayment TEST_TEMP_PAYMENT1 = TempPayment.builder()
             .memberId(TestData.TEST_ID1)
             .orderId(TestData.TEST_ORDER_ID1)
             .amount(TestData.TEST_PAYMENT_AMOUNT1)
             .build();
-    public final static Long TEST_PAYMENT_AMOUNT2 = 2000L;
+
+    public final static Long TEST_DEPOSIT_AMOUNT = 5000L;
+    public final static PaymentDeposit TEST_PAYMENT_DEPOSIT1 = PaymentDeposit.builder()
+            .member(TestData.TEST_MEMBER1)
+            .depositAmount(TestData.TEST_DEPOSIT_AMOUNT)
+            .build();
+    public final static PaymentDeposit TEST_PAYMENT_DEPOSIT2 = PaymentDeposit.builder()
+            .member(TestData.TEST_MEMBER2)
+            .depositAmount(TestData.TEST_DEPOSIT_AMOUNT)
+            .build();
+    
+    //token
+    public final static String TEST_TOKEN = "TEST";
 
 }

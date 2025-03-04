@@ -18,16 +18,16 @@ public class MemberReadResponseDto {
 
     private final Address address;
 
-    private final Long paymentDeposit;
+    private final Long myPoint;
 
     private MemberReadResponseDto(Long id, String name, String email, MemberRole memberRole,
-            Address address, Long paymentDeposit) {
+            Address address, Long myPoint) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.memberRole = memberRole;
         this.address = address;
-        this.paymentDeposit = paymentDeposit;
+        this.myPoint = myPoint;
     }
 
     public static MemberReadResponseDto of(Member member, Long deposit) {
