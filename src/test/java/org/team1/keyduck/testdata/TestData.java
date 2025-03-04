@@ -4,11 +4,8 @@ import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.member.entity.Address;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
-<<<<<<< HEAD
-import org.team1.keyduck.payment.entity.TempPayment;
-=======
 import org.team1.keyduck.payment.entity.PaymentDeposit;
->>>>>>> 027ccf761a5405d2026b8f52311ae38a45dae9af
+import org.team1.keyduck.payment.entity.TempPayment;
 
 public class TestData {
 
@@ -84,7 +81,7 @@ public class TestData {
             .member(TestData.TEST_MEMBER2)
             .depositAmount(TestData.TEST_DEPOSIT_AMOUNT)
             .build();
-    
+
     //token
     public final static String TEST_TOKEN = "TEST";
 
