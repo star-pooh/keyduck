@@ -6,7 +6,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -50,23 +49,6 @@ public class JwtUtil {
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
                         .compact();
-    }
-
-    public String getToken(HttpServletRequest httpRequest) {
-        boolean hasAuthorizationHeader = httpRequest.getHeader("Authorization") != null;
-        boolean hasCookie = httpRequest.getCookies() != null;
-
-        // postman request
-        if (hasAuthorizationHeader) {
-            return httpRequest.getHeader("Authorization");
-        }
-
-        // payment_login.html
-        if (hasCookie) {
-            return httpRequest.getCookies()[0].getValue();
-        }
-
-        return null;
     }
 
     public String substringToken(String tokenValue) {
