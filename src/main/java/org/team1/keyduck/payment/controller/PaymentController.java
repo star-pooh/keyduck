@@ -1,12 +1,9 @@
 package org.team1.keyduck.payment.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,11 +22,6 @@ public class PaymentController {
     private final TempPaymentService tempPaymentService;
     private final PaymentProcessService paymentProcessService;
 
-    @GetMapping("/process")
-    public String callPaymentSystem() {
-        return "payment_process";
-    }
-
     @PostMapping("/temp")
     public ResponseEntity<ApiResponse<Void>> saveTempPaymentInfo(
             @AuthenticationPrincipal AuthMember authMember,
@@ -42,11 +34,6 @@ public class PaymentController {
                 SuccessCode.CREATE_SUCCESS.getStatus());
     }
 
-    @GetMapping("/success")
-    public String paymentRequest() {
-        return "payment_success";
-    }
-
     @PostMapping("/confirm")
     public ResponseEntity<ApiResponse<Void>> confirmPayment(
             @AuthenticationPrincipal AuthMember authMember,
@@ -55,18 +42,5 @@ public class PaymentController {
         paymentProcessService.paymentProcess(jsonBody, authMember.getId());
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS),
                 SuccessCode.CREATE_SUCCESS.getStatus());
-    }
-
-    @GetMapping("/fail")
-    public String failPayment(HttpServletRequest request, Model model) {
-        String failStatus = request.getParameter("status");
-        String failCode = request.getParameter("code");
-        String failMessage = request.getParameter("message");
-
-        model.addAttribute("status", failStatus);
-        model.addAttribute("code", failCode);
-        model.addAttribute("message", failMessage);
-
-        return "payment_fail";
     }
 }

@@ -29,6 +29,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
     // 토큰이 없으면 로그인 페이지로 리다이렉트
     console.log("Token not found. Redirecting to login page.");
     alert("로그인 해주세요.");
-    window.location.href = '/payment_login.html';
+    window.location.href = '/login.html';
   }
 });
