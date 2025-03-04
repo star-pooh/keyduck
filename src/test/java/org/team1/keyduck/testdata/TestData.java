@@ -1,10 +1,12 @@
 package org.team1.keyduck.testdata;
 
+import java.time.LocalDateTime;
+import org.team1.keyduck.auction.entity.Auction;
+import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.member.entity.Address;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
-import org.team1.keyduck.payment.entity.PaymentDeposit;
 
 public class TestData {
 
@@ -111,5 +113,46 @@ public class TestData {
 
     //token
     public final static String TEST_TOKEN = "TEST";
+
+    //AUCTION
+    public final static Long TEST_AUCTION_ID1 = 1L;
+    public final static String TEST_AUCTION_TITLE = "keyboard 1 auction";
+    public final static Long TEST_AUCTION_START_PRICE1 = 50000L;
+    public final static Long TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE1 = 500000L;
+    public final static Long TEST_AUCTION_BIDDING_UNIT1 = 5000L;
+    public final static LocalDateTime TEST_AUCTION_START_DATE1 = LocalDateTime.now().plusDays(1);
+    public final static LocalDateTime TEST_AUCTION_END_DATE1 = LocalDateTime.now().plusDays(3);
+    public final static Auction TEST_AUCTION1 = Auction.builder()
+            .keyboard(TEST_KEYBOARD1)
+            .member(null)
+            .title(TEST_AUCTION_TITLE)
+            .startPrice(TEST_AUCTION_START_PRICE1)
+            .immediatePurchasePrice(TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE1)
+            .currentPrice(TEST_AUCTION_START_PRICE1)
+            .biddingUnit(TEST_AUCTION_BIDDING_UNIT1)
+            .auctionStartDate(TEST_AUCTION_START_DATE1)
+            .auctionEndDate(TEST_AUCTION_END_DATE1)
+            .auctionStatus(AuctionStatus.NOT_STARTED)
+            .build();
+
+    public final static Long TEST_AUCTION_ID2 = 2L;
+    public final static String TEST_AUCTION_TITLE2 = "keyboard 2 auction";
+    public final static Long TEST_AUCTION_START_PRICE2 = 30000L;
+    public final static Long TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE2 = 300000L;
+    public final static Long TEST_AUCTION_BIDDING_UNIT2 = 5000L;
+    public final static LocalDateTime TEST_AUCTION_START_DATE2 = LocalDateTime.now().plusDays(1);
+    public final static LocalDateTime TEST_AUCTION_END_DATE2 = LocalDateTime.now().plusDays(3);
+    public final static Auction TEST_AUCTION2 = Auction.builder()
+            .keyboard(TEST_KEYBOARD2)
+            .member(null)
+            .title(TEST_AUCTION_TITLE2)
+            .startPrice(TEST_AUCTION_START_PRICE2)
+            .immediatePurchasePrice(TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE2)
+            .currentPrice(TEST_AUCTION_START_PRICE2)
+            .biddingUnit(TEST_AUCTION_BIDDING_UNIT2)
+            .auctionStartDate(TEST_AUCTION_START_DATE2)
+            .auctionEndDate(TEST_AUCTION_END_DATE2)
+            .auctionStatus(AuctionStatus.NOT_STARTED)
+            .build();
 
 }
