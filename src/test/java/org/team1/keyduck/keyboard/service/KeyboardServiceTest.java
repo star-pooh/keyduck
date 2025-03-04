@@ -1,9 +1,9 @@
 package org.team1.keyduck.keyboard.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -18,7 +18,6 @@ import static org.team1.keyduck.testdata.TestData.TEST_MEMBER1;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,18 +27,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
+import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataUnauthorizedAccessException;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
-import org.team1.keyduck.keyboard.dto.request.KeyboardUpdateRequestDto;
-import org.team1.keyduck.keyboard.dto.response.KeyboardReadResponseDto;
-import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.keyboard.dto.request.KeyboardCreateRequestDto;
+import org.team1.keyduck.keyboard.dto.request.KeyboardUpdateRequestDto;
 import org.team1.keyduck.keyboard.dto.response.KeyboardCreateResponseDto;
+import org.team1.keyduck.keyboard.dto.response.KeyboardReadResponseDto;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.keyboard.repository.KeyboardRepository;
 import org.team1.keyduck.member.entity.Member;
-import org.team1.keyduck.testdata.TestData;
 import org.team1.keyduck.member.repository.MemberRepository;
+import org.team1.keyduck.testdata.TestData;
 
 @ExtendWith(MockitoExtension.class)
 class KeyboardServiceTest {
