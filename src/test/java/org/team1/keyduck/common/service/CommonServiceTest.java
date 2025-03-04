@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import static org.team1.keyduck.testdata.TestData.TEST_PASSWORD1;
 import static org.team1.keyduck.testdata.TestData.TEST_PASSWORD3;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,7 +26,8 @@ class CommonServiceTest {
     PasswordEncoder passwordEncoder;
 
     @Test
-    void 비밀번호_비교_실패() {
+    @DisplayName(value = "비밀번호 비교시 일치하지 않음")
+    void password_matches_inconsistency() {
         // given
         when(passwordEncoder.matches(any(CharSequence.class), any(String.class))).thenReturn(false);
 

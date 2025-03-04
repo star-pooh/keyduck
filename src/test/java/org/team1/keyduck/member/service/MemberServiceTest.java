@@ -19,6 +19,7 @@ import static org.team1.keyduck.testdata.TestData.TEST_PASSWORD1;
 import static org.team1.keyduck.testdata.TestData.TEST_PASSWORD3;
 
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -51,7 +52,8 @@ class MemberServiceTest {
 
 
     @Test
-    void 성공_케이스_멤버_업데이트() {
+    @DisplayName(value = "멤버 업데이트 성공")
+    void member_update_success() {
 
         //given
         MemberUpdateRequestDto requestDto = mock(MemberUpdateRequestDto.class);
@@ -79,7 +81,8 @@ class MemberServiceTest {
     }
 
     @Test
-    void 실패_케이스_멤버_업데이트_이메일_형식_불일치() {
+    @DisplayName(value = "멤버 업데이트 실패 : 이메일 형식 불일치")
+    void member_update_fail_email_invalid() {
 
         //given
         MemberUpdateRequestDto requestDto = mock(MemberUpdateRequestDto.class);
@@ -97,7 +100,8 @@ class MemberServiceTest {
     }
 
     @Test
-    void 실패_케이스_이전_이메일과_동일한_이메일로_변경() {
+    @DisplayName(value = "멤버 업데이트 실패 : 이전 이메일과 동일한 이메일로 변경")
+    void member_update_fail_duplicate_email() {
 
         //given
         MemberUpdateRequestDto requestDto = mock(MemberUpdateRequestDto.class);
@@ -116,7 +120,8 @@ class MemberServiceTest {
     }
 
     @Test
-    void 실패_케이스_모든_필드가_비어있을경우() {
+    @DisplayName(value = "멤버 업데이트 실패 : 모든 필드가 비어있을 경우")
+    void member_update_fail_all_field_empty() {
 
         //given
         MemberUpdateRequestDto requestDto = new MemberUpdateRequestDto();
@@ -131,7 +136,8 @@ class MemberServiceTest {
     }
 
     @Test
-    void 성공_케이스_비밀번호_업데이트() {
+    @DisplayName(value = "멤버 비밀번호 업데이트 성공")
+    void member_password_update_success() {
 
         //given
         Member beforeMember = TEST_MEMBER1;
@@ -152,7 +158,8 @@ class MemberServiceTest {
     }
 
     @Test
-    void 실패_케이스_비밀번호_이전_비밀번호와_동일함() {
+    @DisplayName(value = "멤버 비밀번호 업데이트 실패 : 수정하려는 비밀번호가 이전 비밀번호와 동일함")
+    void member_password_update_fail_modify_password_same() {
 
         //given
         Member beforeMember = TEST_MEMBER1;

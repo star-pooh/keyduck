@@ -16,6 +16,7 @@ import static org.team1.keyduck.testdata.TestData.TEST_TOKEN;
 
 import java.util.Objects;
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -52,7 +53,8 @@ class AuthServiceTest {
     CommonService commonService;
 
     @Test
-    void 판매자_회원가입_성공() {
+    @DisplayName(value = "회원가입 성공")
+    void member_join_success() {
 
         //given
         MemberCreateRequestDto requestDto = mock(MemberCreateRequestDto.class);
@@ -83,7 +85,8 @@ class AuthServiceTest {
     }
 
     @Test
-    void 멤버_회원가입_실패_이메일_중복() {
+    @DisplayName(value = "멤버 회원가입 실패 : 이메일 중복")
+    void member_join_fail_email_duplicate() {
 
         //given
         MemberCreateRequestDto requestDto = mock(MemberCreateRequestDto.class);
@@ -101,7 +104,8 @@ class AuthServiceTest {
     }
 
     @Test
-    void 로그인_성공() {
+    @DisplayName(value = "로그인 성공")
+    void login_success() {
         //given
         SigninRequestDto requestDto = mock(SigninRequestDto.class);
         Member member = mock(Member.class);
@@ -123,7 +127,8 @@ class AuthServiceTest {
     }
 
     @Test
-    void 로그인_실패_삭제된_유저() {
+    @DisplayName(value = "로그인 실패 : 삭제된 멤버")
+    void login_fail_deleted_member() {
 
         //given
         SigninRequestDto requestDto = mock(SigninRequestDto.class);

@@ -13,6 +13,7 @@ import static org.team1.keyduck.testdata.TestData.TEST_NAME1;
 import static org.team1.keyduck.testdata.TestData.TEST_PASSWORD1;
 import static org.team1.keyduck.testdata.TestData.TEST_TOKEN;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,7 +43,8 @@ public class MemberServiceDeleteTest {
     AuctionRepository auctionRepository;
 
     @Test
-    void 멤버_삭제_성공() {
+    @DisplayName(value = "멤버 삭제 성공")
+    void member_delete_success() {
 
         Member member = new Member(TEST_NAME1, TEST_EMAIL1, TEST_PASSWORD1, TEST_MEMBER_ROLE1,
                 TEST_ADDRESS1);
@@ -57,7 +59,8 @@ public class MemberServiceDeleteTest {
     }
 
     @Test
-    void 멤버_삭제_실패_진행중인_경매가_있음() {
+    @DisplayName(value = "멤버 삭제 실패 : 진행 중인 경매가 있음")
+    void member_delete_fail_in_progress_auction() {
         Member member = mock(Member.class);
 
         when(memberRepository.findByIdAndIsDeleted(any(Long.class), eq(false))).thenReturn(member);

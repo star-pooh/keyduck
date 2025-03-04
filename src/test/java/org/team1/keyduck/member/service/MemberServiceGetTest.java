@@ -7,6 +7,7 @@ import static org.team1.keyduck.testdata.TestData.TEST_ID1;
 import static org.team1.keyduck.testdata.TestData.TEST_MEMBER1;
 
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,7 +31,8 @@ public class MemberServiceGetTest {
 
 
     @Test
-    void 성공_케이스_멤버_조회() {
+    @DisplayName(value = "멤버 조회 성공")
+    void member_get_success() {
         //given
         MemberReadResponseDto expectMember = MemberReadResponseDto.of(TEST_MEMBER1, TEST_ID1);
 
