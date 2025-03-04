@@ -69,6 +69,7 @@ public class TestData {
     // TEMP PAYMENT
     public final static String TEST_ORDER_ID1 = "orderId1";
     public final static Long TEST_PAYMENT_AMOUNT1 = 1000L;
+    public final static Long TEST_PAYMENT_AMOUNT2 = 2000L;
     public final static TempPayment TEST_TEMP_PAYMENT1 = TempPayment.builder()
             .memberId(TestData.TEST_ID1)
             .orderId(TestData.TEST_ORDER_ID1)
