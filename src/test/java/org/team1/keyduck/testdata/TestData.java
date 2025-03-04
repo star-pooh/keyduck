@@ -1,8 +1,10 @@
 package org.team1.keyduck.testdata;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
+import org.team1.keyduck.bidding.entity.Bidding;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.member.entity.Address;
 import org.team1.keyduck.member.entity.Member;
@@ -41,6 +43,21 @@ public class TestData {
     public final static String TEST_PASSWORD2 = "Password123!";
     public final static Member TEST_MEMBER2 = new Member(TEST_NAME2, TEST_EMAIL2, TEST_PASSWORD2,
             TEST_MEMBER_ROLE2, TEST_ADDRESS2);
+
+    public final static Long TEST_ID3 = 3L;
+    public final static String TEST_NAME3 = "TestName2";
+    public final static String TEST_EMAIL3 = "TestUser2@email.com";
+    public final static MemberRole TEST_MEMBER_ROLE3 = MemberRole.CUSTOMER;
+    public final static String TEST_CITY3 = "서울특별시";
+    public final static String TEST_STATE3 = "강남구";
+    public final static String TEST_STREET3 = "테헤란로";
+    public final static String TEST_DETAIL_ADDRESS5 = "address1";
+    public final static String TEST_DETAIL_ADDRESS6 = "address2";
+    public final static Address TEST_ADDRESS3 = new Address(TEST_CITY2, TEST_STATE2, TEST_STREET2,
+            TEST_DETAIL_ADDRESS3, TEST_DETAIL_ADDRESS4);
+    public final static String TEST_PASSWORD4 = "Password123!";
+    public final static Member TEST_MEMBER3 = new Member(TEST_NAME3, TEST_EMAIL3, TEST_PASSWORD4,
+            TEST_MEMBER_ROLE3, TEST_ADDRESS3);
 
     public final static String TEST_PASSWORD3 = "Qwer123@";
 
@@ -83,7 +100,7 @@ public class TestData {
     public final static Long TEST_AUCTION_START_PRICE1 = 50000L;
     public final static Long TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE1 = 100000L;
     public final static Long TEST_AUCTION_CURRENT_PRICE1 = 50000L;
-    public final static int TEST_AUCTION_BIDDING_UNIT1 = 10000;
+    public final static Long TEST_AUCTION_BIDDING_UNIT1 = 10000L;
     public final static LocalDateTime TEST_AUCTION_START_DATE1 = LocalDateTime.now().plusDays(1);
     public final static LocalDateTime TEST_AUCTION_END_DATE1 = LocalDateTime.now().plusDays(7);
     public final static AuctionStatus TEST_AUCTION_STATUS1 = AuctionStatus.NOT_STARTED;
@@ -97,7 +114,7 @@ public class TestData {
     public static final Long TEST_AUCTION_START_PRICE2 = 80000L;
     public static final Long TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE2 = 150000L;
     public static final Long TEST_AUCTION_CURRENT_PRICE2 = 90000L;
-    public static final int TEST_AUCTION_BIDDING_UNIT2 = 10000;
+    public static final Long TEST_AUCTION_BIDDING_UNIT2 = 10000L;
     public static final LocalDateTime TEST_AUCTION_START_DATE2 = LocalDateTime.now().plusDays(2);
     public static final LocalDateTime TEST_AUCTION_END_DATE2 = LocalDateTime.now().plusDays(5);
     public static final AuctionStatus TEST_AUCTION_STATUS2 = AuctionStatus.IN_PROGRESS;
@@ -105,5 +122,19 @@ public class TestData {
             TEST_AUCTION_START_PRICE2, TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE2, TEST_AUCTION_CURRENT_PRICE2,
             TEST_AUCTION_BIDDING_UNIT2, TEST_AUCTION_START_DATE2, TEST_AUCTION_END_DATE2,
             TEST_AUCTION_STATUS2);
+
+    //Bidding
+    public static final Long TEST_BIDDING_ID1 = 1L;
+    public static final Long TEST_BIDDING_PRICE1 = 60000L;
+    public static final LocalDateTime TEST_BIDDING_CREATED_AT1 = LocalDateTime.now().minusDays(1);
+    public static final Bidding TEST_BIDDING1 = new Bidding(TEST_AUCTION1, TEST_MEMBER2, TEST_BIDDING_PRICE1);
+
+    public static final Long TEST_BIDDING_ID2 = 2L;
+    public static final Long TEST_BIDDING_PRICE2 = 70000L;
+    public static final LocalDateTime TEST_BIDDING_CREATED_AT2 = LocalDateTime.now().minusHours(3);
+    public static final Bidding TEST_BIDDING2 = new Bidding(TEST_AUCTION1, TEST_MEMBER3, TEST_BIDDING_PRICE2);
+
+    public static final List<Bidding> TEST_BIDDINGS = List.of(TEST_BIDDING1, TEST_BIDDING2);
+
 
 }

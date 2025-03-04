@@ -4,7 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.team1.keyduck.testdata.TestData.TEST_AUCTION1;
 import static org.team1.keyduck.testdata.TestData.TEST_AUCTION2;
-
+import static org.team1.keyduck.testdata.TestData.TEST_AUCTION_ID1;
+import static org.team1.keyduck.testdata.TestData.TEST_BIDDINGS;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -34,17 +35,16 @@ class AuctionServiceTest {
 
     @Test
     @DisplayName("경매 단건 조회 - 성공 케이스")
-    void findAuction_success() {
+    void findAuctionSuccessWithBiddings() {
         // given
         Auction auction = TEST_AUCTION1;
 
-        when(auctionRepository.findById(TEST_AUCTION1.getId())).thenReturn(Optional.of(auction));
+        when(auctionRepository.findById(TEST_AUCTION_ID1)).thenReturn(Optional.of(auction));
 
-        when(biddingRepository.findAllByAuctionId(TEST_AUCTION1.getId()))
-                .thenReturn(List.of());
+        when(biddingRepository.findAllByAuctionId(TEST_AUCTION_ID1)).thenReturn(TEST_BIDDINGS);
 
         // when
-        AuctionReadResponseDto result = auctionService.findAuction(TEST_AUCTION1.getId());
+        AuctionReadResponseDto result = auctionService.findAuction(TEST_AUCTION_ID1);
 
         // then
         assertEquals(auction.getTitle(), result.getTitle());
@@ -55,20 +55,23 @@ class AuctionServiceTest {
         assertEquals(auction.getAuctionStartDate(), result.getAuctionStartDate());
         assertEquals(auction.getAuctionEndDate(), result.getAuctionEndDate());
         assertEquals(auction.getAuctionStatus(), result.getAuctionStatus());
-        assertTrue(result.getBiddings().isEmpty());
+        assertEquals(2, result.getBiddings().size());
     }
 
     @Test
     @DisplayName("경매 단건 조회 - 실패 케이스 (존재하지 않는 경매)")
-    void findAuction_fail_empty() {
+    void findAuctionFailEmpty() {
         // given
         Long auctionId = 3L; //존재하지 않는 경매 ID 설정
 
-        // when
         when(auctionRepository.findById(auctionId)).thenReturn(Optional.empty());
 
+        // when
         // then
-        assertThrows(DataNotFoundException.class, () -> auctionService.findAuction(auctionId));
+        DataNotFoundException exception = assertThrows(DataNotFoundException.class,
+                () -> auctionService.findAuction(auctionId));
+
+        assertEquals("해당 경매을(를) 찾을 수 없습니다.", exception.getMessage());
     }
 
     @Test
