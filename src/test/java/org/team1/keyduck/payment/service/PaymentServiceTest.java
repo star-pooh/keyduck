@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -101,7 +102,7 @@ public class PaymentServiceTest {
         Member member = mock(Member.class);
 
         // 토스 서버로 요청을 보내기 전에 결제 금액이 조작되었는지 확인
-        when(memberRepository.findById(any(Long.class))).thenReturn(
+        when(memberRepository.findByIdAndIsDeleted(any(Long.class), eq(false))).thenReturn(
                 Optional.ofNullable(member));
         when(paymentProcessor.parseJsonBody(any(String.class))).thenReturn(
                 paymentRequestJsonObject);
@@ -163,7 +164,7 @@ public class PaymentServiceTest {
         Member member = mock(Member.class);
 
         // 토스 서버로 요청을 보내기 전에 결제 금액이 조작되었는지 확인
-        when(memberRepository.findById(any(Long.class))).thenReturn(
+        when(memberRepository.findByIdAndIsDeleted(any(Long.class), eq(false))).thenReturn(
                 Optional.ofNullable(member));
         when(paymentProcessor.parseJsonBody(any(String.class))).thenReturn(
                 paymentRequestJsonObject);
