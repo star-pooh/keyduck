@@ -31,7 +31,7 @@ public class MemberServiceGetTest {
 
 
     @Test
-    @DisplayName(value = "멤버 조회 성공")
+    @DisplayName("멤버 조회 성공")
     void memberGetSuccess() {
         //given
         MemberReadResponseDto expectMember = MemberReadResponseDto.of(TEST_MEMBER1, TEST_ID1);

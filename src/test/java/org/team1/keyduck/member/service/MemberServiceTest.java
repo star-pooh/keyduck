@@ -52,7 +52,7 @@ class MemberServiceTest {
 
 
     @Test
-    @DisplayName(value = "멤버 업데이트 성공")
+    @DisplayName("멤버 업데이트 성공")
     void memberUpdateSuccess() {
 
         //given
@@ -81,7 +81,7 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName(value = "멤버 업데이트 실패 : 이메일 형식 불일치")
+    @DisplayName("멤버 업데이트 실패 : 이메일 형식 불일치")
     void memberUpdateFailEmailInvalid() {
 
         //given
@@ -100,7 +100,7 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName(value = "멤버 업데이트 실패 : 이전 이메일과 동일한 이메일로 변경")
+    @DisplayName("멤버 업데이트 실패 : 이전 이메일과 동일한 이메일로 변경")
     void memberUpdateFailDuplicateEmail() {
 
         //given
@@ -120,7 +120,7 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName(value = "멤버 업데이트 실패 : 모든 필드가 비어있을 경우")
+    @DisplayName("멤버 업데이트 실패 : 모든 필드가 비어있을 경우")
     void memberUpdateFailAllFieldEmpty() {
 
         //given
@@ -136,7 +136,7 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName(value = "멤버 비밀번호 업데이트 성공")
+    @DisplayName("멤버 비밀번호 업데이트 성공")
     void memberPasswordUpdateSuccess() {
 
         //given
@@ -158,7 +158,7 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName(value = "멤버 비밀번호 업데이트 실패 : 수정하려는 비밀번호가 이전 비밀번호와 동일함")
+    @DisplayName("멤버 비밀번호 업데이트 실패 : 수정하려는 비밀번호가 이전 비밀번호와 동일함")
     void memberPasswordUpdateFailModifyPasswordAndBeforePasswordIsSame() {
 
         //given

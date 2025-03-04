@@ -43,7 +43,7 @@ public class MemberServiceDeleteTest {
     AuctionRepository auctionRepository;
 
     @Test
-    @DisplayName(value = "멤버 삭제 성공")
+    @DisplayName("멤버 삭제 성공")
     void memberDeleteSuccess() {
 
         Member member = new Member(TEST_NAME1, TEST_EMAIL1, TEST_PASSWORD1, TEST_MEMBER_ROLE1,
@@ -59,7 +59,7 @@ public class MemberServiceDeleteTest {
     }
 
     @Test
-    @DisplayName(value = "멤버 삭제 실패 : 진행 중인 경매가 있음")
+    @DisplayName("멤버 삭제 실패 : 진행 중인 경매가 있음")
     void memberDeleteFailInProgressAuction() {
         Member member = mock(Member.class);
 
