@@ -11,7 +11,6 @@ public class TestData {
     public final static Long TEST_ID1 = 1L;
     public final static String TEST_NAME1 = "TestName1";
     public final static String TEST_EMAIL1 = "TestUser1@email.com";
-    public final static String TEST_WRONG_EMAIL1 = "TestUser1WrongEmail";
     public final static MemberRole TEST_MEMBER_ROLE1 = MemberRole.SELLER;
     public final static String TEST_CITY1 = "서울특별시";
     public final static String TEST_STATE1 = "강남구";

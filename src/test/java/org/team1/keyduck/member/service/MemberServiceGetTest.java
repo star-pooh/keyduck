@@ -32,7 +32,7 @@ public class MemberServiceGetTest {
     @Test
     void 성공_케이스_멤버_조회() {
         //given
-        MemberReadResponseDto expectMember = MemberReadResponseDto.of(TEST_MEMBER1, 0L);
+        MemberReadResponseDto expectMember = MemberReadResponseDto.of(TEST_MEMBER1, TEST_ID1);
 
         when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(TEST_MEMBER1));
 

@@ -17,7 +17,6 @@ import static org.team1.keyduck.testdata.TestData.TEST_NAME1;
 import static org.team1.keyduck.testdata.TestData.TEST_NAME2;
 import static org.team1.keyduck.testdata.TestData.TEST_PASSWORD1;
 import static org.team1.keyduck.testdata.TestData.TEST_PASSWORD3;
-import static org.team1.keyduck.testdata.TestData.TEST_WRONG_EMAIL1;
 
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -56,13 +55,15 @@ class MemberServiceTest {
 
         //given
         MemberUpdateRequestDto requestDto = mock(MemberUpdateRequestDto.class);
-        Member modifyMember = new Member(TEST_NAME1, TEST_EMAIL1, TEST_PASSWORD1, TEST_MEMBER_ROLE1,
+        Member beforeModifyMember = new Member(TEST_NAME1, TEST_EMAIL1, TEST_PASSWORD1,
+                TEST_MEMBER_ROLE1,
                 TEST_ADDRESS1);
         Member expectMember = new Member(TEST_NAME2, TEST_EMAIL2, TEST_PASSWORD1, TEST_MEMBER_ROLE1,
                 TEST_ADDRESS2);
         MemberUpdateResponseDto expectResponse = MemberUpdateResponseDto.of(expectMember);
 
-        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(modifyMember));
+        when(memberRepository.findById(any(Long.class))).thenReturn(
+                Optional.of(beforeModifyMember));
         when(requestDto.getName()).thenReturn(TEST_NAME2);
         when(requestDto.getEmail()).thenReturn(TEST_EMAIL2);
         when(requestDto.getAddress()).thenReturn(TEST_ADDRESS2);
@@ -85,7 +86,7 @@ class MemberServiceTest {
 
         when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(TEST_MEMBER1));
         when(requestDto.getName()).thenReturn(TEST_NAME1);
-        when(requestDto.getEmail()).thenReturn(TEST_WRONG_EMAIL1);
+        when(requestDto.getEmail()).thenReturn("ASDDFFGGHH");
 
         //when&then
         DataNotMatchException exception = assertThrows(DataNotMatchException.class, () -> {
