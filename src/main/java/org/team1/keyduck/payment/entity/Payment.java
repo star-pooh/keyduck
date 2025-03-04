@@ -35,33 +35,33 @@ public class Payment extends BaseTime {
 
     // 토스 주문 ID
     @Column(nullable = false, length = 30)
-    String orderId;
+    private String orderId;
 
     // 결제 금액
     @Column(nullable = false)
-    Long amount;
+    private Long amount;
 
     // 결제 수단
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
-    PaymentMethod paymentMethod;
+    private PaymentMethod paymentMethod;
 
     // 간편 결제 타입
     @Column(length = 30)
-    String easyPayType;
+    private String easyPayType;
 
     // 결제 상태
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
-    PaymentStatus paymentStatus;
+    private PaymentStatus paymentStatus;
 
     // 결제가 일어난 날짜와 시간
     @Column(nullable = false)
-    LocalDateTime requestedAt;
+    private LocalDateTime requestedAt;
 
     // 결제 승인이 일어난 날짜와 시간
     @Column(nullable = false)
-    LocalDateTime approvedAt;
+    private LocalDateTime approvedAt;
 
     @Builder
     public Payment(Member member, String orderId, Long amount,
