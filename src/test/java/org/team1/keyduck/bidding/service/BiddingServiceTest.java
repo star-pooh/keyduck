@@ -68,6 +68,7 @@ public class BiddingServiceTest {
         memberRepository.save(TestData.TEST_MEMBER1);
         memberRepository.save(TestData.TEST_MEMBER2);
         memberRepository.save(TestData.TEST_MEMBER3);
+        memberRepository.save(TestData.TEST_MEMBER4);
         keyboardRepository.save(TestData.TEST_KEYBOARD1);
         keyboardRepository.save(TestData.TEST_KEYBOARD2);
         keyboardRepository.save(TestData.TEST_KEYBOARD3);
@@ -79,6 +80,8 @@ public class BiddingServiceTest {
         biddingRepository.save(TestData.TEST_BIDDING1);
         paymentDepositRepository.save(TestData.TEST_PAYMENT_DEPOSIT1);
         paymentDepositRepository.save(TestData.TEST_PAYMENT_DEPOSIT2);
+        paymentDepositRepository.save(TestData.TEST_PAYMENT_DEPOSIT3);
+        paymentDepositRepository.save(TestData.TEST_PAYMENT_DEPOSIT4);
     }
 
     @Test
@@ -86,7 +89,7 @@ public class BiddingServiceTest {
     @DisplayName("비관적 락 이용한 입찰 생성")
     public void createBidding_success() throws InterruptedException {
         Long auctionId = TestData.TEST_AUCTION4.getId();
-        Long memberId = TestData.TEST_MEMBER2.getId();
+        Long memberId = TestData.TEST_MEMBER4.getId();
         Long price = 50000L;
         AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE2);
 
@@ -123,12 +126,12 @@ public class BiddingServiceTest {
     @DisplayName("진행중인 경매가 아닐때")
     public void createBidding_fail_Auction_Not_Inprogress() {
         Long auctionId = TestData.TEST_AUCTION2.getId();
-        Long memberId = TestData.TEST_MEMBER2.getId();
-        Long price = 25000L;
-        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE2);
+        Long memberId = TestData.TEST_MEMBER4.getId();
+        Long price = 45000L;
+        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE4);
 
-        OperationNotAllowedException exception1 = assertThrows(
-                OperationNotAllowedException.class,
+        DataInvalidException exception1 = assertThrows(
+                DataInvalidException.class,
                 () -> biddingService.createBidding(auctionId, price, authMember)
         );
         assertEquals("진행 중인 경매가 아닙니다.", exception1.getErrorCode().getMessage());
@@ -138,15 +141,15 @@ public class BiddingServiceTest {
     @DisplayName("비딩횟수 초과")
     public void createBidding_fail_bids_exceeded() {
         Long auctionId = TestData.TEST_AUCTION3.getId();
-        Long memberId = TestData.TEST_MEMBER2.getId();
-        Long price = 25000L;
-        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE2);
+        Long memberId = TestData.TEST_MEMBER4.getId();
+        Long price = 30000L;
+        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE4);
 
         // 실제 DB에 10개의 비딩 추가
         for (int i = 0; i < 10; i++) {
             biddingRepository.save(Bidding.builder()
                     .auction(TestData.TEST_AUCTION3)
-                    .member(TestData.TEST_MEMBER2)
+                    .member(TestData.TEST_MEMBER4)
                     .price(price + (i * 100L))
                     .build());
         }
@@ -161,9 +164,9 @@ public class BiddingServiceTest {
     @DisplayName("입찰단위에 맞지 않는 입찰")
     public void createBidding_fail_bid_not_fit_unit() {
         Long auctionId = TestData.TEST_AUCTION1.getId();
-        Long memberId = TestData.TEST_MEMBER2.getId();
+        Long memberId = TestData.TEST_MEMBER4.getId();
         Long price = 25100L;
-        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE2);
+        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE4);
 
         DataInvalidException exception3 = assertThrows(DataInvalidException.class,
                 () -> biddingService.createBidding(auctionId, price, authMember)
@@ -175,9 +178,9 @@ public class BiddingServiceTest {
     @DisplayName("현재가보다 낮은 입찰금액")
     public void createBidding_fail_lower_than_current_price() {
         Long auctionId = TestData.TEST_AUCTION1.getId();
-        Long memberId = TestData.TEST_MEMBER2.getId();
+        Long memberId = TestData.TEST_MEMBER4.getId();
         Long price = 20000L;
-        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE2);
+        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE4);
 
         DataInvalidException exception4 = assertThrows(DataInvalidException.class,
                 () -> biddingService.createBidding(auctionId, price, authMember)
@@ -189,9 +192,9 @@ public class BiddingServiceTest {
     @DisplayName("최대호가보다 높은 입찰금액")
     public void createBidding_fail_higher_than_max_price() {
         Long auctionId = TestData.TEST_AUCTION1.getId();
-        Long memberId = TestData.TEST_MEMBER2.getId();
+        Long memberId = TestData.TEST_MEMBER4.getId();
         Long price = 100000L;
-        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE2);
+        AuthMember authMember = new AuthMember(memberId, TestData.TEST_MEMBER_ROLE4);
 
         DataInvalidException exception5 = assertThrows(DataInvalidException.class,
                 () -> biddingService.createBidding(auctionId, price, authMember)

@@ -47,11 +47,21 @@ public class TestData {
     public final static String TEST_NAME3 = "TestName3";
     public final static String TEST_EMAIL3 = "TestUser3@email.com";
     public final static MemberRole TEST_MEMBER_ROLE3 = MemberRole.CUSTOMER;
-    public final static Address TEST_ADDRESS3 = new Address("서울특별시", "서초구", "반포대로", "address5",
-            "address6");
+    public final static Address TEST_ADDRESS3 = new Address(TEST_CITY2, TEST_STATE2, TEST_STREET2,
+            TEST_DETAIL_ADDRESS3, TEST_DETAIL_ADDRESS4);
     public final static String TEST_PASSWORD3 = "Password123!";
     public final static Member TEST_MEMBER3 = new Member(TEST_NAME3, TEST_EMAIL3, TEST_PASSWORD3,
             TEST_MEMBER_ROLE3, TEST_ADDRESS3);
+
+    public final static Long TEST_ID4 = 4L;
+    public final static String TEST_NAME4 = "TestName4";
+    public final static String TEST_EMAIL4 = "TestUser4@email.com";
+    public final static MemberRole TEST_MEMBER_ROLE4 = MemberRole.CUSTOMER;
+    public final static Address TEST_ADDRESS4 = new Address(TEST_CITY2, TEST_STATE2, TEST_STREET2,
+            TEST_DETAIL_ADDRESS3, TEST_DETAIL_ADDRESS4);
+    public final static String TEST_PASSWORD4 = "Password123!";
+    public final static Member TEST_MEMBER4 = new Member(TEST_NAME4, TEST_EMAIL4, TEST_PASSWORD4,
+            TEST_MEMBER_ROLE4, TEST_ADDRESS4);
 
 
     //KEYBOARD
@@ -125,8 +135,8 @@ public class TestData {
     public final static Long KEYBOARD_ID3 = 3L;
     public final static String TEST_AUCTION_TITLE3 = "Keyboard_auction3";
     public final static Long START_PRICE3 = 20000L;
-    public final static Long BIDDING_UNIT3 = 10000L;
-    public final static Long CURRENT_PRICE3 = 40000L;
+    public final static Long BIDDING_UNIT3 = 1000L;
+    public final static Long CURRENT_PRICE3 = 25000L;
     public final static LocalDateTime START_DATE3 = LocalDateTime.now().plusHours(1);
     public final static LocalDateTime END_DATE3 = LocalDateTime.now().plusDays(1);
     public final static AuctionStatus AUCTION_STATUS3 = AuctionStatus.IN_PROGRESS;
@@ -173,15 +183,24 @@ public class TestData {
             .build();
 
     //paymentdeposit
-    public final static Long DEPOSIT_AMOUNT1 = 500000000L;
+    public final static Long TEST_DEPOSIT_AMOUNT = 5000L;
     public final static PaymentDeposit TEST_PAYMENT_DEPOSIT1 = PaymentDeposit.builder()
-            .member(TEST_MEMBER2)
-            .depositAmount(DEPOSIT_AMOUNT1)
+            .member(TestData.TEST_MEMBER1)
+            .depositAmount(TestData.TEST_DEPOSIT_AMOUNT)
             .build();
-    public final static Long DEPOSIT_AMOUNT2 = 500000000L;
     public final static PaymentDeposit TEST_PAYMENT_DEPOSIT2 = PaymentDeposit.builder()
+            .member(TestData.TEST_MEMBER2)
+            .depositAmount(TestData.TEST_DEPOSIT_AMOUNT)
+            .build();
+    public final static Long DEPOSIT_AMOUNT3 = 500000000L;
+    public final static PaymentDeposit TEST_PAYMENT_DEPOSIT3 = PaymentDeposit.builder()
             .member(TEST_MEMBER3)
-            .depositAmount(DEPOSIT_AMOUNT2)
+            .depositAmount(DEPOSIT_AMOUNT3)
+            .build();
+    public final static Long DEPOSIT_AMOUNT4 = 500000000L;
+    public final static PaymentDeposit TEST_PAYMENT_DEPOSIT4 = PaymentDeposit.builder()
+            .member(TEST_MEMBER4)
+            .depositAmount(DEPOSIT_AMOUNT4)
             .build();
 
 
