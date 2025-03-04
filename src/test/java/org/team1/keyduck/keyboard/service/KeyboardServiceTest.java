@@ -56,7 +56,8 @@ class KeyboardServiceTest {
         ReflectionTestUtils.setField(member, "id", TEST_ID1);
 
         //when : 수행할 작업(테스트 검증을 위한 준비)
-        when(keyboardRepository.findAllByMemberId(member.getId())).thenReturn(List.of(keyboard));
+        when(keyboardRepository.findAllByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(
+                member.getId())).thenReturn(List.of(keyboard));
         //then : 결과검증
         List<KeyboardReadResponseDto> result = keyboardService.findKeyboardBySellerId(
                 member.getId());
@@ -76,7 +77,8 @@ class KeyboardServiceTest {
                 TEST_KEYBOARD3);
 
         //when : 수행할 작업
-        when(keyboardRepository.findAllByMemberId(member.getId())).thenReturn(keyboardList);
+        when(keyboardRepository.findAllByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(
+                member.getId())).thenReturn(keyboardList);
 
         List<KeyboardReadResponseDto> result = keyboardService.findKeyboardBySellerId(
                 member.getId());
@@ -93,7 +95,8 @@ class KeyboardServiceTest {
         Member member = TEST_MEMBER1;
 
         //when : 수행할 작업
-        when(keyboardRepository.findAllByMemberId(member.getId())).thenReturn(
+        when(keyboardRepository.findAllByMemberIdAndIsDeletedFalseOrderByCreatedAtDesc(
+                member.getId())).thenReturn(
                 Collections.emptyList());
 
         //then : 결과검증
