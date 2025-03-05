@@ -8,6 +8,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.team1.keyduck.auction.dto.response.AuctionSearchResponseDto;
 import org.team1.keyduck.auction.dto.response.QAuctionSearchResponseDto;
+import org.team1.keyduck.auction.entity.Auction;
+import org.team1.keyduck.auction.entity.AuctionStatus;
 
 @Repository
 @RequiredArgsConstructor
@@ -70,6 +73,19 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
                 )
                 .fetchOne()).orElse(0L);
         return new PageImpl<>(auctionList, pageable, totalCount);
+    }
+
+    @Override
+    public List<Auction> findStartTargetAuction(LocalDateTime now) {
+        return queryFactory.selectFrom(auction)
+                .where(auction.auctionStartDate.year().eq(now.getYear())
+                        .and(auction.auctionStartDate.month().eq(now.getMonthValue()))
+                        .and(auction.auctionStartDate.dayOfMonth().eq(now.getDayOfMonth()))
+                        .and(auction.auctionStartDate.hour().eq(now.getHour()))
+                        .and(auction.auctionStartDate.minute().eq(now.getMinute()))
+                        .and(auction.auctionStatus.eq(AuctionStatus.NOT_STARTED))
+                )
+                .fetch();
     }
 
     private BooleanExpression keyboard(String keyboardName) {
