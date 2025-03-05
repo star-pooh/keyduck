@@ -2,6 +2,7 @@ package org.team1.keyduck.testdata;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.team1.keyduck.auction.dto.response.AuctionSearchResponseDto;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.bidding.entity.Bidding;
@@ -109,32 +110,31 @@ public class TestData {
             TEST_AUCTION_BIDDING_UNIT1, TEST_AUCTION_START_DATE1, TEST_AUCTION_END_DATE1,
             TEST_AUCTION_STATUS1 );
 
-    public static final Long TEST_AUCTION_ID2 = 2L;
-    public static final String TEST_AUCTION_TITLE2 = "키보드 가져가세요";
-    public static final Long TEST_AUCTION_START_PRICE2 = 80000L;
-    public static final Long TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE2 = 150000L;
-    public static final Long TEST_AUCTION_CURRENT_PRICE2 = 90000L;
-    public static final Long TEST_AUCTION_BIDDING_UNIT2 = 10000L;
-    public static final LocalDateTime TEST_AUCTION_START_DATE2 = LocalDateTime.now().plusDays(2);
-    public static final LocalDateTime TEST_AUCTION_END_DATE2 = LocalDateTime.now().plusDays(5);
-    public static final AuctionStatus TEST_AUCTION_STATUS2 = AuctionStatus.IN_PROGRESS;
-    public static final Auction TEST_AUCTION2 = new Auction(TEST_KEYBOARD2, TEST_MEMBER1, TEST_AUCTION_TITLE2,
+    public final static Long TEST_AUCTION_ID2 = 2L;
+    public final static String TEST_AUCTION_TITLE2 = "키보드 가져가세요";
+    public final static Long TEST_AUCTION_START_PRICE2 = 80000L;
+    public final static Long TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE2 = 150000L;
+    public final static Long TEST_AUCTION_CURRENT_PRICE2 = 90000L;
+    public final static Long TEST_AUCTION_BIDDING_UNIT2 = 10000L;
+    public final static LocalDateTime TEST_AUCTION_START_DATE2 = LocalDateTime.now().plusDays(2);
+    public final static LocalDateTime TEST_AUCTION_END_DATE2 = LocalDateTime.now().plusDays(5);
+    public final static AuctionStatus TEST_AUCTION_STATUS2 = AuctionStatus.IN_PROGRESS;
+    public final static Auction TEST_AUCTION2 = new Auction(TEST_KEYBOARD2, TEST_MEMBER1, TEST_AUCTION_TITLE2,
             TEST_AUCTION_START_PRICE2, TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE2, TEST_AUCTION_CURRENT_PRICE2,
             TEST_AUCTION_BIDDING_UNIT2, TEST_AUCTION_START_DATE2, TEST_AUCTION_END_DATE2,
             TEST_AUCTION_STATUS2);
 
     //Bidding
-    public static final Long TEST_BIDDING_ID1 = 1L;
-    public static final Long TEST_BIDDING_PRICE1 = 60000L;
-    public static final LocalDateTime TEST_BIDDING_CREATED_AT1 = LocalDateTime.now().minusDays(1);
-    public static final Bidding TEST_BIDDING1 = new Bidding(TEST_AUCTION1, TEST_MEMBER2, TEST_BIDDING_PRICE1);
+    public final static Long TEST_BIDDING_ID1 = 1L;
+    public final static Long TEST_BIDDING_PRICE1 = 60000L;
+    public final static LocalDateTime TEST_BIDDING_CREATED_AT1 = LocalDateTime.now().minusDays(1);
+    public final static Bidding TEST_BIDDING1 = new Bidding(TEST_AUCTION1, TEST_MEMBER2, TEST_BIDDING_PRICE1);
 
-    public static final Long TEST_BIDDING_ID2 = 2L;
-    public static final Long TEST_BIDDING_PRICE2 = 70000L;
-    public static final LocalDateTime TEST_BIDDING_CREATED_AT2 = LocalDateTime.now().minusHours(3);
-    public static final Bidding TEST_BIDDING2 = new Bidding(TEST_AUCTION1, TEST_MEMBER3, TEST_BIDDING_PRICE2);
+    public final static Long TEST_BIDDING_ID2 = 2L;
+    public final static Long TEST_BIDDING_PRICE2 = 70000L;
+    public final static LocalDateTime TEST_BIDDING_CREATED_AT2 = LocalDateTime.now().minusHours(3);
+    public final static Bidding TEST_BIDDING2 = new Bidding(TEST_AUCTION1, TEST_MEMBER3, TEST_BIDDING_PRICE2);
 
-    public static final List<Bidding> TEST_BIDDINGS = List.of(TEST_BIDDING1, TEST_BIDDING2);
-
+    public final static List<Bidding> TEST_BIDDINGS = List.of(TEST_BIDDING1, TEST_BIDDING2);
 
 }

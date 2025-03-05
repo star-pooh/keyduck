@@ -6,6 +6,9 @@ import static org.team1.keyduck.testdata.TestData.TEST_AUCTION1;
 import static org.team1.keyduck.testdata.TestData.TEST_AUCTION2;
 import static org.team1.keyduck.testdata.TestData.TEST_AUCTION_ID1;
 import static org.team1.keyduck.testdata.TestData.TEST_BIDDINGS;
+import static org.team1.keyduck.testdata.TestData.TEST_MEMBER2;
+import static org.team1.keyduck.testdata.TestData.TEST_MEMBER3;
+
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -14,12 +17,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.team1.keyduck.auction.dto.response.AuctionReadAllResponseDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.team1.keyduck.auction.dto.response.AuctionReadResponseDto;
+import org.team1.keyduck.auction.dto.response.AuctionSearchResponseDto;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
 import org.team1.keyduck.common.exception.DataNotFoundException;
+import org.team1.keyduck.testdata.TestData;
 
 @ExtendWith(MockitoExtension.class)
 class AuctionServiceTest {
@@ -35,7 +42,7 @@ class AuctionServiceTest {
 
     @Test
     @DisplayName("경매 단건 조회 - 성공 케이스")
-    void findAuctionSuccessWithBiddings() {
+    void findAuctionSuccess() {
         // given
         Auction auction = TEST_AUCTION1;
 
@@ -76,27 +83,57 @@ class AuctionServiceTest {
 
     @Test
     @DisplayName("경매 다건 조회 - 성공 케이스")
-    void findAllAuction_success() {
+    void findAllAuctionSuccess() {
         // given
-        List<Auction> auctions = List.of(TEST_AUCTION1, TEST_AUCTION2);
+        ReflectionTestUtils.setField(TEST_AUCTION1, "member", TEST_MEMBER2);
+        ReflectionTestUtils.setField(TEST_AUCTION2, "member", TEST_MEMBER3);
 
-        when(auctionRepository.findAllByOrderByIdDesc()).thenReturn(auctions);
+        List<AuctionSearchResponseDto> auctions = List.of(
+                new AuctionSearchResponseDto(
+                        TEST_AUCTION1.getId(),
+                        TEST_AUCTION1.getKeyboard().getId(),
+                        TEST_AUCTION1.getKeyboard().getName(),
+                        TEST_AUCTION1.getKeyboard().getDescription(),
+                        TEST_AUCTION1.getTitle(),
+                        TEST_AUCTION1.getCurrentPrice(),
+                        TEST_AUCTION1.getImmediatePurchasePrice(),
+                        TEST_AUCTION1.getAuctionStatus(),
+                        TEST_AUCTION1.getMember() != null ? TEST_AUCTION1.getMember().getId() : null,
+                        TEST_AUCTION1.getMember() != null ? TEST_AUCTION1.getMember().getName() : null
+                ),
+                new AuctionSearchResponseDto(
+                        TEST_AUCTION2.getId(),
+                        TEST_AUCTION2.getKeyboard().getId(),
+                        TEST_AUCTION2.getKeyboard().getName(),
+                        TEST_AUCTION2.getKeyboard().getDescription(),
+                        TEST_AUCTION2.getTitle(),
+                        TEST_AUCTION2.getCurrentPrice(),
+                        TEST_AUCTION2.getImmediatePurchasePrice(),
+                        TEST_AUCTION2.getAuctionStatus(),
+                        TEST_AUCTION2.getMember() != null ? TEST_AUCTION2.getMember().getId() : null,
+                        TEST_AUCTION2.getMember() != null ? TEST_AUCTION2.getMember().getName() : null
+                )
+        );
+
+        Page<AuctionSearchResponseDto> responseDto = new PageImpl<>(auctions);
+        when(auctionRepository.findAllAuction(null, null, null, null)).thenReturn(responseDto);
 
         // when
-        List<AuctionReadAllResponseDto> result = auctionService.findAllAuction();
+        Page<AuctionSearchResponseDto> result = auctionService.findAllAuction(null, null, null, null);
 
         // then
-        assertEquals(2, result.size());
+        assertEquals(2, result.getSize());
     }
 
     @Test
     @DisplayName("경매 다건 조회 - 실패 케이스(존재하지 않는 경매)")
-    void findAllAuction_fail_empty() {
+    void findAllAuctionFailEmpty() {
         // given
-        when(auctionRepository.findAllByOrderByIdDesc()).thenReturn(List.of());
+        Page<AuctionSearchResponseDto> responseDto = new PageImpl<>(List.of());
+        when(auctionRepository.findAllAuction(null, null, null, null)).thenReturn(responseDto);
 
         // when
-        List<AuctionReadAllResponseDto> result = auctionService.findAllAuction();
+        Page<AuctionSearchResponseDto> result = auctionService.findAllAuction(null, null, null, null);
 
         // then
         assertTrue(result.isEmpty());
