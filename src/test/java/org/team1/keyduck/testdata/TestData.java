@@ -177,34 +177,6 @@ public class TestData {
             .auctionStatus(AuctionStatus.NOT_STARTED)
             .build();
 
-    public final static Long TEST_AUCTION_ID3 = 3L;
-    public final static String TEST_AUCTION_TITLE3 = "키보드 팔아요";
-    public final static Long TEST_AUCTION_START_PRICE3 = 50000L;
-    public final static Long TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE3 = 100000L;
-    public final static Long TEST_AUCTION_CURRENT_PRICE3 = 50000L;
-    public final static Long TEST_AUCTION_BIDDING_UNIT3 = 10000L;
-    public final static LocalDateTime TEST_AUCTION_START_DATE3 = LocalDateTime.now().plusDays(1);
-    public final static LocalDateTime TEST_AUCTION_END_DATE3 = LocalDateTime.now().plusDays(7);
-    public final static AuctionStatus TEST_AUCTION_STATUS3 = AuctionStatus.NOT_STARTED;
-    public final static Auction TEST_AUCTION3 = new Auction(TEST_KEYBOARD1, TEST_MEMBER1, TEST_AUCTION_TITLE3,
-            TEST_AUCTION_START_PRICE3, TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE3, TEST_AUCTION_CURRENT_PRICE3,
-            TEST_AUCTION_BIDDING_UNIT3, TEST_AUCTION_START_DATE3, TEST_AUCTION_END_DATE3,
-            TEST_AUCTION_STATUS3);
-
-    public final static Long TEST_AUCTION_ID4 = 4L;
-    public final static String TEST_AUCTION_TITLE4 = "키보드 가져가세요";
-    public final static Long TEST_AUCTION_START_PRICE4 = 80000L;
-    public final static Long TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE4 = 150000L;
-    public final static Long TEST_AUCTION_CURRENT_PRICE4 = 90000L;
-    public final static Long TEST_AUCTION_BIDDING_UNIT4 = 10000L;
-    public final static LocalDateTime TEST_AUCTION_START_DATE4 = LocalDateTime.now().plusDays(2);
-    public final static LocalDateTime TEST_AUCTION_END_DATE4 = LocalDateTime.now().plusDays(5);
-    public final static AuctionStatus TEST_AUCTION_STATUS4 = AuctionStatus.IN_PROGRESS;
-    public final static Auction TEST_AUCTION4 = new Auction(TEST_KEYBOARD2, TEST_MEMBER1, TEST_AUCTION_TITLE4,
-            TEST_AUCTION_START_PRICE4, TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE4, TEST_AUCTION_CURRENT_PRICE4,
-            TEST_AUCTION_BIDDING_UNIT4, TEST_AUCTION_START_DATE4, TEST_AUCTION_END_DATE4,
-            TEST_AUCTION_STATUS4);
-
     //Bidding
     public final static Long TEST_BIDDING_ID1 = 1L;
     public final static Long TEST_BIDDING_PRICE1 = 60000L;
