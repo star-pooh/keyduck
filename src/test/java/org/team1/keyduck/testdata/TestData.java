@@ -106,129 +106,42 @@ public class TestData {
 
     //auction
     public final static Long TEST_AUCTION_ID1 = 1L;
-    public final static String TEST_AUCTION_TITLE1 = "Keyboard_auction1";
     public final static Long START_PRICE1 = 20000L;
     public final static Long BIDDING_UNIT1 = 1000L;
-    public final static Long CURRENT_PRICE1 = 21000L;
-    public final static LocalDateTime START_DATE1 = LocalDateTime.now().plusHours(1);
-    public final static LocalDateTime END_DATE1 = LocalDateTime.now().plusDays(1);
+    public final static Long CURRENT_PRICE1 = 40000L;
+    public final static Long IMMEDIATE_PURCHASE_PRICE1 = 100000L;
     public final static AuctionStatus AUCTION_STATUS1 = AuctionStatus.IN_PROGRESS;
+    public final static AuctionStatus AUCTION_STATUS2 = AuctionStatus.NOT_STARTED;
+    public final static AuctionStatus AUCTION_STATUS3 = AuctionStatus.CLOSED;
     public final static Auction TEST_AUCTION1 = Auction.builder()
-            .keyboard(TEST_KEYBOARD1)
-            .member(TEST_MEMBER1)
-            .title(TEST_AUCTION_TITLE1)
-            .startPrice(START_PRICE1)
-            .currentPrice(CURRENT_PRICE1)
-            .biddingUnit(BIDDING_UNIT1)
-            .auctionStartDate(START_DATE1)
-            .auctionEndDate(END_DATE1)
-            .auctionStatus(AUCTION_STATUS1)
-            .build();
+            .keyboard(TEST_KEYBOARD1).startPrice(START_PRICE1).currentPrice(START_PRICE1)
+            .biddingUnit(BIDDING_UNIT1).auctionStatus(AUCTION_STATUS1).build();
 
     public final static Long TEST_AUCTION_ID2 = 2L;
-    public final static Long KEYBOARD_ID2 = 2L;
-    public final static String TEST_AUCTION_TITLE2 = "Keyboard_auction2";
-    public final static Long START_PRICE2 = 40000L;
-    public final static Long BIDDING_UNIT2 = 1000L;
-    public final static LocalDateTime START_DATE2 = LocalDateTime.now().plusHours(1);
-    public final static LocalDateTime END_DATE2 = LocalDateTime.now().plusDays(1);
-    public final static AuctionStatus AUCTION_STATUS2 = AuctionStatus.NOT_STARTED;
     public final static Auction TEST_AUCTION2 = Auction.builder()
-            .keyboard(TEST_KEYBOARD2)
-            .member(TEST_MEMBER1)
-            .title(TEST_AUCTION_TITLE2)
-            .startPrice(START_PRICE2)
-            .currentPrice(START_PRICE2)
-            .biddingUnit(BIDDING_UNIT2)
-            .auctionStartDate(START_DATE2)
-            .auctionEndDate(END_DATE2)
-            .auctionStatus(AUCTION_STATUS2)
-            .build();
-
+            .keyboard(TEST_KEYBOARD2).startPrice(START_PRICE1).currentPrice(START_PRICE1)
+            .biddingUnit(BIDDING_UNIT1).auctionStatus(AUCTION_STATUS1).build();
 
     public final static Long TEST_AUCTION_ID3 = 3L;
-    public final static Long KEYBOARD_ID3 = 3L;
-    public final static String TEST_AUCTION_TITLE3 = "Keyboard_auction3";
-    public final static Long START_PRICE3 = 20000L;
-    public final static Long BIDDING_UNIT3 = 10000L;
-    public final static Long CURRENT_PRICE3 = 40000L;
-    public final static LocalDateTime START_DATE3 = LocalDateTime.now().plusHours(1);
-    public final static LocalDateTime END_DATE3 = LocalDateTime.now().plusDays(1);
-    public final static AuctionStatus AUCTION_STATUS3 = AuctionStatus.IN_PROGRESS;
     public final static Auction TEST_AUCTION3 = Auction.builder()
-            .keyboard(TEST_KEYBOARD3)
-            .member(TEST_MEMBER1)
-            .title(TEST_AUCTION_TITLE3)
-            .startPrice(START_PRICE3)
-            .currentPrice(CURRENT_PRICE3)
-            .biddingUnit(BIDDING_UNIT3)
-            .auctionStartDate(START_DATE3)
-            .auctionEndDate(END_DATE3)
-            .auctionStatus(AUCTION_STATUS3)
-            .build();
+            .keyboard(TEST_KEYBOARD3).startPrice(START_PRICE1).currentPrice(CURRENT_PRICE1)
+            .biddingUnit(BIDDING_UNIT1).immediatePurchasePrice(IMMEDIATE_PURCHASE_PRICE1)
+            .auctionStatus(AUCTION_STATUS1).build();
 
     public final static Long TEST_AUCTION_ID4 = 4L;
-    public final static Long KEYBOARD_ID4 = 4L;
-    public final static String TEST_AUCTION_TITLE4 = "Keyboard_auction4";
-    public final static Long START_PRICE4 = 20000L;
-    public final static Long BIDDING_UNIT4 = 10000L;
-    public final static Long CURRENT_PRICE4 = 40000L;
-    public final static LocalDateTime START_DATE4 = LocalDateTime.now().plusHours(1);
-    public final static LocalDateTime END_DATE4 = LocalDateTime.now().plusDays(1);
-    public final static AuctionStatus AUCTION_STATUS4 = AuctionStatus.IN_PROGRESS;
     public final static Auction TEST_AUCTION4 = Auction.builder()
-            .keyboard(TEST_KEYBOARD4)
-            .member(TEST_MEMBER1)
-            .title(TEST_AUCTION_TITLE4)
-            .startPrice(START_PRICE4)
-            .currentPrice(CURRENT_PRICE4)
-            .biddingUnit(BIDDING_UNIT4)
-            .auctionStartDate(START_DATE4)
-            .auctionEndDate(END_DATE4)
-            .auctionStatus(AUCTION_STATUS4)
-            .build();
+            .keyboard(TEST_KEYBOARD4).startPrice(START_PRICE1).currentPrice(CURRENT_PRICE1)
+            .biddingUnit(BIDDING_UNIT1).auctionStatus(AUCTION_STATUS2).build();
 
     public final static Long TEST_AUCTION_ID5 = 5L;
-    public final static Long KEYBOARD_ID5 = 5L;
-    public final static String TEST_AUCTION_TITLE5 = "Keyboard_auction5";
-    public final static Long START_PRICE5 = 20000L;
-    public final static Long BIDDING_UNIT5 = 10000L;
-    public final static Long CURRENT_PRICE5 = 40000L;
-    public final static LocalDateTime START_DATE5 = LocalDateTime.now().plusHours(1);
-    public final static LocalDateTime END_DATE5 = LocalDateTime.now().plusDays(1);
-    public final static AuctionStatus AUCTION_STATUS5 = AuctionStatus.CLOSED;
     public final static Auction TEST_AUCTION5 = Auction.builder()
-            .keyboard(TEST_KEYBOARD5)
-            .member(TEST_MEMBER1)
-            .title(TEST_AUCTION_TITLE5)
-            .startPrice(START_PRICE5)
-            .currentPrice(CURRENT_PRICE5)
-            .biddingUnit(BIDDING_UNIT5)
-            .auctionStartDate(START_DATE5)
-            .auctionEndDate(END_DATE5)
-            .auctionStatus(AUCTION_STATUS5)
-            .build();
+            .keyboard(TEST_KEYBOARD5).startPrice(START_PRICE1).currentPrice(CURRENT_PRICE1)
+            .biddingUnit(BIDDING_UNIT1).auctionStatus(AUCTION_STATUS1).build();
 
     public final static Long TEST_AUCTION_ID6 = 6L;
-    public final static Long KEYBOARD_ID6 = 5L;
-    public final static String TEST_AUCTION_TITLE6 = "Keyboard_auction6";
-    public final static Long START_PRICE6 = 20000L;
-    public final static Long BIDDING_UNIT6 = 10000L;
-    public final static Long CURRENT_PRICE6 = 40000L;
-    public final static LocalDateTime START_DATE6 = LocalDateTime.now().plusHours(1);
-    public final static LocalDateTime END_DATE6 = LocalDateTime.now().plusDays(1);
-    public final static AuctionStatus AUCTION_STATUS6 = AuctionStatus.CLOSED;
     public final static Auction TEST_AUCTION6 = Auction.builder()
-            .keyboard(TEST_KEYBOARD6)
-            .member(TEST_MEMBER1)
-            .title(TEST_AUCTION_TITLE6)
-            .startPrice(START_PRICE6)
-            .currentPrice(CURRENT_PRICE6)
-            .biddingUnit(BIDDING_UNIT6)
-            .auctionStartDate(START_DATE6)
-            .auctionEndDate(END_DATE6)
-            .auctionStatus(AUCTION_STATUS6)
-            .build();
+            .keyboard(TEST_KEYBOARD6).startPrice(START_PRICE1).currentPrice(CURRENT_PRICE1)
+            .biddingUnit(BIDDING_UNIT1).auctionStatus(AUCTION_STATUS1).build();
 
     public final static Long TEST_AUCTION_ID7 = 6L;
     public final static Long KEYBOARD_ID7 = 5L;
