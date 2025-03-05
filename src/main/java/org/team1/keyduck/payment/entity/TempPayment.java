@@ -21,13 +21,13 @@ public class TempPayment {
     private Long id;
 
     @Column(nullable = false)
-    Long memberId;
+    private Long memberId;
 
     @Column(nullable = false, length = 30)
-    String orderId;
+    private String orderId;
 
     @Column(nullable = false)
-    Long amount;
+    private Long amount;
 
     @Builder
     public TempPayment(Long memberId, String orderId, Long amount) {
