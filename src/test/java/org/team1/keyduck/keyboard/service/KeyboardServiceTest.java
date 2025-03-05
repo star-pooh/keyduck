@@ -337,27 +337,6 @@ class KeyboardServiceTest {
     @DisplayName("키보드 삭제 - 실패 케이스(생성 유저와 삭제를 하려는 유저가 동일하지 않음)")
     void deleteKeyboardFailNotSameMember() {
         // given
-        Member member = TEST_MEMBER2;
-        Keyboard keyboard = TEST_KEYBOARD1;
-
-        ReflectionTestUtils.setField(TEST_MEMBER1, "id", TEST_ID1);
-
-        ReflectionTestUtils.setField(keyboard, "isDeleted", false);
-
-        when(keyboardRepository.findById(keyboard.getId())).thenReturn(Optional.of(keyboard));
-
-        // when & then
-        DataUnauthorizedAccessException exception = assertThrows(DataUnauthorizedAccessException.class, () -> {
-            keyboardService.deleteKeyboard(keyboard.getId(), member.getId());
-        });
-
-        assertEquals("접근 권한이 없습니다.", exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("키보드 삭제 - 실패 케이스(생성 유저와 삭제를 하려는 유저가 동일하지 않음)")
-    void deleteKeyboardFailNotSameMember2() {
-        // given
         Member member = mock(Member.class);
         Keyboard keyboard = TEST_KEYBOARD1;
 
