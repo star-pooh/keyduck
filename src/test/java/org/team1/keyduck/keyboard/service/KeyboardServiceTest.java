@@ -325,8 +325,7 @@ class KeyboardServiceTest {
 
         when(keyboardRepository.findById(keyboard.getId())).thenReturn(Optional.of(keyboard));
 
-        // when
-        // then
+        // when&then
         DataDuplicateException exception = assertThrows(DataDuplicateException.class, () -> {
             keyboardService.deleteKeyboard(keyboard.getId(), member.getId());
         });
@@ -338,26 +337,21 @@ class KeyboardServiceTest {
     @DisplayName("키보드 삭제 - 실패 케이스(생성 유저와 삭제를 하려는 유저가 동일하지 않음)")
     void deleteKeyboardFailNotSameMember() {
         // given
-        Member member1 = TEST_MEMBER1;
-        Member member2 = TEST_MEMBER2;
+        Member member = TEST_MEMBER2;
         Keyboard keyboard = TEST_KEYBOARD1;
 
-        ReflectionTestUtils.setField(member1, "id", TEST_ID1);
-        ReflectionTestUtils.setField(member2, "id", TEST_ID2);
+        ReflectionTestUtils.setField(TEST_MEMBER1, "id", TEST_ID1);
 
-        // false가 삭제되지 않은 상태
         ReflectionTestUtils.setField(keyboard, "isDeleted", false);
-
-        // 키보드1의 작성자를 member2로 설정
-        ReflectionTestUtils.setField(keyboard, "member", member2);
 
         when(keyboardRepository.findById(keyboard.getId())).thenReturn(Optional.of(keyboard));
 
-        // when
-        // then
-        assertThrows(DataUnauthorizedAccessException.class, () -> {
-            keyboardService.deleteKeyboard(keyboard.getId(), member1.getId());
+        // when & then
+        DataUnauthorizedAccessException exception = assertThrows(DataUnauthorizedAccessException.class, () -> {
+            keyboardService.deleteKeyboard(keyboard.getId(), member.getId());
         });
+
+        assertEquals("접근 권한이 없습니다.", exception.getMessage());
     }
 
     @Test
@@ -368,20 +362,16 @@ class KeyboardServiceTest {
         Keyboard keyboard = TEST_KEYBOARD1;
 
         ReflectionTestUtils.setField(member, "id", TEST_ID1);
-        ReflectionTestUtils.setField(keyboard, "id", TEST_ID2);
-
         ReflectionTestUtils.setField(keyboard, "isDeleted", false);
 
-        when(keyboardRepository.findById(keyboard.getId())).thenReturn(Optional.of(keyboard));
-        when(auctionRepository.existsAuctionByKeyboardId(keyboard.getId())).thenReturn(true);
+        when(keyboardRepository.findById(any(Long.class))).thenReturn(Optional.of(keyboard));
+        when(auctionRepository.existsAuctionByKeyboardId(any(Long.class))).thenReturn(true);
 
-        // when
-        // then
+        // when&then
         OperationNotAllowedException exception = assertThrows(OperationNotAllowedException.class, () -> {
-            keyboardService.deleteKeyboard(keyboard.getId(), member.getId());
+            keyboardService.deleteKeyboard(TEST_ID1, member.getId());
         });
 
         assertEquals("경매에 등록된 키보드는 삭제할 수 없습니다.", exception.getMessage());
     }
-
 }
