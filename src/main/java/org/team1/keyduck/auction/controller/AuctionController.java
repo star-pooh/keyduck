@@ -108,13 +108,10 @@ public class AuctionController {
 
 
     @GetMapping("/main")
-    public String findAllAuctionWithHtml(
-            Pageable pageable, @RequestParam(required = false) String keyboardName,
-            @RequestParam(required = false) String auctionTitle,
-            @RequestParam(required = false) String sellerName, Model model) {
+    public String findAllAuctionWithHtml(Pageable pageable, Model model) {
 
         Page<AuctionSearchResponseDto> response = auctionService.findAllAuction(pageable,
-                keyboardName, auctionTitle, sellerName);
+                null, null, null);
 
         model.addAttribute("auctions", response);
         return "main";
