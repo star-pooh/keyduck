@@ -32,15 +32,6 @@
 <script>
   const form = document.getElementById("paymentForm");
 
-  function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) {
-      return parts.pop().split(";").shift();
-    }
-    return null;
-  }
-
   form.addEventListener("submit", function (event) {
     event.preventDefault(); // 기본 폼 제출 방지
 
@@ -50,16 +41,12 @@
       amount: document.getElementById("amount").value
     };
 
-    const authCookie = getCookie("Authorization");
-
     fetch("/api/auth/payment", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": authCookie
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(requestData),
-      credentials: "include"
+      body: JSON.stringify(requestData)
     })
     .then(response => {
       console.log(response);
@@ -69,6 +56,10 @@
           throw new Error(errorData.message);
         });
       }
+
+      const token = response.headers.get("Authorization");
+      sessionStorage.setItem('Authorization', token);
+
       return response.json();
     })
     .then(data => {

@@ -1,5 +1,7 @@
 package org.team1.keyduck.auth.service;
 
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,7 +36,8 @@ public class AuthService {
 
     public SigninResponseDto login(SigninRequestDto signinRequest) {
         Member member = memberRepository.findByEmail(signinRequest.getEmail())
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.LOGIN_FAILED, null));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.INVALID_DATA_VALUE,
+                        ErrorMessageParameter.EMAIL));
 
         if (member.isDeleted()) {
             throw new DataInvalidException(ErrorCode.DUPLICATE_DELETED,
@@ -86,5 +89,20 @@ public class AuthService {
         String bearerToken = jwtUtil.createToken(member.getId(), member.getMemberRole());
 
         return new PaymentFormResponseDto(bearerToken, dto.getAmount());
+    }
+
+    public void verifyJwtToken(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        String jwt = jwtUtil.substringToken(token);
+        Claims claims = jwtUtil.extractClaims(jwt);
+        if (claims == null) {
+            throw new DataInvalidException(ErrorCode.INVALID_TOKEN, ErrorMessageParameter.TOKEN);
+        }
+
+        MemberRole memberRole = MemberRole.valueOf(claims.get("memberRole", String.class));
+
+        if (memberRole.equals(MemberRole.SELLER)) {
+            throw new OperationNotAllowedException(ErrorCode.FORBIDDEN_PAYMENT_LOGIN_FORM, null);
+        }
     }
 }
