@@ -294,7 +294,7 @@ class KeyboardServiceTest {
 
     @Test
     @DisplayName("키보드 삭제 - 성공 케이스")
-    void deleteKeyboard_success() {
+    void deleteKeyboardSuccess() {
         // given
         Member member = TEST_MEMBER1;
         Keyboard keyboard = TEST_KEYBOARD1;
@@ -315,7 +315,7 @@ class KeyboardServiceTest {
 
     @Test
     @DisplayName("키보드 삭제 - 실패 케이스(이미 삭제된 키보드)")
-    void deleteKeyboard_fail_true() {
+    void deleteKeyboardFailAlreadyDeleted() {
         // given
         Member member = TEST_MEMBER1;
         Keyboard keyboard = TEST_KEYBOARD1;
@@ -327,14 +327,16 @@ class KeyboardServiceTest {
 
         // when
         // then
-        assertThrows(DataDuplicateException.class, () -> {
+        DataDuplicateException exception = assertThrows(DataDuplicateException.class, () -> {
             keyboardService.deleteKeyboard(keyboard.getId(), member.getId());
         });
+
+        assertEquals("이미 삭제된 키보드 입니다.", exception.getMessage());
     }
-    //
+
     @Test
     @DisplayName("키보드 삭제 - 실패 케이스(생성 유저와 삭제를 하려는 유저가 동일하지 않음)")
-    void deleteKeyboard_fail_not_same_member() {
+    void deleteKeyboardFailNotSameMember() {
         // given
         Member member1 = TEST_MEMBER1;
         Member member2 = TEST_MEMBER2;
@@ -358,15 +360,12 @@ class KeyboardServiceTest {
         });
     }
 
-    @Mock
-    private AuctionRepository auctionRepository;
-
     @Test
-    @DisplayName("키보드 삭제 - 실패 케이스(경매 진행 중인 키보드 삭제 요청)")
-    void deleteKeyboard_fail_auction_in_Progress() {
+    @DisplayName("키보드 삭제 - 실패 케이스(경매가 생성된 키보드 삭제 요청)")
+    void deleteKeyboardFailAuctionInProgress() {
         // given
-        Member member = TestData.TEST_MEMBER1;
-        Keyboard keyboard = TestData.TEST_KEYBOARD1;
+        Member member = TEST_MEMBER1;
+        Keyboard keyboard = TEST_KEYBOARD1;
 
         ReflectionTestUtils.setField(member, "id", TEST_ID1);
         ReflectionTestUtils.setField(keyboard, "id", TEST_ID2);
@@ -374,13 +373,15 @@ class KeyboardServiceTest {
         ReflectionTestUtils.setField(keyboard, "isDeleted", false);
 
         when(keyboardRepository.findById(keyboard.getId())).thenReturn(Optional.of(keyboard));
-        when(auctionRepository.existsByKeyboard_Member_IdAndAuctionStatus(
-                keyboard.getId(), AuctionStatus.IN_PROGRESS)).thenReturn(true);
+        when(auctionRepository.existsAuctionByKeyboardId(keyboard.getId())).thenReturn(true);
 
         // when
         // then
-        assertThrows(OperationNotAllowedException.class, () ->
-                keyboardService.deleteKeyboard(keyboard.getId(), member.getId())
-        );
+        OperationNotAllowedException exception = assertThrows(OperationNotAllowedException.class, () -> {
+            keyboardService.deleteKeyboard(keyboard.getId(), member.getId());
+        });
+
+        assertEquals("경매에 등록된 키보드는 삭제할 수 없습니다.", exception.getMessage());
     }
+
 }
