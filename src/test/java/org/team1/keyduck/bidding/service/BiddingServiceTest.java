@@ -62,10 +62,10 @@ public class BiddingServiceTest {
     public void successCreateBiddingWithFirstBidding() {
         //given
         Long price = 22000L;
-        Long auctionId = TestData.TEST_AUCTION_ID1;
+        Long auctionId = TestData.TEST_AUCTION_ID3;
         AuthMember authMember = new AuthMember(TestData.TEST_ID1, MemberRole.CUSTOMER);
 
-        Auction auction = TestData.TEST_AUCTION1;
+        Auction auction = TestData.TEST_AUCTION3;
         ReflectionTestUtils.setField(auction, "id", auctionId);
         when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
                 Optional.of(auction));
@@ -95,10 +95,10 @@ public class BiddingServiceTest {
     public void successCreateBiddingWithSecondBidding() {
         //given
         Long price = 23000L;
-        Long auctionId = TestData.TEST_AUCTION_ID2;
+        Long auctionId = TestData.TEST_AUCTION_ID4;
         AuthMember authMember = new AuthMember(TestData.TEST_ID1, MemberRole.CUSTOMER);
 
-        Auction auction = TestData.TEST_AUCTION2;
+        Auction auction = TestData.TEST_AUCTION4;
         ReflectionTestUtils.setField(auction, "id", auctionId);
         when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
                 Optional.of(auction));
@@ -128,10 +128,10 @@ public class BiddingServiceTest {
     public void successCreateBiddingWithImmediatePurchasePrice() {
         //given
         Long price = 100000L;
-        Long auctionId = TestData.TEST_AUCTION_ID3;
+        Long auctionId = TestData.TEST_AUCTION_ID5;
         AuthMember authMember = new AuthMember(TestData.TEST_ID2, MemberRole.CUSTOMER);
 
-        Auction auction = spy(TestData.TEST_AUCTION3);
+        Auction auction = spy(TestData.TEST_AUCTION5);
         ReflectionTestUtils.setField(auction, "id", auctionId);
         ReflectionTestUtils.setField(auction, "immediatePurchasePrice", price);
         when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
@@ -170,12 +170,12 @@ public class BiddingServiceTest {
     @DisplayName("실패: 진행중인 경매가 아닐때")
     public void failCreateBiddingWhenAuctionIsNotInProgress() {
         //given
-        Long auctionId = TestData.TEST_AUCTION_ID4;
+        Long auctionId = TestData.TEST_AUCTION_ID6;
         Long memberId = TestData.TEST_ID2;
         Long price = 50000L;
         AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
 
-        Auction auction = TestData.TEST_AUCTION4;
+        Auction auction = TestData.TEST_AUCTION6;
         ReflectionTestUtils.setField(auction, "id", auctionId);
 
         when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
@@ -195,12 +195,12 @@ public class BiddingServiceTest {
     @DisplayName("실패: 비딩횟수가 10번을 초과했을 때")
     public void failCreateBiddingWhenBidsExceed() {
         //given
-        Long auctionId = TestData.TEST_AUCTION_ID5;
+        Long auctionId = TestData.TEST_AUCTION_ID7;
         Long memberId = TestData.TEST_ID2;
         Long price = 50000L;
         AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
 
-        Auction auction = TestData.TEST_AUCTION5;
+        Auction auction = TestData.TEST_AUCTION7;
         ReflectionTestUtils.setField(auction, "id", auctionId);
 
         when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
@@ -223,12 +223,12 @@ public class BiddingServiceTest {
     @DisplayName("실패: 입찰 단위에 맞지 않을 때")
     public void failCreateBiddingWhenNotFitBiddingUnit() {
         //given
-        Long auctionId = TestData.TEST_AUCTION_ID6;
+        Long auctionId = TestData.TEST_AUCTION_ID8;
         Long memberId = TestData.TEST_ID2;
         Long price = 40100L;
         AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
 
-        Auction auction = TestData.TEST_AUCTION6;
+        Auction auction = TestData.TEST_AUCTION8;
         ReflectionTestUtils.setField(auction, "id", auctionId);
 
         when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
@@ -248,12 +248,12 @@ public class BiddingServiceTest {
     @DisplayName("실패: 현재가보다 낮은 입찰")
     public void failCreateBiddingWhenLowerThanCurrentPrice() {
         //given
-        Long auctionId = TestData.TEST_AUCTION_ID6;
+        Long auctionId = TestData.TEST_AUCTION_ID8;
         Long memberId = TestData.TEST_ID2;
         Long price = 30000L;
         AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
 
-        Auction auction = TestData.TEST_AUCTION6;
+        Auction auction = TestData.TEST_AUCTION8;
         ReflectionTestUtils.setField(auction, "id", auctionId);
 
         when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
@@ -273,12 +273,12 @@ public class BiddingServiceTest {
     @DisplayName("실패: 최대 호가보다 높은 입찰")
     public void failCreateBiddingWhenHigherThanMax() {
         //given
-        Long auctionId = TestData.TEST_AUCTION_ID6;
+        Long auctionId = TestData.TEST_AUCTION_ID8;
         Long memberId = TestData.TEST_ID2;
         Long price = 51000L;
         AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
 
-        Auction auction = TestData.TEST_AUCTION6;
+        Auction auction = TestData.TEST_AUCTION8;
         ReflectionTestUtils.setField(auction, "id", auctionId);
 
         when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
