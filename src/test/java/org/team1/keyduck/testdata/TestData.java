@@ -3,6 +3,9 @@ package org.team1.keyduck.testdata;
 import java.time.LocalDateTime;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
+import java.time.LocalDateTime;
+import org.team1.keyduck.auction.entity.Auction;
+import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.bidding.entity.Bidding;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.member.entity.Address;
@@ -43,6 +46,8 @@ public class TestData {
     public final static Member TEST_MEMBER2 = new Member(TEST_NAME2, TEST_EMAIL2, TEST_PASSWORD2,
             TEST_MEMBER_ROLE2, TEST_ADDRESS2);
 
+    public final static String TEST_PASSWORD3 = "Qwer123@";
+
     public final static Long TEST_ID3 = 3L;
     public final static String TEST_NAME3 = "TestName3";
     public final static String TEST_EMAIL3 = "TestUser3@email.com";
@@ -68,20 +73,112 @@ public class TestData {
     public final static Long TEST_KEYBOARD_ID1 = 1L;
     public final static String TEST_KEYBOARD_NAME1 = "keyboard";
     public final static String TEST_KEYBOARD_DESCRIPTION1 = "짱짱맨";
-    public final static Keyboard TEST_KEYBOARD1 = new Keyboard(TEST_MEMBER1, TEST_KEYBOARD_NAME1,
-            TEST_KEYBOARD_DESCRIPTION1);
+    public final static Keyboard TEST_KEYBOARD1 = Keyboard.builder()
+            .member(TEST_MEMBER1)
+            .name(TEST_KEYBOARD_NAME1)
+            .description(TEST_KEYBOARD_DESCRIPTION1)
+            .build();
 
     public final static Long TEST_KEYBOARD_ID2 = 2L;
     public final static String TEST_KEYBOARD_NAME2 = "keyboard!!!";
     public final static String TEST_KEYBOARD_DESCRIPTION2 = "짱짱걸";
-    public final static Keyboard TEST_KEYBOARD2 = new Keyboard(TEST_MEMBER1, TEST_KEYBOARD_NAME2,
-            TEST_KEYBOARD_DESCRIPTION2);
+    public final static Keyboard TEST_KEYBOARD2 = Keyboard.builder()
+            .member(TEST_MEMBER1)
+            .name(TEST_KEYBOARD_NAME2)
+            .description(TEST_KEYBOARD_DESCRIPTION2)
+            .build();
 
     public final static Long TEST_KEYBOARD_ID3 = 3L;
     public final static String TEST_KEYBOARD_NAME3 = "keyboard!!!";
     public final static String TEST_KEYBOARD_DESCRIPTION3 = "짱짱";
-    public final static Keyboard TEST_KEYBOARD3 = new Keyboard(TEST_MEMBER1, TEST_KEYBOARD_NAME3,
-            TEST_KEYBOARD_DESCRIPTION3);
+    public final static Keyboard TEST_KEYBOARD3 = Keyboard.builder()
+            .member(TEST_MEMBER1)
+            .name(TEST_KEYBOARD_NAME3)
+            .description(TEST_KEYBOARD_DESCRIPTION3)
+            .build();
+
+    // TEMP PAYMENT
+    public final static String TEST_ORDER_ID1 = "orderId1";
+    public final static Long TEST_PAYMENT_AMOUNT1 = 1000L;
+    public final static Long TEST_PAYMENT_AMOUNT2 = 2000L;
+    public final static TempPayment TEST_TEMP_PAYMENT1 = TempPayment.builder()
+            .memberId(TestData.TEST_ID1)
+            .orderId(TestData.TEST_ORDER_ID1)
+            .amount(TestData.TEST_PAYMENT_AMOUNT1)
+            .build();
+
+    // PAYMENT
+    public final static PaymentMethod TEST_PAYMENT_METHOD = PaymentMethod.EASY_PAY;
+    public final static String TEST_EASY_PAY_TYPE = "카카오페이";
+    public final static PaymentStatus TEST_PAYMENT_STATUS = PaymentStatus.DONE;
+    public final static LocalDateTime TEST_REQUESTED_AT =
+            LocalDateTime.parse("2025-02-24T22:52:37");
+    public final static LocalDateTime TEST_APPROVED_AT =
+            LocalDateTime.parse("2025-02-24T22:55:44");
+    public final static Payment TEST_PAYMENT1 = Payment.builder()
+            .member(TEST_MEMBER1)
+            .orderId(TEST_ORDER_ID1)
+            .amount(TEST_PAYMENT_AMOUNT1)
+            .paymentMethod(TEST_PAYMENT_METHOD)
+            .easyPayType(TEST_EASY_PAY_TYPE)
+            .paymentStatus(TEST_PAYMENT_STATUS)
+            .requestedAt(TEST_REQUESTED_AT)
+            .approvedAt(TEST_APPROVED_AT)
+            .build();
+
+    public final static Long TEST_DEPOSIT_AMOUNT = 5000L;
+    public final static PaymentDeposit TEST_PAYMENT_DEPOSIT1 = PaymentDeposit.builder()
+            .member(TestData.TEST_MEMBER1)
+            .depositAmount(TestData.TEST_DEPOSIT_AMOUNT)
+            .build();
+    public final static PaymentDeposit TEST_PAYMENT_DEPOSIT2 = PaymentDeposit.builder()
+            .member(TestData.TEST_MEMBER2)
+            .depositAmount(TestData.TEST_DEPOSIT_AMOUNT)
+            .build();
+
+    //token
+    public final static String TEST_TOKEN = "TEST";
+
+    //AUCTION
+    public final static Long TEST_AUCTION_ID1 = 1L;
+    public final static String TEST_AUCTION_TITLE = "keyboard 1 auction";
+    public final static Long TEST_AUCTION_START_PRICE1 = 50000L;
+    public final static Long TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE1 = 500000L;
+    public final static Long TEST_AUCTION_BIDDING_UNIT1 = 5000L;
+    public final static LocalDateTime TEST_AUCTION_START_DATE1 = LocalDateTime.now().plusDays(1);
+    public final static LocalDateTime TEST_AUCTION_END_DATE1 = LocalDateTime.now().plusDays(3);
+    public final static Auction TEST_AUCTION1 = Auction.builder()
+            .keyboard(TEST_KEYBOARD1)
+            .member(null)
+            .title(TEST_AUCTION_TITLE)
+            .startPrice(TEST_AUCTION_START_PRICE1)
+            .immediatePurchasePrice(TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE1)
+            .currentPrice(TEST_AUCTION_START_PRICE1)
+            .biddingUnit(TEST_AUCTION_BIDDING_UNIT1)
+            .auctionStartDate(TEST_AUCTION_START_DATE1)
+            .auctionEndDate(TEST_AUCTION_END_DATE1)
+            .auctionStatus(AuctionStatus.NOT_STARTED)
+            .build();
+
+    public final static Long TEST_AUCTION_ID2 = 2L;
+    public final static String TEST_AUCTION_TITLE2 = "keyboard 2 auction";
+    public final static Long TEST_AUCTION_START_PRICE2 = 30000L;
+    public final static Long TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE2 = 300000L;
+    public final static Long TEST_AUCTION_BIDDING_UNIT2 = 5000L;
+    public final static LocalDateTime TEST_AUCTION_START_DATE2 = LocalDateTime.now().plusDays(1);
+    public final static LocalDateTime TEST_AUCTION_END_DATE2 = LocalDateTime.now().plusDays(3);
+    public final static Auction TEST_AUCTION2 = Auction.builder()
+            .keyboard(TEST_KEYBOARD2)
+            .member(null)
+            .title(TEST_AUCTION_TITLE2)
+            .startPrice(TEST_AUCTION_START_PRICE2)
+            .immediatePurchasePrice(TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE2)
+            .currentPrice(TEST_AUCTION_START_PRICE2)
+            .biddingUnit(TEST_AUCTION_BIDDING_UNIT2)
+            .auctionStartDate(TEST_AUCTION_START_DATE2)
+            .auctionEndDate(TEST_AUCTION_END_DATE2)
+            .auctionStatus(AuctionStatus.NOT_STARTED)
+            .build();
 
     public final static Long TEST_KEYBOARD_ID4 = 4L;
     public final static String TEST_KEYBOARD_NAME4 = "keyboard!!!";
