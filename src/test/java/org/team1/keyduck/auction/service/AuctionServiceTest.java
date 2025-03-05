@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.team1.keyduck.testdata.TestData.TEST_AUCTION1;
 import static org.team1.keyduck.testdata.TestData.TEST_AUCTION2;
+import static org.team1.keyduck.testdata.TestData.TEST_AUCTION3;
+import static org.team1.keyduck.testdata.TestData.TEST_AUCTION4;
 import static org.team1.keyduck.testdata.TestData.TEST_AUCTION_ID1;
 import static org.team1.keyduck.testdata.TestData.TEST_BIDDINGS;
 import static org.team1.keyduck.testdata.TestData.TEST_MEMBER2;
@@ -85,33 +87,33 @@ class AuctionServiceTest {
     @DisplayName("경매 다건 조회 - 성공 케이스")
     void findAllAuctionSuccess() {
         // given
-        ReflectionTestUtils.setField(TEST_AUCTION1, "member", TEST_MEMBER2);
-        ReflectionTestUtils.setField(TEST_AUCTION2, "member", TEST_MEMBER3);
+        ReflectionTestUtils.setField(TEST_AUCTION3, "member", TEST_MEMBER2);
+        ReflectionTestUtils.setField(TEST_AUCTION4, "member", TEST_MEMBER3);
 
         List<AuctionSearchResponseDto> auctions = List.of(
                 new AuctionSearchResponseDto(
-                        TEST_AUCTION1.getId(),
-                        TEST_AUCTION1.getKeyboard().getId(),
-                        TEST_AUCTION1.getKeyboard().getName(),
-                        TEST_AUCTION1.getKeyboard().getDescription(),
-                        TEST_AUCTION1.getTitle(),
-                        TEST_AUCTION1.getCurrentPrice(),
-                        TEST_AUCTION1.getImmediatePurchasePrice(),
-                        TEST_AUCTION1.getAuctionStatus(),
-                        TEST_AUCTION1.getMember() != null ? TEST_AUCTION1.getMember().getId() : null,
-                        TEST_AUCTION1.getMember() != null ? TEST_AUCTION1.getMember().getName() : null
+                        TEST_AUCTION3.getId(),
+                        TEST_AUCTION3.getKeyboard().getId(),
+                        TEST_AUCTION3.getKeyboard().getName(),
+                        TEST_AUCTION3.getKeyboard().getDescription(),
+                        TEST_AUCTION3.getTitle(),
+                        TEST_AUCTION3.getCurrentPrice(),
+                        TEST_AUCTION3.getImmediatePurchasePrice(),
+                        TEST_AUCTION3.getAuctionStatus(),
+                        TEST_AUCTION3.getMember() != null ? TEST_AUCTION3.getMember().getId() : null,
+                        TEST_AUCTION3.getMember() != null ? TEST_AUCTION3.getMember().getName() : null
                 ),
                 new AuctionSearchResponseDto(
-                        TEST_AUCTION2.getId(),
-                        TEST_AUCTION2.getKeyboard().getId(),
-                        TEST_AUCTION2.getKeyboard().getName(),
-                        TEST_AUCTION2.getKeyboard().getDescription(),
-                        TEST_AUCTION2.getTitle(),
-                        TEST_AUCTION2.getCurrentPrice(),
-                        TEST_AUCTION2.getImmediatePurchasePrice(),
-                        TEST_AUCTION2.getAuctionStatus(),
-                        TEST_AUCTION2.getMember() != null ? TEST_AUCTION2.getMember().getId() : null,
-                        TEST_AUCTION2.getMember() != null ? TEST_AUCTION2.getMember().getName() : null
+                        TEST_AUCTION4.getId(),
+                        TEST_AUCTION4.getKeyboard().getId(),
+                        TEST_AUCTION4.getKeyboard().getName(),
+                        TEST_AUCTION4.getKeyboard().getDescription(),
+                        TEST_AUCTION4.getTitle(),
+                        TEST_AUCTION4.getCurrentPrice(),
+                        TEST_AUCTION4.getImmediatePurchasePrice(),
+                        TEST_AUCTION4.getAuctionStatus(),
+                        TEST_AUCTION4.getMember() != null ? TEST_AUCTION4.getMember().getId() : null,
+                        TEST_AUCTION4.getMember() != null ? TEST_AUCTION4.getMember().getName() : null
                 )
         );
 

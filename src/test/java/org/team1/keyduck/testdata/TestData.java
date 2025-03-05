@@ -2,17 +2,18 @@ package org.team1.keyduck.testdata;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import org.team1.keyduck.auction.dto.response.AuctionSearchResponseDto;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.bidding.entity.Bidding;
-import java.time.LocalDateTime;
-import org.team1.keyduck.auction.entity.Auction;
-import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.member.entity.Address;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
+import org.team1.keyduck.payment.entity.Payment;
+import org.team1.keyduck.payment.entity.PaymentDeposit;
+import org.team1.keyduck.payment.entity.PaymentMethod;
+import org.team1.keyduck.payment.entity.PaymentStatus;
+import org.team1.keyduck.payment.entity.TempPayment;
 
 public class TestData {
 
@@ -176,33 +177,33 @@ public class TestData {
             .auctionStatus(AuctionStatus.NOT_STARTED)
             .build();
 
-    public final static Long TEST_AUCTION_ID1 = 1L;
-    public final static String TEST_AUCTION_TITLE1 = "키보드 팔아요";
-    public final static Long TEST_AUCTION_START_PRICE1 = 50000L;
-    public final static Long TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE1 = 100000L;
-    public final static Long TEST_AUCTION_CURRENT_PRICE1 = 50000L;
-    public final static Long TEST_AUCTION_BIDDING_UNIT1 = 10000L;
-    public final static LocalDateTime TEST_AUCTION_START_DATE1 = LocalDateTime.now().plusDays(1);
-    public final static LocalDateTime TEST_AUCTION_END_DATE1 = LocalDateTime.now().plusDays(7);
-    public final static AuctionStatus TEST_AUCTION_STATUS1 = AuctionStatus.NOT_STARTED;
-    public final static Auction TEST_AUCTION1 = new Auction(TEST_KEYBOARD1, TEST_MEMBER1, TEST_AUCTION_TITLE1,
-            TEST_AUCTION_START_PRICE1, TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE1, TEST_AUCTION_CURRENT_PRICE1,
-            TEST_AUCTION_BIDDING_UNIT1, TEST_AUCTION_START_DATE1, TEST_AUCTION_END_DATE1,
-            TEST_AUCTION_STATUS1 );
+    public final static Long TEST_AUCTION_ID3 = 3L;
+    public final static String TEST_AUCTION_TITLE3 = "키보드 팔아요";
+    public final static Long TEST_AUCTION_START_PRICE3 = 50000L;
+    public final static Long TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE3 = 100000L;
+    public final static Long TEST_AUCTION_CURRENT_PRICE3 = 50000L;
+    public final static Long TEST_AUCTION_BIDDING_UNIT3 = 10000L;
+    public final static LocalDateTime TEST_AUCTION_START_DATE3 = LocalDateTime.now().plusDays(1);
+    public final static LocalDateTime TEST_AUCTION_END_DATE3 = LocalDateTime.now().plusDays(7);
+    public final static AuctionStatus TEST_AUCTION_STATUS3 = AuctionStatus.NOT_STARTED;
+    public final static Auction TEST_AUCTION3 = new Auction(TEST_KEYBOARD1, TEST_MEMBER1, TEST_AUCTION_TITLE3,
+            TEST_AUCTION_START_PRICE3, TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE3, TEST_AUCTION_CURRENT_PRICE3,
+            TEST_AUCTION_BIDDING_UNIT3, TEST_AUCTION_START_DATE3, TEST_AUCTION_END_DATE3,
+            TEST_AUCTION_STATUS3);
 
-    public final static Long TEST_AUCTION_ID2 = 2L;
-    public final static String TEST_AUCTION_TITLE2 = "키보드 가져가세요";
-    public final static Long TEST_AUCTION_START_PRICE2 = 80000L;
-    public final static Long TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE2 = 150000L;
-    public final static Long TEST_AUCTION_CURRENT_PRICE2 = 90000L;
-    public final static Long TEST_AUCTION_BIDDING_UNIT2 = 10000L;
-    public final static LocalDateTime TEST_AUCTION_START_DATE2 = LocalDateTime.now().plusDays(2);
-    public final static LocalDateTime TEST_AUCTION_END_DATE2 = LocalDateTime.now().plusDays(5);
-    public final static AuctionStatus TEST_AUCTION_STATUS2 = AuctionStatus.IN_PROGRESS;
-    public final static Auction TEST_AUCTION2 = new Auction(TEST_KEYBOARD2, TEST_MEMBER1, TEST_AUCTION_TITLE2,
-            TEST_AUCTION_START_PRICE2, TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE2, TEST_AUCTION_CURRENT_PRICE2,
-            TEST_AUCTION_BIDDING_UNIT2, TEST_AUCTION_START_DATE2, TEST_AUCTION_END_DATE2,
-            TEST_AUCTION_STATUS2);
+    public final static Long TEST_AUCTION_ID4 = 4L;
+    public final static String TEST_AUCTION_TITLE4 = "키보드 가져가세요";
+    public final static Long TEST_AUCTION_START_PRICE4 = 80000L;
+    public final static Long TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE4 = 150000L;
+    public final static Long TEST_AUCTION_CURRENT_PRICE4 = 90000L;
+    public final static Long TEST_AUCTION_BIDDING_UNIT4 = 10000L;
+    public final static LocalDateTime TEST_AUCTION_START_DATE4 = LocalDateTime.now().plusDays(2);
+    public final static LocalDateTime TEST_AUCTION_END_DATE4 = LocalDateTime.now().plusDays(5);
+    public final static AuctionStatus TEST_AUCTION_STATUS4 = AuctionStatus.IN_PROGRESS;
+    public final static Auction TEST_AUCTION4 = new Auction(TEST_KEYBOARD2, TEST_MEMBER1, TEST_AUCTION_TITLE4,
+            TEST_AUCTION_START_PRICE4, TEST_AUCTION_IMMEDIATE_PURCHASE_PRICE4, TEST_AUCTION_CURRENT_PRICE4,
+            TEST_AUCTION_BIDDING_UNIT4, TEST_AUCTION_START_DATE4, TEST_AUCTION_END_DATE4,
+            TEST_AUCTION_STATUS4);
 
     //Bidding
     public final static Long TEST_BIDDING_ID1 = 1L;
