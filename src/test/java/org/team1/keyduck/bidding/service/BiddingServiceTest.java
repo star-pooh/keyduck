@@ -1,199 +1,365 @@
 package org.team1.keyduck.bidding.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import net.datafaker.Faker;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ActiveProfiles;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.auth.entity.AuthMember;
+import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
+import org.team1.keyduck.bidding.dto.response.SuccessBiddingResponseDto;
 import org.team1.keyduck.bidding.entity.Bidding;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
 import org.team1.keyduck.common.exception.DataInvalidException;
-import org.team1.keyduck.keyboard.entity.Keyboard;
+import org.team1.keyduck.common.exception.DataNotFoundException;
+import org.team1.keyduck.common.exception.OperationNotAllowedException;
 import org.team1.keyduck.keyboard.repository.KeyboardRepository;
-import org.team1.keyduck.member.entity.Address;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
+import org.team1.keyduck.payment.repository.PaymentDepositRepository;
+import org.team1.keyduck.payment.service.PaymentDepositService;
+import org.team1.keyduck.payment.service.SaleProfitService;
+import org.team1.keyduck.testdata.TestData;
 
-@SpringBootTest
-@ActiveProfiles("test")
+@ExtendWith(MockitoExtension.class)
 public class BiddingServiceTest {
 
-    @Autowired
+    @InjectMocks
     private BiddingService biddingService;
-    @Autowired
+    @Mock
     private BiddingRepository biddingRepository;
-    @Autowired
+    @Mock
     private AuctionRepository auctionRepository;
-    @Autowired
+    @Mock
     private MemberRepository memberRepository;
-    @Autowired
+    @Mock
     private KeyboardRepository keyboardRepository;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    @Mock
+    private PaymentDepositService paymentDepositService;
+    @Mock
+    private PaymentDepositRepository paymentDepositRepository;
+    @Mock
+    private SaleProfitService saleProfitService;
 
 
-    private Member member;
-    private Auction auction;
+    //todo 성공케이스만들기
+    @Test
+    @DisplayName("성공: 첫번쨰 입찰")
+    public void successCreateBiddingWithFirstBidding() {
+        //given
+        Long price = 22000L;
+        Long auctionId = TestData.TEST_AUCTION_ID3;
+        AuthMember authMember = new AuthMember(TestData.TEST_ID1, MemberRole.CUSTOMER);
 
-    private static final Logger log = LoggerFactory.getLogger(BiddingServiceTest.class);
+        Auction auction = TestData.TEST_AUCTION3;
+        ReflectionTestUtils.setField(auction, "id", auctionId);
+        when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
+                Optional.of(auction));
 
-    public void setUpBidding() {
+        Member member = mock(Member.class);
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
 
-        // 판매자 멤버 생성
-        member = memberRepository.save(
-                Member.builder()
-                        .name("판매자")
-                        .email("email@example.com")
-                        .password("1234")
-                        .memberRole(MemberRole.SELLER)
-                        .address(new Address("경기도", "안양시", "동안구", "12345", "1층"))
-                        .build()
-        );
+        when(biddingRepository.countByMember_IdAndAuction_Id(any(Long.class),
+                any(Long.class))).thenReturn(0L);
 
-        // 키보드 생성
-        Keyboard keyboard = keyboardRepository.save(
-                Keyboard.builder()
-                        .member(member)
-                        .name("키보드")
-                        .description("키보드입니다.")
-                        .build()
-        );
+        when(biddingRepository.findByMember_IdAndAuction_Id(any(Long.class),
+                any(Long.class))).thenReturn(Optional.of(0L));
 
-        // 경매 생성
-        auction = auctionRepository.save(
-                Auction.builder()
-                        .title("키보드 경매")
-                        .keyboard(keyboard)
-                        .startPrice(1000L)
-                        .currentPrice(1000L)
-                        .biddingUnit(100L)
-                        .auctionStartDate(LocalDateTime.now())
-                        .auctionEndDate(LocalDateTime.now().plusDays(1))
-                        .auctionStatus(AuctionStatus.IN_PROGRESS)
-                        .build()
-        );
+        doNothing().when(paymentDepositService)
+                .payBiddingPrice(any(Long.class), any(Long.class), any(Long.class));
 
-        Faker faker = new Faker();
-        final int MAX_CUSTOMERS = 100;
-        final int BATCH_SIZE = 100;
-        final String PASSWORD = "5678";
+        when(biddingRepository.save(any(Bidding.class))).thenReturn(new Bidding());
 
-        String memberSql = "INSERT INTO member (name, email, password, member_role, city, state, street, detail_address1, detail_address2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        List<Object[]> members = new ArrayList<>();
-
-        for (int i = 0; i < MAX_CUSTOMERS; i++) {
-            members.add(new Object[]{
-                    "구매자" + i,
-                    faker.color().name() + i + "@" + faker.animal() + ".com",
-                    PASSWORD,
-                    MemberRole.CUSTOMER.name(),
-                    "경기도", "안양시", "만안구", "56789", "2층"
-            });
-        }
-
-        jdbcTemplate.batchUpdate(memberSql, members, BATCH_SIZE,
-                (ps, param) -> {
-                    ps.setString(1, (String) param[0]);
-                    ps.setString(2, (String) param[1]);
-                    ps.setString(3, (String) param[2]);
-                    ps.setString(4, (String) param[3]);
-                    ps.setString(5, (String) param[4]);
-                    ps.setString(6, (String) param[5]);
-                    ps.setString(7, (String) param[6]);
-                    ps.setString(8, (String) param[7]);
-                    ps.setString(9, (String) param[8]);
-                });
-
-        List<Member> customers = memberRepository.findAll().stream()
-                .filter(m -> m.getMemberRole() == MemberRole.CUSTOMER)
-                .toList();
-
-        String depositSql = "INSERT INTO payment_deposit (member_id, deposit_amount) VALUES (?, ?)";
-        List<Object[]> paymentDeposits = new ArrayList<>();
-
-        for (Member customer : customers) {
-            paymentDeposits.add(new Object[]{customer.getId(), 1_000_000L});
-        }
-
-        jdbcTemplate.batchUpdate(depositSql, paymentDeposits, BATCH_SIZE,
-                (ps, param) -> {
-                    ps.setLong(1, (Long) param[0]);
-                    ps.setLong(2, (Long) param[1]);
-                });
+        //when
+        biddingService.createBidding(auctionId, price, authMember);
+        //then
+        verify(biddingRepository, times(1)).save(any(Bidding.class));
     }
-
-    @BeforeEach
-    public void setUp() {
-        setUpBidding();
-    }
-
 
     @Test
-    @DisplayName("비관적 락 이용한 입찰 생성")
-    public void createBiddingWithPessimisticLock() throws InterruptedException {
-        List<Member> members = memberRepository.findAll(); // 전체 유저를 조회하고
-        // customer만 담기
-        List<Member> customers = new ArrayList<>();
+    @DisplayName("성공: 두번째 이상 입찰")
+    public void successCreateBiddingWithSecondBidding() {
+        //given
+        Long price = 23000L;
+        Long auctionId = TestData.TEST_AUCTION_ID4;
+        AuthMember authMember = new AuthMember(TestData.TEST_ID1, MemberRole.CUSTOMER);
 
-        for (Member member : members) {
-            if (member.getMemberRole() == MemberRole.CUSTOMER) {
-                customers.add(member);
-            }
-        }
+        Auction auction = TestData.TEST_AUCTION4;
+        ReflectionTestUtils.setField(auction, "id", auctionId);
+        when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
+                Optional.of(auction));
 
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
-        CountDownLatch latch = new CountDownLatch(100);
+        Member member = mock(Member.class);
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
 
-        for (int i = 0; i < 100; i++) {
-            final long biddingPrice = auction.getCurrentPrice() + (i + 1) * 100L;
-            final Member customer = customers.get(i);
+        when(biddingRepository.countByMember_IdAndAuction_Id(any(Long.class),
+                any(Long.class))).thenReturn(1L);
 
-            executorService.execute(() -> {
-                try {
-                    biddingService.createBidding(
-                            auction.getId(),
-                            biddingPrice,
-                            new AuthMember(customer.getId(), customer.getMemberRole())
-                    );
-                } catch (DataInvalidException e) {
-                    log.info("입찰 실패 - 유저 ID: {}, 현재가: {}, 입찰 금액: {}", customer.getId(),
-                            auction.getCurrentPrice(), biddingPrice);
-                    log.info("예외 메시지: {}", e.getMessage());
-                } finally {
-                    latch.countDown();
-                }
-            });
-        }
+        when(biddingRepository.findByMember_IdAndAuction_Id(any(Long.class),
+                any(Long.class))).thenReturn(Optional.of(1L));
 
-        latch.await();
-        executorService.shutdown();
+        doNothing().when(paymentDepositService)
+                .payBiddingPrice(any(Long.class), any(Long.class), any(Long.class));
 
-        // then
-        // 최신 현재가
-        Auction updatedAuction = auctionRepository.findById(auction.getId()).get();
+        when(biddingRepository.save(any(Bidding.class))).thenReturn(new Bidding());
 
-        // 최종 입찰가
-        Bidding lastBidding = biddingRepository.findByAuctionIdOrderByPriceDesc(auction.getId())
-                .get(0);
-        assertEquals(lastBidding.getPrice(), updatedAuction.getCurrentPrice());
-
+        //when
+        biddingService.createBidding(auctionId, price, authMember);
+        //then
+        verify(biddingRepository, times(1)).save(any(Bidding.class));
     }
+
+    @Test
+    @DisplayName("성공: 즉시 구매가로 구매")
+    public void successCreateBiddingWithImmediatePurchasePrice() {
+        //given
+        Long price = 100000L;
+        Long auctionId = TestData.TEST_AUCTION_ID5;
+        AuthMember authMember = new AuthMember(TestData.TEST_ID2, MemberRole.CUSTOMER);
+
+        Auction auction = spy(TestData.TEST_AUCTION5);
+        ReflectionTestUtils.setField(auction, "id", auctionId);
+        ReflectionTestUtils.setField(auction, "immediatePurchasePrice", price);
+        when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
+                Optional.of(auction));
+
+        Member member = mock(Member.class);
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
+
+        when(biddingRepository.countByMember_IdAndAuction_Id(any(Long.class),
+                any(Long.class))).thenReturn(0L);
+
+        when(biddingRepository.findByMember_IdAndAuction_Id(any(Long.class),
+                any(Long.class))).thenReturn(Optional.of(0L));
+
+        doNothing().when(paymentDepositService)
+                .payBiddingPrice(any(Long.class), any(Long.class), any(Long.class));
+
+        when(biddingRepository.save(any(Bidding.class))).thenReturn(new Bidding());
+
+        doNothing().when(saleProfitService).saleProfit(any(Long.class));
+        doNothing().when(paymentDepositService).refundPaymentDeposit(any(Long.class));
+        doNothing().when(auction).updateSuccessBiddingMember(any(Member.class));
+        doNothing().when(auction).updateAuctionStatus(any(AuctionStatus.class));
+
+        //when
+        biddingService.createBidding(auctionId, price, authMember);
+        //then
+        verify(biddingRepository, times(1)).save(any(Bidding.class));
+        verify(saleProfitService, times(1)).saleProfit(any(Long.class));
+        verify(paymentDepositService, times(1)).refundPaymentDeposit(any(Long.class));
+        verify(auction, times(1)).updateSuccessBiddingMember(any(Member.class));
+        verify(auction, times(1)).updateAuctionStatus(any(AuctionStatus.class));
+    }
+
+    @Test
+    @DisplayName("실패: 진행중인 경매가 아닐때")
+    public void failCreateBiddingWhenAuctionIsNotInProgress() {
+        //given
+        Long auctionId = TestData.TEST_AUCTION_ID6;
+        Long memberId = TestData.TEST_ID2;
+        Long price = 50000L;
+        AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
+
+        Auction auction = TestData.TEST_AUCTION6;
+        ReflectionTestUtils.setField(auction, "id", auctionId);
+
+        when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
+                Optional.of(auction));
+
+        Member member = mock(Member.class);
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
+
+        OperationNotAllowedException exception1 = assertThrows(
+                OperationNotAllowedException.class,
+                () -> biddingService.createBidding(auctionId, price, authMember)
+        );
+        assertEquals("진행 중인 경매가 아닙니다.", exception1.getErrorCode().getMessage());
+    }
+
+    @Test
+    @DisplayName("실패: 비딩횟수가 10번을 초과했을 때")
+    public void failCreateBiddingWhenBidsExceed() {
+        //given
+        Long auctionId = TestData.TEST_AUCTION_ID7;
+        Long memberId = TestData.TEST_ID2;
+        Long price = 50000L;
+        AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
+
+        Auction auction = TestData.TEST_AUCTION7;
+        ReflectionTestUtils.setField(auction, "id", auctionId);
+
+        when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
+                Optional.of(auction));
+
+        Member member = mock(Member.class);
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
+
+        when(biddingRepository.countByMember_IdAndAuction_Id(any(Long.class),
+                any(Long.class))).thenReturn(10L);
+
+        OperationNotAllowedException exception1 = assertThrows(
+                OperationNotAllowedException.class,
+                () -> biddingService.createBidding(auctionId, price, authMember)
+        );
+        assertEquals("입찰은 10번까지만 가능합니다.", exception1.getErrorCode().getMessage());
+    }
+
+    @Test
+    @DisplayName("실패: 입찰 단위에 맞지 않을 때")
+    public void failCreateBiddingWhenNotFitBiddingUnit() {
+        //given
+        Long auctionId = TestData.TEST_AUCTION_ID8;
+        Long memberId = TestData.TEST_ID2;
+        Long price = 40100L;
+        AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
+
+        Auction auction = TestData.TEST_AUCTION8;
+        ReflectionTestUtils.setField(auction, "id", auctionId);
+
+        when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
+                Optional.of(auction));
+
+        Member member = mock(Member.class);
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
+
+        DataInvalidException exception1 = assertThrows(
+                DataInvalidException.class,
+                () -> biddingService.createBidding(auctionId, price, authMember)
+        );
+        assertEquals("최소 입찰 금액 단위의 배수가 아닙니다.", exception1.getErrorCode().getMessage());
+    }
+
+    @Test
+    @DisplayName("실패: 현재가보다 낮은 입찰")
+    public void failCreateBiddingWhenLowerThanCurrentPrice() {
+        //given
+        Long auctionId = TestData.TEST_AUCTION_ID8;
+        Long memberId = TestData.TEST_ID2;
+        Long price = 30000L;
+        AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
+
+        Auction auction = TestData.TEST_AUCTION8;
+        ReflectionTestUtils.setField(auction, "id", auctionId);
+
+        when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
+                Optional.of(auction));
+
+        Member member = mock(Member.class);
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
+
+        DataInvalidException exception1 = assertThrows(
+                DataInvalidException.class,
+                () -> biddingService.createBidding(auctionId, price, authMember)
+        );
+        assertEquals("입찰가가 현재가보다 작습니다.", exception1.getErrorCode().getMessage());
+    }
+
+    @Test
+    @DisplayName("실패: 최대 호가보다 높은 입찰")
+    public void failCreateBiddingWhenHigherThanMax() {
+        //given
+        Long auctionId = TestData.TEST_AUCTION_ID8;
+        Long memberId = TestData.TEST_ID2;
+        Long price = 51000L;
+        AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
+
+        Auction auction = TestData.TEST_AUCTION8;
+        ReflectionTestUtils.setField(auction, "id", auctionId);
+
+        when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
+                Optional.of(auction));
+
+        Member member = mock(Member.class);
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
+
+        DataInvalidException exception1 = assertThrows(
+                DataInvalidException.class,
+                () -> biddingService.createBidding(auctionId, price, authMember)
+        );
+        assertEquals("입찰가가 1회 입찰 시 가능한 최대 금액(최소 입찰 금액 단위의 10배)을 초과하였습니다.",
+                exception1.getErrorCode().getMessage());
+    }
+
+    @Test
+    @DisplayName("조회 성공")
+    public void getBiddingsByAuctionId() {
+        //given
+        Long auctionId = TestData.TEST_AUCTION_ID3;
+        Member member = TestData.TEST_MEMBER1;
+        Auction auction = TestData.TEST_AUCTION3;
+        ReflectionTestUtils.setField(auction, "id", auctionId);
+
+        List<Bidding> biddingList = List.of(TestData.TEST_BIDDING1, TestData.TEST_BIDDING2,
+                TestData.TEST_BIDDING3);
+
+        //when
+        when(auctionRepository.existsById(auctionId)).thenReturn(true);
+        when(biddingRepository.findByAuctionIdOrderByPriceDesc(auction.getId())).thenReturn(
+                biddingList);
+
+        List<BiddingResponseDto> result = biddingService.getBiddingByAuction(auction.getId());
+
+        //then
+        assertEquals(3, result.size());
+    }
+
+    @Test
+    @DisplayName("입찰 조회 실패: 없는 경매일 경우")
+    public void getBiddingFailWhenauctionNotFound() {
+        //given
+        Long auctionId = 100L;
+        when(auctionRepository.existsById(auctionId)).thenReturn(false);
+
+        //then
+        DataNotFoundException exception1 = assertThrows(
+                DataNotFoundException.class,
+                () -> biddingService.getBiddingByAuction(auctionId)
+        );
+        System.out.println("예외 메시지: " + exception1.getMessage());
+        assertEquals("해당 경매을(를) 찾을 수 없습니다.", exception1.getMessage());
+    }
+
+    @Test
+    @DisplayName("낙찰 조회 성공")
+    public void getSuccessBidding() {
+        //given
+        Long auctionId = TestData.TEST_AUCTION_ID9;
+        Long memberId = TestData.TEST_ID4;
+        Member member = TestData.TEST_MEMBER4;
+        ReflectionTestUtils.setField(member, "id", memberId);
+
+        List<Auction> closedAuctions = List.of(TestData.TEST_AUCTION9, TestData.TEST_AUCTION10);
+
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
+        when(auctionRepository.findAllByMember_IdAndAuctionStatus(memberId, AuctionStatus.CLOSED))
+                .thenReturn(closedAuctions);
+
+        //when
+        Page<SuccessBiddingResponseDto> result = biddingService.getSuccessBidding(memberId, 1);
+
+        //then
+        assertEquals(2, result.getContent().size());
+    }
+
+
 }
