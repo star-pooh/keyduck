@@ -61,7 +61,6 @@ public class BiddingServiceTest {
     private SaleProfitService saleProfitService;
 
 
-    //todo 성공케이스만들기
     @Test
     @DisplayName("성공: 첫번쨰 입찰")
     public void successCreateBiddingWithFirstBidding() {
