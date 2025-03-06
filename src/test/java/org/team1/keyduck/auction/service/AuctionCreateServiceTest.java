@@ -6,12 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.team1.keyduck.testdata.TestData.BIDDING_UNIT1;
-import static org.team1.keyduck.testdata.TestData.END_DATE1;
-import static org.team1.keyduck.testdata.TestData.START_DATE1;
-import static org.team1.keyduck.testdata.TestData.START_PRICE1;
 import static org.team1.keyduck.testdata.TestData.TEST_AUCTION1;
-import static org.team1.keyduck.testdata.TestData.TEST_AUCTION_TITLE1;
+import static org.team1.keyduck.testdata.TestData.TEST_AUCTION_BIDDING_UNIT1;
+import static org.team1.keyduck.testdata.TestData.TEST_AUCTION_END_DATE1;
+import static org.team1.keyduck.testdata.TestData.TEST_AUCTION_START_DATE1;
+import static org.team1.keyduck.testdata.TestData.TEST_AUCTION_START_PRICE1;
+import static org.team1.keyduck.testdata.TestData.TEST_AUCTION_TITLE;
 import static org.team1.keyduck.testdata.TestData.TEST_ID1;
 import static org.team1.keyduck.testdata.TestData.TEST_ID2;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD_ID1;
@@ -52,7 +52,8 @@ class AuctionCreateServiceTest {
     public void createAuctionSuccess() {
         //given
         AuctionCreateRequestDto request = new AuctionCreateRequestDto(TEST_KEYBOARD_ID1,
-                TEST_AUCTION_TITLE1, START_PRICE1, null, BIDDING_UNIT1, START_DATE1, END_DATE1);
+                TEST_AUCTION_TITLE, TEST_AUCTION_START_PRICE1, null, TEST_AUCTION_BIDDING_UNIT1,
+                TEST_AUCTION_START_DATE1, TEST_AUCTION_END_DATE1);
 
         Keyboard keyboard = mock(Keyboard.class);
         Member member = mock(Member.class);
@@ -71,9 +72,7 @@ class AuctionCreateServiceTest {
                 request);
 
         //then
-        assertThat(actualResponse)
-                .usingRecursiveComparison()
-                .ignoringFields("id")
+        assertThat(actualResponse).usingRecursiveComparison().ignoringFields("id")
                 .isEqualTo(expectResponse);
     }
 
