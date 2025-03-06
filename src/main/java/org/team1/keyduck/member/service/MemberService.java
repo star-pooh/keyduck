@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.auth.service.JwtBlacklistService;
+import org.team1.keyduck.common.exception.DataDuplicateException;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
@@ -43,6 +44,10 @@ public class MemberService {
 
         Member member = memberRepository.findById(id).orElseThrow(() -> new DataNotFoundException(
                 ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
+
+        if (memberRepository.existsByEmail(requestDto.getEmail())) {
+            throw new DataDuplicateException(ErrorCode.DUPLICATE_EMAIL, ErrorMessageParameter.EMAIL);
+        }
 
         member.updateMember(requestDto);
 
