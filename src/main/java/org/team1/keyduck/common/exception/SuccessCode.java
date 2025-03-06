@@ -14,9 +14,8 @@ public enum SuccessCode {
     TOKEN_VERIFY_SUCCESS(HttpStatus.OK, "OK_005", "토큰이 검증 되었습니다."),
 
     // 201 CREATED
-    CREATE_SUCCESS(HttpStatus.CREATED, "CRATED_001", "정상적으로 생성되었습니다."),
-
-    SEND_SUCCESS(HttpStatus.CREATED, "SEND_001", "정상적으로 전송되었습니다");
+    CREATE_SUCCESS(HttpStatus.CREATED, "CREATED_001", "정상적으로 생성되었습니다."),
+    SEND_SUCCESS(HttpStatus.CREATED, "CREATED_002", "정상적으로 전송되었습니다");
 
     private final HttpStatus status;
     private final String code;
