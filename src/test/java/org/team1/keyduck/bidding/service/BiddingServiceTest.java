@@ -111,7 +111,7 @@ public class BiddingServiceTest {
                 any(Long.class))).thenReturn(1L);
 
         when(biddingRepository.findByMember_IdAndAuction_Id(any(Long.class),
-                any(Long.class))).thenReturn(Optional.of(1L));
+                any(Long.class))).thenReturn(Optional.of(21000L));
 
         doNothing().when(paymentDepositService)
                 .payBiddingPrice(any(Long.class), any(Long.class), any(Long.class));
