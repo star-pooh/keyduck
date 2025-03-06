@@ -29,7 +29,7 @@ public class EmailController {
     }
 
     @PostMapping("/{memberId}")
-    public ResponseEntity<ApiResponse<Object>> sendEmailByMemberId(
+    public ResponseEntity<ApiResponse<Void>> sendEmailByMemberId(
             @PathVariable("memberId") Long memberId,
             @RequestBody MemberEmailRequestDto memberEmailRequestDto) {
         emailService.sendMemberEmail(memberId, memberEmailRequestDto);
