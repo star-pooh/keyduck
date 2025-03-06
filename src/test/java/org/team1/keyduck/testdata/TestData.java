@@ -62,15 +62,14 @@ public class TestData {
     public final static String TEST_PASSWORD4 = "Password123!";
     public final static Member TEST_MEMBER3 = new Member(TEST_NAME3, TEST_EMAIL3, TEST_PASSWORD4,
             TEST_MEMBER_ROLE3, TEST_ADDRESS3);
-
     public final static String TEST_PASSWORD3 = "Qwer123@";
+
     public final static Long TEST_ID4 = 4L;
     public final static String TEST_NAME4 = "TestName2";
     public final static String TEST_EMAIL4 = "TestUser4@email.com";
     public final static MemberRole TEST_MEMBER_ROLE4 = MemberRole.CUSTOMER;
     public final static Address TEST_ADDRESS4 = new Address(TEST_CITY2, TEST_STATE2, TEST_STREET2,
             TEST_DETAIL_ADDRESS3, TEST_DETAIL_ADDRESS4);
-    public final static String TEST_PASSWORD4 = "Password123!";
     public final static Member TEST_MEMBER4 = new Member(TEST_NAME4, TEST_EMAIL4, TEST_PASSWORD4,
             TEST_MEMBER_ROLE4, TEST_ADDRESS4);
 
@@ -108,9 +107,9 @@ public class TestData {
     public final static Long TEST_PAYMENT_AMOUNT1 = 1000L;
     public final static Long TEST_PAYMENT_AMOUNT2 = 2000L;
     public final static TempPayment TEST_TEMP_PAYMENT1 = TempPayment.builder()
-            .memberId(TestData.TEST_ID1)
-            .orderId(TestData.TEST_ORDER_ID1)
-            .amount(TestData.TEST_PAYMENT_AMOUNT1)
+            .memberId(TEST_ID1)
+            .orderId(TEST_ORDER_ID1)
+            .amount(TEST_PAYMENT_AMOUNT1)
             .build();
 
     // PAYMENT
@@ -233,36 +232,6 @@ public class TestData {
             .keyboard(TEST_KEYBOARD6).startPrice(START_PRICE1).currentPrice(CURRENT_PRICE1)
             .biddingUnit(BIDDING_UNIT1).auctionStatus(AUCTION_STATUS1).build();
 
-    //BIDDING
-    public final static Long TEST_BIDDING_ID1 = 1L;
-    public final static Long MY_GREAT_PRICE1 = 21000L;
-    public final static Bidding TEST_BIDDING1 = Bidding.builder()
-            .auction(TEST_AUCTION1)
-            .member(TEST_MEMBER2)
-            .price(MY_GREAT_PRICE1)
-            .build();
-    public final static Long TEST_BIDDING_ID2 = 2L;
-    public final static Long MY_GREAT_PRICE2 = 26000L;
-    public final static Bidding TEST_BIDDING2 = Bidding.builder()
-            .auction(TEST_AUCTION1)
-            .member(TEST_MEMBER4)
-            .price(MY_GREAT_PRICE2)
-            .build();
-    public final static Long TEST_BIDDING_ID3 = 3L;
-    public final static Long MY_GREAT_PRICE3 = 24000L;
-    public final static Bidding TEST_BIDDING3 = Bidding.builder()
-            .auction(TEST_AUCTION3)
-            .member(TEST_MEMBER3)
-            .price(MY_GREAT_PRICE2)
-            .build();
-    public final static Long TEST_BIDDING_ID4 = 4L;
-    public final static Long MY_GREAT_PRICE4 = 24000L;
-    public final static Bidding TEST_BIDDING4 = Bidding.builder()
-            .auction(TEST_AUCTION1)
-            .member(TEST_MEMBER3)
-            .price(MY_GREAT_PRICE4)
-            .build();
-
 
     //paymentdeposit
     public final static Long DEPOSIT_AMOUNT1 = 500000000L;
@@ -277,26 +246,28 @@ public class TestData {
             .build();
     public final static Long TEST_DEPOSIT_AMOUNT = 5000L;
     public final static PaymentDeposit TEST_PAYMENT_DEPOSIT1 = PaymentDeposit.builder()
-            .member(TestData.TEST_MEMBER1)
-            .depositAmount(TestData.TEST_DEPOSIT_AMOUNT)
+            .member(TEST_MEMBER1)
+            .depositAmount(TEST_DEPOSIT_AMOUNT)
             .build();
     public final static PaymentDeposit TEST_PAYMENT_DEPOSIT2 = PaymentDeposit.builder()
-            .member(TestData.TEST_MEMBER2)
-            .depositAmount(TestData.TEST_DEPOSIT_AMOUNT)
+            .member(TEST_MEMBER2)
+            .depositAmount(TEST_DEPOSIT_AMOUNT)
             .build();
     //Bidding
     public final static Long TEST_BIDDING_ID1 = 1L;
     public final static Long TEST_BIDDING_PRICE1 = 60000L;
     public final static LocalDateTime TEST_BIDDING_CREATED_AT1 = LocalDateTime.now().minusDays(1);
-    public final static Bidding TEST_BIDDING1 = new Bidding(TEST_AUCTION1, TEST_MEMBER2, TEST_BIDDING_PRICE1);
+    public final static Bidding TEST_BIDDING1 = new Bidding(TEST_AUCTION1, TEST_MEMBER2,
+            TEST_BIDDING_PRICE1);
 
     public final static Long TEST_BIDDING_ID2 = 2L;
     public final static Long TEST_BIDDING_PRICE2 = 70000L;
     public final static LocalDateTime TEST_BIDDING_CREATED_AT2 = LocalDateTime.now().minusHours(3);
-    public final static Bidding TEST_BIDDING2 = new Bidding(TEST_AUCTION1, TEST_MEMBER3, TEST_BIDDING_PRICE2);
+    public final static Bidding TEST_BIDDING2 = new Bidding(TEST_AUCTION1, TEST_MEMBER3,
+            TEST_BIDDING_PRICE2);
 
     public final static List<Bidding> TEST_BIDDINGS = List.of(TEST_BIDDING1, TEST_BIDDING2);
-}
+
 
     //token
     public final static String TEST_TOKEN = "TEST";

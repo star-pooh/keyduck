@@ -1,11 +1,11 @@
 package org.team1.keyduck.bidding.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -88,6 +88,7 @@ public class BiddingServiceTest {
         biddingService.createBidding(auctionId, price, authMember);
         //then
         verify(biddingRepository, times(1)).save(any(Bidding.class));
+        assertEquals(price, auction.getCurrentPrice());
     }
 
     @Test
@@ -121,6 +122,7 @@ public class BiddingServiceTest {
         biddingService.createBidding(auctionId, price, authMember);
         //then
         verify(biddingRepository, times(1)).save(any(Bidding.class));
+        assertEquals(price, auction.getCurrentPrice());
     }
 
     @Test
@@ -131,9 +133,8 @@ public class BiddingServiceTest {
         Long auctionId = TestData.TEST_AUCTION_ID5;
         AuthMember authMember = new AuthMember(TestData.TEST_ID2, MemberRole.CUSTOMER);
 
-        Auction auction = spy(TestData.TEST_AUCTION5);
+        Auction auction = TestData.TEST_AUCTION5;
         ReflectionTestUtils.setField(auction, "id", auctionId);
-        ReflectionTestUtils.setField(auction, "immediatePurchasePrice", price);
         when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
                 Optional.of(auction));
 
@@ -153,8 +154,6 @@ public class BiddingServiceTest {
 
         doNothing().when(saleProfitService).saleProfit(any(Long.class));
         doNothing().when(paymentDepositService).refundPaymentDeposit(any(Long.class));
-        doNothing().when(auction).updateSuccessBiddingMember(any(Member.class));
-        doNothing().when(auction).updateAuctionStatus(any(AuctionStatus.class));
 
         //when
         biddingService.createBidding(auctionId, price, authMember);
@@ -162,8 +161,8 @@ public class BiddingServiceTest {
         verify(biddingRepository, times(1)).save(any(Bidding.class));
         verify(saleProfitService, times(1)).saleProfit(any(Long.class));
         verify(paymentDepositService, times(1)).refundPaymentDeposit(any(Long.class));
-        verify(auction, times(1)).updateSuccessBiddingMember(any(Member.class));
-        verify(auction, times(1)).updateAuctionStatus(any(AuctionStatus.class));
+        assertNotNull(auction.getMember());
+        assertEquals(AuctionStatus.CLOSED, auction.getAuctionStatus());
     }
 
     @Test
@@ -193,7 +192,7 @@ public class BiddingServiceTest {
 
     @Test
     @DisplayName("실패: 비딩횟수가 10번을 초과했을 때")
-    public void failCreateBiddingWhenBidsExceed() {
+    public void failCreateBiddingWhenBiddingCountExceed() {
         //given
         Long auctionId = TestData.TEST_AUCTION_ID7;
         Long memberId = TestData.TEST_ID2;
