@@ -13,4 +13,6 @@ public interface AuctionQueryDslRepository {
             String auctionTitle, String sellerName);
 
     List<Auction> findStartTargetAuction(LocalDateTime now);
+
+    List<Auction> findEndTargetAuction(LocalDateTime now);
 }

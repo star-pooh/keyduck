@@ -88,6 +88,19 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
                 .fetch();
     }
 
+    @Override
+    public List<Auction> findEndTargetAuction(LocalDateTime now) {
+        return queryFactory.selectFrom(auction)
+                .where(auction.auctionEndDate.year().eq(now.getYear())
+                        .and(auction.auctionEndDate.month().eq(now.getMonthValue()))
+                        .and(auction.auctionEndDate.dayOfMonth().eq(now.getDayOfMonth()))
+                        .and(auction.auctionEndDate.hour().eq(now.getHour()))
+                        .and(auction.auctionEndDate.minute().eq(now.getMinute()))
+                        .and(auction.auctionStatus.eq(AuctionStatus.IN_PROGRESS))
+                )
+                .fetch();
+    }
+
     private BooleanExpression keyboard(String keyboardName) {
         if (keyboardName == null) {
             return null;
