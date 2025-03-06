@@ -7,7 +7,10 @@ import org.springframework.stereotype.Service;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.Constants;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
+import org.team1.keyduck.email.dto.MemberEmailRequestDto;
+import org.team1.keyduck.email.service.EmailService;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.team1.keyduck.payment.dto.PaymentDto;
@@ -22,6 +25,7 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final TempPaymentService tempPaymentService;
     private final MemberRepository memberRepository;
+    private final EmailService emailService;
 
     private final PaymentProcessor paymentProcessor;
 
@@ -42,6 +46,15 @@ public class PaymentService {
         // 결제 내역 DB에 데이터 저장
         Payment payment = paymentProcessor.createPaymentData(resultJsonObject, foundedMember);
         Payment savedPayment = paymentRepository.save(payment);
+
+        // 결제 내역 이메일로 알림주기
+        MemberEmailRequestDto emailRequestDto = new MemberEmailRequestDto(
+                Constants.PAYMENT_COMPLETION_EMAIL_TITLE,
+                String.format(Constants.PAYMENT_COMPLETION_EMAIL_CONTENTS, savedPayment.getAmount(),
+                        savedPayment.getPaymentMethod()
+                )
+        );
+        emailService.sendMemberEmail(savedPayment.getMember().getId(), emailRequestDto);
 
         return PaymentDto.of(savedPayment);
     }
