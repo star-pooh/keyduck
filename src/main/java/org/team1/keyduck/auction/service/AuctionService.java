@@ -2,9 +2,11 @@ package org.team1.keyduck.auction.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.dto.request.AuctionCreateRequestDto;
 import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
@@ -31,6 +33,7 @@ import org.team1.keyduck.payment.service.SaleProfitService;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuctionService {
 
     private final AuctionRepository auctionRepository;
@@ -135,6 +138,14 @@ public class AuctionService {
         }
 
         findAuction.updateAuctionStatus(AuctionStatus.IN_PROGRESS);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void startAuction(Auction targetAuction) {
+        targetAuction.updateAuctionStatus(AuctionStatus.IN_PROGRESS);
+
+        log.info("auctionId : {}, auctionTitle : {}, in progress status change success",
+                targetAuction.getId(), targetAuction.getTitle());
     }
 
     @Transactional
