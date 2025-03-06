@@ -26,11 +26,9 @@ import org.team1.keyduck.bidding.entity.Bidding;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
-import org.team1.keyduck.keyboard.repository.KeyboardRepository;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
-import org.team1.keyduck.payment.repository.PaymentDepositRepository;
 import org.team1.keyduck.payment.service.PaymentDepositService;
 import org.team1.keyduck.payment.service.SaleProfitService;
 import org.team1.keyduck.testdata.TestData;
@@ -47,16 +45,11 @@ public class BiddingServiceTest {
     @Mock
     private MemberRepository memberRepository;
     @Mock
-    private KeyboardRepository keyboardRepository;
-    @Mock
     private PaymentDepositService paymentDepositService;
-    @Mock
-    private PaymentDepositRepository paymentDepositRepository;
     @Mock
     private SaleProfitService saleProfitService;
 
 
-    //todo 성공케이스만들기
     @Test
     @DisplayName("성공: 첫번쨰 입찰")
     public void successCreateBiddingWithFirstBidding() {
@@ -72,22 +65,24 @@ public class BiddingServiceTest {
 
         Member member = mock(Member.class);
         when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
-
+        //검증
         when(biddingRepository.countByMember_IdAndAuction_Id(any(Long.class),
                 any(Long.class))).thenReturn(0L);
-
+        //이전입찰 금액->첫번째 이므로 0
         when(biddingRepository.findByMember_IdAndAuction_Id(any(Long.class),
                 any(Long.class))).thenReturn(Optional.of(0L));
-
+        //paymentDepositService 지나가기
         doNothing().when(paymentDepositService)
                 .payBiddingPrice(any(Long.class), any(Long.class), any(Long.class));
-
+        //생성
         when(biddingRepository.save(any(Bidding.class))).thenReturn(new Bidding());
 
         //when
         biddingService.createBidding(auctionId, price, authMember);
         //then
+        //입찰내역 저장
         verify(biddingRepository, times(1)).save(any(Bidding.class));
+        //현재가 업데이트
         assertEquals(price, auction.getCurrentPrice());
     }
 
@@ -109,7 +104,7 @@ public class BiddingServiceTest {
 
         when(biddingRepository.countByMember_IdAndAuction_Id(any(Long.class),
                 any(Long.class))).thenReturn(1L);
-
+        //두번째 입찰이라 값 존재
         when(biddingRepository.findByMember_IdAndAuction_Id(any(Long.class),
                 any(Long.class))).thenReturn(Optional.of(21000L));
 
@@ -161,7 +156,9 @@ public class BiddingServiceTest {
         verify(biddingRepository, times(1)).save(any(Bidding.class));
         verify(saleProfitService, times(1)).saleProfit(any(Long.class));
         verify(paymentDepositService, times(1)).refundPaymentDeposit(any(Long.class));
+        //낙찰자 존재여부
         assertNotNull(auction.getMember());
+        //경매상태변경
         assertEquals(AuctionStatus.CLOSED, auction.getAuctionStatus());
     }
 
@@ -182,11 +179,12 @@ public class BiddingServiceTest {
 
         Member member = mock(Member.class);
         when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
-
+        //예외
         OperationNotAllowedException exception1 = assertThrows(
                 OperationNotAllowedException.class,
                 () -> biddingService.createBidding(auctionId, price, authMember)
         );
+        //메세지
         assertEquals("진행 중인 경매가 아닙니다.", exception1.getErrorCode().getMessage());
     }
 
@@ -207,40 +205,16 @@ public class BiddingServiceTest {
 
         Member member = mock(Member.class);
         when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
-
+        //입찰을 10번 넣어주기
         when(biddingRepository.countByMember_IdAndAuction_Id(any(Long.class),
                 any(Long.class))).thenReturn(10L);
-
+        //예외
         OperationNotAllowedException exception1 = assertThrows(
                 OperationNotAllowedException.class,
                 () -> biddingService.createBidding(auctionId, price, authMember)
         );
+        //메세지
         assertEquals("입찰은 10번까지만 가능합니다.", exception1.getErrorCode().getMessage());
-    }
-
-    @Test
-    @DisplayName("실패: 입찰 단위에 맞지 않을 때")
-    public void failCreateBiddingWhenNotFitBiddingUnit() {
-        //given
-        Long auctionId = TestData.TEST_AUCTION_ID8;
-        Long memberId = TestData.TEST_ID2;
-        Long price = 40100L;
-        AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
-
-        Auction auction = TestData.TEST_AUCTION8;
-        ReflectionTestUtils.setField(auction, "id", auctionId);
-
-        when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
-                Optional.of(auction));
-
-        Member member = mock(Member.class);
-        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
-
-        DataInvalidException exception1 = assertThrows(
-                DataInvalidException.class,
-                () -> biddingService.createBidding(auctionId, price, authMember)
-        );
-        assertEquals("최소 입찰 금액 단위의 배수가 아닙니다.", exception1.getErrorCode().getMessage());
     }
 
     @Test
@@ -249,6 +223,7 @@ public class BiddingServiceTest {
         //given
         Long auctionId = TestData.TEST_AUCTION_ID8;
         Long memberId = TestData.TEST_ID2;
+        //현재가보다 낮은 입찰금액
         Long price = 30000L;
         AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
 
@@ -260,12 +235,41 @@ public class BiddingServiceTest {
 
         Member member = mock(Member.class);
         when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
-
+        //예외
         DataInvalidException exception1 = assertThrows(
                 DataInvalidException.class,
                 () -> biddingService.createBidding(auctionId, price, authMember)
         );
+        //메세지
         assertEquals("입찰가가 현재가보다 작습니다.", exception1.getErrorCode().getMessage());
+    }
+
+
+    @Test
+    @DisplayName("실패: 입찰 단위에 맞지 않을 때")
+    public void failCreateBiddingWhenNotFitBiddingUnit() {
+        //given
+        Long auctionId = TestData.TEST_AUCTION_ID8;
+        Long memberId = TestData.TEST_ID2;
+        //단위에 맞지 않는 입찰
+        Long price = 40100L;
+        AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
+
+        Auction auction = TestData.TEST_AUCTION8;
+        ReflectionTestUtils.setField(auction, "id", auctionId);
+
+        when(auctionRepository.findByIdWithPessimisticLock(any(Long.class))).thenReturn(
+                Optional.of(auction));
+
+        Member member = mock(Member.class);
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
+        //예외
+        DataInvalidException exception1 = assertThrows(
+                DataInvalidException.class,
+                () -> biddingService.createBidding(auctionId, price, authMember)
+        );
+        //메세지
+        assertEquals("최소 입찰 금액 단위의 배수가 아닙니다.", exception1.getErrorCode().getMessage());
     }
 
     @Test
@@ -274,6 +278,7 @@ public class BiddingServiceTest {
         //given
         Long auctionId = TestData.TEST_AUCTION_ID8;
         Long memberId = TestData.TEST_ID2;
+        //입찰단위의 10배보다 큰 입찰금액
         Long price = 51000L;
         AuthMember authMember = new AuthMember(memberId, MemberRole.CUSTOMER);
 
@@ -285,11 +290,12 @@ public class BiddingServiceTest {
 
         Member member = mock(Member.class);
         when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
-
+        //예외
         DataInvalidException exception1 = assertThrows(
                 DataInvalidException.class,
                 () -> biddingService.createBidding(auctionId, price, authMember)
         );
+        //메세지
         assertEquals("입찰가가 1회 입찰 시 가능한 최대 금액(최소 입찰 금액 단위의 10배)을 초과하였습니다.",
                 exception1.getErrorCode().getMessage());
     }
