@@ -300,19 +300,33 @@ public class BiddingServiceTest {
     }
 
     @Test
-    @DisplayName("조회 성공")
+    @DisplayName("입찰 조회 성공")
     public void getBiddingsByAuctionId() {
         //given
-        Long auctionId = TestData.TEST_AUCTION_ID3;
-        Member member = TestData.TEST_MEMBER1;
-        Auction auction = TestData.TEST_AUCTION3;
-        ReflectionTestUtils.setField(auction, "id", auctionId);
+        //Mock Auction 객체 생성 및 설정
+        Auction auction = mock(Auction.class);
+        when(auction.getTitle()).thenReturn("Auction Title");
+        when(auction.getId()).thenReturn(1L);
 
-        List<Bidding> biddingList = List.of(TestData.TEST_BIDDING1, TestData.TEST_BIDDING2,
-                TestData.TEST_BIDDING3);
+        //Mock Member 객체 생성 및 설정
+        Member member = mock(Member.class);
+        when(member.getName()).thenReturn("member Name");
+
+        Bidding mockBidding1 = mock(Bidding.class);
+        Bidding mockBidding2 = mock(Bidding.class);
+        Bidding mockBidding3 = mock(Bidding.class);
+
+        //Mock Bidding 객체가 getMember() 호출 시 mockMember 반환하도록 설정
+        when(mockBidding1.getMember()).thenReturn(member);
+        when(mockBidding2.getMember()).thenReturn(member);
+        when(mockBidding3.getMember()).thenReturn(member);
+        when(mockBidding1.getAuction()).thenReturn(auction);
+        when(mockBidding2.getAuction()).thenReturn(auction);
+        when(mockBidding3.getAuction()).thenReturn(auction);
+        List<Bidding> biddingList = List.of(mockBidding1, mockBidding2, mockBidding3);
 
         //when
-        when(auctionRepository.existsById(auctionId)).thenReturn(true);
+        when(auctionRepository.existsById(auction.getId())).thenReturn(true);
         when(biddingRepository.findByAuctionIdOrderByPriceDesc(auction.getId())).thenReturn(
                 biddingList);
 
@@ -334,7 +348,6 @@ public class BiddingServiceTest {
                 DataNotFoundException.class,
                 () -> biddingService.getBiddingByAuction(auctionId)
         );
-        System.out.println("예외 메시지: " + exception1.getMessage());
         assertEquals("해당 경매을(를) 찾을 수 없습니다.", exception1.getMessage());
     }
 
@@ -342,12 +355,17 @@ public class BiddingServiceTest {
     @DisplayName("낙찰 조회 성공")
     public void getSuccessBidding() {
         //given
-        Long auctionId = TestData.TEST_AUCTION_ID9;
         Long memberId = TestData.TEST_ID4;
-        Member member = TestData.TEST_MEMBER4;
-        ReflectionTestUtils.setField(member, "id", memberId);
 
-        List<Auction> closedAuctions = List.of(TestData.TEST_AUCTION9, TestData.TEST_AUCTION10);
+        Auction mockAuction1 = mock(Auction.class);
+        Auction mockAuction2 = mock(Auction.class);
+        List<Auction> closedAuctions = List.of(mockAuction1, mockAuction2);
+
+        Member member = mock(Member.class);
+        when(member.getId()).thenReturn(memberId);
+
+        when(mockAuction1.getMember()).thenReturn(member);
+        when(mockAuction2.getMember()).thenReturn(member);
 
         when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
         when(auctionRepository.findAllByMember_IdAndAuctionStatus(memberId, AuctionStatus.CLOSED))
