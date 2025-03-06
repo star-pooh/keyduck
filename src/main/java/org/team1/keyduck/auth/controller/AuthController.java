@@ -1,7 +1,7 @@
 package org.team1.keyduck.auth.controller;
 
 
-import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.net.URLEncoder;
@@ -62,15 +62,18 @@ public class AuthController {
         PaymentFormResponseDto responseDto = authService.paymentFormLogin(dto);
         String bearerToken = URLEncoder.encode(responseDto.getToken(), StandardCharsets.UTF_8);
 
-        Cookie cookie = new Cookie("Authorization", bearerToken);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(3600);
-        response.addCookie(cookie);
-
+        response.setHeader("Authorization", bearerToken);
         model.addAttribute("paymentAmount", dto.getAmount());
 
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS, responseDto),
                 SuccessCode.CREATE_SUCCESS.getStatus());
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<ApiResponse<Void>> verifyJwtToken(HttpServletRequest request) {
+        authService.verifyJwtToken(request);
+
+        return new ResponseEntity<>(ApiResponse.success(SuccessCode.TOKEN_VERIFY_SUCCESS),
+                SuccessCode.TOKEN_VERIFY_SUCCESS.getStatus());
     }
 }
