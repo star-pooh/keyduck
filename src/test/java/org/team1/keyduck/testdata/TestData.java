@@ -1,6 +1,7 @@
 package org.team1.keyduck.testdata;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.bidding.entity.Bidding;
@@ -47,17 +48,22 @@ public class TestData {
     public final static Member TEST_MEMBER2 = new Member(TEST_NAME2, TEST_EMAIL2, TEST_PASSWORD2,
             TEST_MEMBER_ROLE2, TEST_ADDRESS2);
 
-    public final static String TEST_PASSWORD3 = "Qwer123@";
-
     public final static Long TEST_ID3 = 3L;
-    public final static String TEST_NAME3 = "TestName3";
-    public final static String TEST_EMAIL3 = "TestUser3@email.com";
+    public final static String TEST_NAME3 = "TestName2";
+    public final static String TEST_EMAIL3 = "TestUser2@email.com";
     public final static MemberRole TEST_MEMBER_ROLE3 = MemberRole.CUSTOMER;
-    public final static Address TEST_ADDRESS3 = new Address("서울특별시", "서초구", "반포대로", "address5",
-            "address6");
-    public final static Member TEST_MEMBER3 = new Member(TEST_NAME3, TEST_EMAIL3, TEST_PASSWORD3,
+    public final static String TEST_CITY3 = "서울특별시";
+    public final static String TEST_STATE3 = "강남구";
+    public final static String TEST_STREET3 = "테헤란로";
+    public final static String TEST_DETAIL_ADDRESS5 = "address1";
+    public final static String TEST_DETAIL_ADDRESS6 = "address2";
+    public final static Address TEST_ADDRESS3 = new Address(TEST_CITY2, TEST_STATE2, TEST_STREET2,
+            TEST_DETAIL_ADDRESS3, TEST_DETAIL_ADDRESS4);
+    public final static String TEST_PASSWORD4 = "Password123!";
+    public final static Member TEST_MEMBER3 = new Member(TEST_NAME3, TEST_EMAIL3, TEST_PASSWORD4,
             TEST_MEMBER_ROLE3, TEST_ADDRESS3);
 
+    public final static String TEST_PASSWORD3 = "Qwer123@";
     public final static Long TEST_ID4 = 4L;
     public final static String TEST_NAME4 = "TestName2";
     public final static String TEST_EMAIL4 = "TestUser4@email.com";
@@ -278,6 +284,19 @@ public class TestData {
             .member(TestData.TEST_MEMBER2)
             .depositAmount(TestData.TEST_DEPOSIT_AMOUNT)
             .build();
+    //Bidding
+    public final static Long TEST_BIDDING_ID1 = 1L;
+    public final static Long TEST_BIDDING_PRICE1 = 60000L;
+    public final static LocalDateTime TEST_BIDDING_CREATED_AT1 = LocalDateTime.now().minusDays(1);
+    public final static Bidding TEST_BIDDING1 = new Bidding(TEST_AUCTION1, TEST_MEMBER2, TEST_BIDDING_PRICE1);
+
+    public final static Long TEST_BIDDING_ID2 = 2L;
+    public final static Long TEST_BIDDING_PRICE2 = 70000L;
+    public final static LocalDateTime TEST_BIDDING_CREATED_AT2 = LocalDateTime.now().minusHours(3);
+    public final static Bidding TEST_BIDDING2 = new Bidding(TEST_AUCTION1, TEST_MEMBER3, TEST_BIDDING_PRICE2);
+
+    public final static List<Bidding> TEST_BIDDINGS = List.of(TEST_BIDDING1, TEST_BIDDING2);
+}
 
     //token
     public final static String TEST_TOKEN = "TEST";
