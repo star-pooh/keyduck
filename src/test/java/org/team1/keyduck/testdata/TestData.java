@@ -181,12 +181,14 @@ public class TestData {
     public final static Long TEST_BIDDING_ID1 = 1L;
     public final static Long TEST_BIDDING_PRICE1 = 60000L;
     public final static LocalDateTime TEST_BIDDING_CREATED_AT1 = LocalDateTime.now().minusDays(1);
-    public final static Bidding TEST_BIDDING1 = new Bidding(TEST_AUCTION1, TEST_MEMBER2, TEST_BIDDING_PRICE1);
+    public final static Bidding TEST_BIDDING1 = new Bidding(TEST_AUCTION1, TEST_MEMBER2,
+            TEST_BIDDING_PRICE1);
 
     public final static Long TEST_BIDDING_ID2 = 2L;
     public final static Long TEST_BIDDING_PRICE2 = 70000L;
     public final static LocalDateTime TEST_BIDDING_CREATED_AT2 = LocalDateTime.now().minusHours(3);
-    public final static Bidding TEST_BIDDING2 = new Bidding(TEST_AUCTION1, TEST_MEMBER3, TEST_BIDDING_PRICE2);
+    public final static Bidding TEST_BIDDING2 = new Bidding(TEST_AUCTION1, TEST_MEMBER3,
+            TEST_BIDDING_PRICE2);
 
     public final static List<Bidding> TEST_BIDDINGS = List.of(TEST_BIDDING1, TEST_BIDDING2);
 }
