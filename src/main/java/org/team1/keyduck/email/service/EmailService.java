@@ -13,6 +13,7 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.EmailSendErrorException;
@@ -91,6 +92,7 @@ public class EmailService {
     }
 
     //멤버정보에서 가져온 이메일로 보내기
+    @Async
     public void sendMemberEmail(Long memberId, MemberEmailRequestDto memberEmailRequestDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
