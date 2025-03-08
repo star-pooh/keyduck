@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>경매 상세 정보 및 입찰</title>
+  <style>
+    .container {
+      width: 80%;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .current-price {
+      color: red;
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .bid-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .bid-input {
+      padding: 5px;
+    }
+
+    .bid-button {
+      padding: 5px 10px;
+      background-color: #3182F6;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .bid-button:hover {
+      background-color: #FF2424;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>경매 상세 정보</h2>
+  <p><strong>경매 이름:</strong> <span id="title"></span></p>
+  <p><strong>키보드 이름:</strong> <span id="keyboard-name"></span></p>
+  <p><strong>키보드 설명:</strong> <span id="keyboard-description"></span></p>
+  <p><strong>경매 시작가:</strong> <span id="start-price"></span></p>
+  <p><strong>입찰 단위:</strong> <span id="bidding-unit"></span></p>
+  <p><strong>현재가:</strong> <span id="current-price" class="current-price"></span></p>
+  <p><strong>경매 시작 시간:</strong> <span id="auction-start"></span></p>
+  <p><strong>경매 종료 시간:</strong> <span id="auction-end"></span></p>
+  <p><strong>경매 상태:</strong> <span id="auction-status"></span></p>
+  <p><strong>낙찰자:</strong> <span id="winner-name"></span></p>
+
+  <div class="bid-header">
+    <h3>입찰 내역</h3>
+    <div>
+      <label for="bidding">입찰금액:</label>
+      <input type="number" id="bidding" class="bid-input" name="price" required/>
+      <button class="bid-button" onclick="submitBid()">입찰하기</button>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+    <tr>
+      <th>입찰자</th>
+      <th>입찰 가격</th>
+      <th>입찰 시간</th>
+    </tr>
+    </thead>
+    <tbody id="bidding-list"></tbody>
+  </table>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const auctionId = params.get("auctionId");
+  const token = sessionStorage.getItem("Authorization");
+  let socket;
+
+  if (!auctionId) {
+    alert("경매 ID가 없습니다.");
+  } else {
+    fetchAuctionData(auctionId);
+    connectWebSocket(auctionId);
+  }
+
+  function fetchAuctionData(id) {
+    fetch("/api/auctions/" + id, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (!data || !data.data) {
+        alert("데이터를 불러올 수 없습니다.");
+        return;
+      }
+
+      updateAuctionUI(data.data);
+    })
+    .catch(error => {
+      console.error("API 호출 중 오류 발생:", error);
+      alert("경매 정보를 불러오는데 실패했습니다.");
+    });
+  }
+
+  function updateAuctionUI(auction) {
+    document.getElementById("title").textContent = auction.title;
+    document.getElementById("keyboard-name").textContent = auction.keyboard.name;
+    document.getElementById("keyboard-description").textContent = auction.keyboard.description;
+    document.getElementById("start-price").textContent = auction.immediatePurchasePrice + "원";
+    document.getElementById("bidding-unit").textContent = auction.biddingUnit + "원";
+    document.getElementById("current-price").textContent = auction.currentPrice + "원";
+    document.getElementById("auction-start").textContent = auction.auctionStartDate;
+    document.getElementById("auction-end").textContent = auction.auctionEndDate;
+    document.getElementById("auction-status").textContent = auction.auctionStatus;
+    document.getElementById("winner-name").textContent = auction.winnerName || " - ";
+
+    const biddingList = document.getElementById("bidding-list");
+    biddingList.replaceChildren();
+    auction.biddings.forEach(bid => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${bid.memberName}</td><td>${bid.biddingPrice}원</td><td>${new Date(
+          bid.createdAt).toLocaleString()}</td>`;
+      biddingList.appendChild(row);
+    });
+  }
+
+  function connectWebSocket(auctionId) {
+    socket = new WebSocket(`ws://localhost:8080/ws/auction?auctionId=${auctionId}`);
+
+    socket.onopen = () => console.log("WebSocket 연결 성공");
+    socket.onmessage = (event) => {
+      console.log("WebSocket 메시지 수신:", event.data);
+      const data = JSON.parse(event.data);
+
+      if (data.biddingPrice) {
+        document.getElementById("current-price").textContent = data.biddingPrice + "원";
+      }
+
+      const biddingList = document.getElementById("bidding-list");
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${data.memberName}</td><td>${data.biddingPrice}원</td><td>${new Date(
+          data.createdAt).toLocaleString()}</td>`;
+      biddingList.prepend(row);
+    };
+
+    socket.onclose = () => console.log("WebSocket 연결 종료");
+    socket.onerror = (error) => console.error("WebSocket 오류 발생:", error);
+  }
+
+  function submitBid() {
+    const biddingPrice = Number(document.getElementById("bidding").value);
+    if (!biddingPrice || biddingPrice <= 0) {
+      alert("올바른 입찰 금액을 입력하세요.");
+      return;
+    }
+    fetch(`api/biddings/${auctionId}?price=${biddingPrice}`, {
+      method: "POST",
+      headers: {
+        "Authorization": token
+      }
+    })
+    .then(response => response.json())
+    .then(() => {
+      alert("입찰 성공");
+    })
+    .catch(error => {
+      alert("입찰 실패 : " + error.message);
+    });
+  }
+</script>
+</body>
+</html>
