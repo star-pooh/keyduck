@@ -1,7 +1,9 @@
 package org.team1.keyduck.bidding.controller;
 
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,48 +17,57 @@ import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 import org.team1.keyduck.bidding.dto.response.SuccessBiddingResponseDto;
 import org.team1.keyduck.bidding.service.BiddingService;
+import org.team1.keyduck.common.config.AuctionWebSocketHandler;
 import org.team1.keyduck.common.dto.ApiResponse;
 import org.team1.keyduck.common.exception.SuccessCode;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/biddings")
+@Slf4j
 public class BiddingController {
 
     private final BiddingService biddingService;
+    private final AuctionWebSocketHandler auctionWebSocketHandler;
 
     //생성
     @PostMapping("/{auctionId}")
     public ResponseEntity<ApiResponse<Void>> createBidding(
-        @PathVariable("auctionId") Long auctionId,
-        @RequestParam(value = "price", required = true) Long price,
-        @AuthenticationPrincipal AuthMember authMember) {
-        biddingService.createBidding(auctionId, price, authMember);
+            @PathVariable("auctionId") Long auctionId,
+            @RequestParam(value = "price", required = true) Long price,
+            @AuthenticationPrincipal AuthMember authMember) {
+        BiddingResponseDto biddingResponseDto = biddingService.createBidding(auctionId, price,
+                authMember);
+        try {
+            auctionWebSocketHandler.broadcastAuctionUpdate(auctionId, biddingResponseDto);
+        } catch (IOException e) {
+            log.error("WebSocket 메시지 전송 실패: auctionId={}, error={}", auctionId, e.getMessage(), e);
+        }
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS),
-            SuccessCode.CREATE_SUCCESS.getStatus());
+                SuccessCode.CREATE_SUCCESS.getStatus());
 
     }
 
     //조회(경매별 입찰내역)
     @GetMapping("/{auctionId}")
     public ResponseEntity<ApiResponse<List<BiddingResponseDto>>> getBiddingList(
-        @PathVariable Long auctionId) {
+            @PathVariable Long auctionId) {
         List<BiddingResponseDto> biddingResponseDtos = biddingService.getBiddingByAuction(
-            auctionId);
+                auctionId);
         return new ResponseEntity<>(
-            ApiResponse.success(SuccessCode.READ_SUCCESS, biddingResponseDtos),
-            SuccessCode.READ_SUCCESS.getStatus());
+                ApiResponse.success(SuccessCode.READ_SUCCESS, biddingResponseDtos),
+                SuccessCode.READ_SUCCESS.getStatus());
     }
 
     //낙찰내역 조회
     @GetMapping("/success")
     public ResponseEntity<ApiResponse<Page<SuccessBiddingResponseDto>>> getSuccessBidding(
-        @AuthenticationPrincipal AuthMember authMember,
-        @RequestParam(defaultValue = "1") int page) {
+            @AuthenticationPrincipal AuthMember authMember,
+            @RequestParam(defaultValue = "1") int page) {
         Page<SuccessBiddingResponseDto> successBiddingResponseDtoPage = biddingService.getSuccessBidding(
-            authMember.getId(), page);
+                authMember.getId(), page);
         return new ResponseEntity<>(
-            ApiResponse.success(SuccessCode.READ_SUCCESS, successBiddingResponseDtoPage),
-            SuccessCode.READ_SUCCESS.getStatus());
+                ApiResponse.success(SuccessCode.READ_SUCCESS, successBiddingResponseDtoPage),
+                SuccessCode.READ_SUCCESS.getStatus());
     }
 }

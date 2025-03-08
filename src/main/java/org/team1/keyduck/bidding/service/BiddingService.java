@@ -84,7 +84,7 @@ public class BiddingService {
 
     //생성 매서드 (락 적용)
     @Transactional
-    public void createBidding(Long auctionId, Long price, AuthMember authMember) {
+    public BiddingResponseDto createBidding(Long auctionId, Long price, AuthMember authMember) {
         Auction auction = auctionRepository.findByIdWithPessimisticLock(auctionId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
                         ErrorMessageParameter.AUCTION));
@@ -109,7 +109,7 @@ public class BiddingService {
                 .build();
 
         //생성한 입찰내역을 저장
-        biddingRepository.save(newBidding);
+        newBidding = biddingRepository.save(newBidding);
         //경매의 현재가 업데이트
         auction.updateCurrentPrice(price);
 
@@ -124,6 +124,8 @@ public class BiddingService {
             auction.updateAuctionStatus(AuctionStatus.CLOSED);
 
         }
+
+        return BiddingResponseDto.of(newBidding);
     }
 
 
