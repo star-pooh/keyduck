@@ -133,7 +133,7 @@
           fetchAuctionData(auctionId);
           connectWebSocket(auctionId);
         }
-      }); // 인증 함수 호출
+      });
     } catch (error) {
       alert("인증 실패: " + error.message);
       window.location.href = '/login.html';
