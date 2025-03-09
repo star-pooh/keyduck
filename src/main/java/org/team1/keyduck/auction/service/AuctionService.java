@@ -102,7 +102,8 @@ public class AuctionService {
                         ErrorMessageParameter.AUCTION));
 
         // 경매 입찰 내역 조회
-        List<BiddingResponseDto> responseDto = biddingRepository.findAllByAuctionId(auctionId)
+        List<BiddingResponseDto> responseDto = biddingRepository.findAllByAuctionIdOrderByCreatedAt(
+                        auctionId)
                 .stream()
                 .map(BiddingResponseDto::of)
                 .toList();

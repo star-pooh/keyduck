@@ -23,7 +23,10 @@
   <tbody>
   <tr th:each="auction : ${auctions}">
     <td th:text="${auction.auctionId}"></td>
-    <td th:text="${auction.title}"></td>
+    <td>
+      <a th:href="@{/auction_detail.html(auctionId=${auction.auctionId})}"
+         th:text="${auction.title}"></a>
+    </td>
     <td th:text="${auction.keyboardName}"></td>
     <td th:text="${#numbers.formatInteger(auction.currentPrice, 3, 'COMMA') + '원'}"></td>
     <td th:text="${#numbers.formatInteger(auction.immediatePurchasePrice, 3, 'COMMA') + '원'}"></td>

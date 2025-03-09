@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +14,8 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
-import org.team1.keyduck.auction.dto.response.AuctionReadResponseDto;
-import org.team1.keyduck.auction.service.AuctionService;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 
 @Slf4j
@@ -25,7 +24,6 @@ import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 public class AuctionWebSocketHandler extends TextWebSocketHandler {
 
     private final ObjectMapper objectMapper;
-    private final AuctionService auctionService;
 
     // 경매 ID별 웹소켓 세션 관리
     private static final Map<Long, Set<WebSocketSession>> auctionSessions = new ConcurrentHashMap<>();
@@ -44,9 +42,6 @@ public class AuctionWebSocketHandler extends TextWebSocketHandler {
                 .add(session);
 
         log.info("WebSocket 연결됨: auctionId={}, sessionId={}", auctionId, session.getId());
-
-        // 현재 경매 상태 전송 (최신 가격 & 입찰 내역)
-        sendAuctionState(session, auctionId);
     }
 
     @Override
@@ -97,25 +92,23 @@ public class AuctionWebSocketHandler extends TextWebSocketHandler {
                 auctionId, bidding.getBiddingPrice(), bidding.getId());
     }
 
-    // 처음 연결됬을때 내역보냄
-    private void sendAuctionState(WebSocketSession session, Long auctionId) throws IOException {
-        AuctionReadResponseDto auction = auctionService.findAuction(auctionId);
-        if (auction != null) {
-            String message = objectMapper.writeValueAsString(auction);
-            session.sendMessage(new TextMessage(message));
-        }
-    }
 
     // 세션에서 auctionId 추출
     private Long getAuctionIdFromSession(WebSocketSession session) {
         try {
-            String query = Objects.requireNonNull(session.getUri()).getQuery();
-            if (query != null && query.startsWith("auctionId=")) {
-                return Long.parseLong(query.split("=")[1]);
+            // URI를 UriComponents로 파싱
+            UriComponents uriComponents = UriComponentsBuilder.fromUri(session.getUri()).build();
+
+            // 쿼리 파라미터에서 auctionId 값을 추출
+            String auctionIdParam = uriComponents.getQueryParams().getFirst("auctionId");
+
+            if (auctionIdParam != null) {
+                return Long.parseLong(auctionIdParam);  // auctionId를 Long으로 변환
             }
         } catch (Exception e) {
             log.error("auctionId 파싱 오류", e);
         }
-        return null;
+        return null;  // 파라미터가 없거나 오류가 발생한 경우 null 반환
     }
+
 }

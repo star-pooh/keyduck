@@ -22,6 +22,7 @@ public class Constants {
             "/payment_",
             "/api/auth",
             "/api/auctions/main",
-            "/auction_detail"
+            "/auction_detail",
+            "/ws/auction"
     );
 }
