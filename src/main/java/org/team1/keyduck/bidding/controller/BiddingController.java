@@ -1,6 +1,5 @@
 package org.team1.keyduck.bidding.controller;
 
-import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,6 @@ import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 import org.team1.keyduck.bidding.dto.response.SuccessBiddingResponseDto;
 import org.team1.keyduck.bidding.service.BiddingService;
-import org.team1.keyduck.common.config.AuctionWebSocketHandler;
 import org.team1.keyduck.common.dto.ApiResponse;
 import org.team1.keyduck.common.exception.SuccessCode;
 
@@ -28,7 +26,6 @@ import org.team1.keyduck.common.exception.SuccessCode;
 public class BiddingController {
 
     private final BiddingService biddingService;
-    private final AuctionWebSocketHandler auctionWebSocketHandler;
 
     //생성
     @PostMapping("/{auctionId}")
@@ -36,13 +33,8 @@ public class BiddingController {
             @PathVariable("auctionId") Long auctionId,
             @RequestParam(value = "price", required = true) Long price,
             @AuthenticationPrincipal AuthMember authMember) {
-        BiddingResponseDto biddingResponseDto = biddingService.createBidding(auctionId, price,
+        biddingService.createBidding(auctionId, price,
                 authMember);
-        try {
-            auctionWebSocketHandler.broadcastAuctionUpdate(auctionId, biddingResponseDto);
-        } catch (IOException e) {
-            log.error("WebSocket 메시지 전송 실패: auctionId={}, error={}", auctionId, e.getMessage(), e);
-        }
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS),
                 SuccessCode.CREATE_SUCCESS.getStatus());
 

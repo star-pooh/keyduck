@@ -21,6 +21,7 @@ import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
+import org.team1.keyduck.common.util.BiddingEventListener;
 import org.team1.keyduck.common.util.Constants;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.entity.Member;
@@ -38,6 +39,7 @@ public class BiddingService {
     private final MemberRepository memberRepository;
     private final PaymentDepositService paymentDepositService;
     private final SaleProfitService saleProfitService;
+    private final BiddingEventListener biddingEventListener;
 
     //비딩참여가 가능한 상태인지 검증
     private void validateBiddingAvailability(Auction auction, AuthMember authMember) {
@@ -84,7 +86,7 @@ public class BiddingService {
 
     //생성 매서드 (락 적용)
     @Transactional
-    public BiddingResponseDto createBidding(Long auctionId, Long price, AuthMember authMember) {
+    public void createBidding(Long auctionId, Long price, AuthMember authMember) {
         Auction auction = auctionRepository.findByIdWithPessimisticLock(auctionId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
                         ErrorMessageParameter.AUCTION));
@@ -125,7 +127,7 @@ public class BiddingService {
 
         }
 
-        return BiddingResponseDto.of(newBidding);
+        biddingEventListener.publishBidding(BiddingResponseDto.of(newBidding));
     }
 
 
