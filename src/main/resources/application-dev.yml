@@ -26,6 +26,11 @@ spring:
     defer-datasource-initialization: true # 데이터 소스 초기화 지연
     database-platform: org.hibernate.dialect.MySQLDialect
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}

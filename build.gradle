@@ -73,6 +73,12 @@ dependencies {
 
     // web socket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // jsr310
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3'
 }
 
 tasks.named('test') {
