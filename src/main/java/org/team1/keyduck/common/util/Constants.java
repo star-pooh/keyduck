@@ -22,4 +22,6 @@ public class Constants {
             "/token_verify",
             "/style"
     );
+
+    public static final int PAYMENT_CONFIRM_MAX_RETRIES = 3;
 }
