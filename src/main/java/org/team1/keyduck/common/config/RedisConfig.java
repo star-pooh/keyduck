@@ -17,7 +17,7 @@ import org.team1.keyduck.common.util.BiddingEventListener;
 public class RedisConfig {
 
     @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer( // (1)
+    public RedisMessageListenerContainer redisMessageListenerContainer(
             RedisConnectionFactory connectionFactory,
             MessageListenerAdapter listenerAdapter,
             ChannelTopic channelTopic
@@ -31,7 +31,7 @@ public class RedisConfig {
     // RedisTemplate 설정
     @Bean
     public RedisTemplate<String, Object> redisTemplate
-    (RedisConnectionFactory connectionFactory) { // (3)
+    (RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(connectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
