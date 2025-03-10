@@ -92,10 +92,13 @@
   </table>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script>
   const params = new URLSearchParams(window.location.search);
   const auctionId = params.get("auctionId");
   const token = sessionStorage.getItem("Authorization");
+  let stompClient = null;
 
   (async function init() {
     async function verifyToken() {
@@ -199,22 +202,25 @@
   }
 
   function connectWebSocket(auctionId) {
-    socket = new WebSocket(`ws://localhost:8080/ws/auction?auctionId=${auctionId}`);
-    socket.onopen = () => console.log("WebSocket 연결 성공");
-    socket.onmessage = (event) => {
-      console.log("WebSocket 메시지 수신:", event.data);
-      const data = JSON.parse(event.data);
+    const socket = new SockJS('http://localhost:8080/ws/auction');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+      console.log("WebSocket 연결 성공" + frame);
+      stompClient.subscribe(`/topic/auction/${auctionId}`, function (message) {
+        const data = JSON.parse(message.body);
+        if (data.biddingPrice) {
+          document.getElementById("current-price").textContent = data.biddingPrice + "원";
+        }
 
-      if (data.biddingPrice) {
-        document.getElementById("current-price").textContent = data.biddingPrice + "원";
-      }
-
-      const biddingList = document.getElementById("bidding-list");
-      const row = document.createElement("tr");
-      row.innerHTML = `<td>${data.memberName}</td><td>${data.biddingPrice}원</td><td>${new Date(
-          data.createdAt).toLocaleString()}</td>`;
-      biddingList.prepend(row);
-    };
+        const biddingList = document.getElementById("bidding-list");
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${data.memberName}</td><td>${data.biddingPrice}원</td><td>${new Date(
+            data.createdAt).toLocaleString()}</td>`;
+        biddingList.prepend(row);
+      });
+    }, function (error) {
+      console.error("WebSocket 연결 실패:", error);
+    })
   }
 
   function submitBid() {

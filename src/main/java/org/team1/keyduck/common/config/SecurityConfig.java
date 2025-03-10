@@ -54,7 +54,7 @@ public class SecurityConfig {
                                 "/auction_detail.html")
                         .permitAll()
                         .requestMatchers("/api/payment/**").permitAll()
-                        .requestMatchers("/ws/auction**").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();
