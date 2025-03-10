@@ -1,42 +1,37 @@
 package org.team1.keyduck.common.service;
 
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionQueryDslRepository;
-import org.team1.keyduck.bidding.repository.BiddingRepository;
+import org.team1.keyduck.auction.service.AuctionService;
 import org.team1.keyduck.member.entity.Member;
-import org.team1.keyduck.payment.service.PaymentDepositService;
-import org.team1.keyduck.payment.service.SaleProfitService;
 
 @Service
 @Slf4j
 public class SchedulerService {
 
     private final AuctionQueryDslRepository auctionQueryDslRepository;
-    private final BiddingRepository biddingRepository;
-    private final PaymentDepositService paymentDepositService;
-    private final SaleProfitService saleProfitService;
+    private final AuctionService auctionService;
+    private final EntityManager entityManager;
 
 
     public SchedulerService(
             @Qualifier("auctionQueryDslRepositoryImpl") AuctionQueryDslRepository auctionQueryDslRepository,
-            BiddingRepository biddingRepository,
-            PaymentDepositService paymentDepositService,
-            SaleProfitService saleProfitService) {
+            AuctionService auctionService, EntityManager entityManager) {
         this.auctionQueryDslRepository = auctionQueryDslRepository;
-        this.biddingRepository = biddingRepository;
-        this.paymentDepositService = paymentDepositService;
-        this.saleProfitService = saleProfitService;
+        this.auctionService = auctionService;
+        this.entityManager = entityManager;
     }
 
-    @Scheduled(cron = "0 0 0/1 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "*/20 * * * * *", zone = "Asia/Seoul")
     @Transactional
     public void auctionStart() {
         List<Auction> startTargetAuctionList =
@@ -44,17 +39,25 @@ public class SchedulerService {
 
         if (startTargetAuctionList.isEmpty()) {
             log.info("start target auction list is empty");
+            return;
         }
 
         for (Auction startTargetAuction : startTargetAuctionList) {
-            startTargetAuction.updateAuctionStatus(AuctionStatus.IN_PROGRESS);
-            log.info("auctionId : {}, auctionTitle : {}, in progress status change success",
-                    startTargetAuction.getId(), startTargetAuction.getTitle());
+            try {
+                auctionService.startAuction(startTargetAuction);
+                entityManager.flush();
+
+                log.info("auctionStatus : {}", startTargetAuction.getAuctionStatus());
+            } catch (Exception e) {
+                log.error("auctionId : {}, auctionTitle : {} status change failed",
+                        startTargetAuction.getId(), startTargetAuction.getTitle(), e);
+                throw e;
+            }
         }
     }
 
     @Scheduled(cron = "0 0 0/1 * * *", zone = "Asia/Seoul")
-    @Transactional
+    @jakarta.transaction.Transactional
     public void auctionEnd() {
         List<Auction> endTargetAuctionList =
                 auctionQueryDslRepository.findEndTargetAuction(LocalDateTime.now());
