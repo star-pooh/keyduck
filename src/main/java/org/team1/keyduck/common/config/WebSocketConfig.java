@@ -6,21 +6,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-//@Configuration
-//@EnableWebSocket
-//@RequiredArgsConstructor
-//public class WebSocketConfig implements WebSocketConfigurer {
-//
-//    private final AuctionWebSocketHandler auctionWebSocketHandler;
-//
-//    @Override
-//    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-//        registry.addHandler(auctionWebSocketHandler, "/ws/auction")
-//                .setAllowedOrigins("*");
-//    }
-//}
-
-
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
