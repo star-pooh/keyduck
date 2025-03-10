@@ -14,6 +14,7 @@ import org.team1.keyduck.auction.dto.response.AuctionSearchResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionUpdateResponseDto;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
+import org.team1.keyduck.auction.repository.AuctionQueryDslRepository;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
@@ -38,6 +39,7 @@ public class AuctionService {
     private final BiddingRepository biddingRepository;
     private final SaleProfitService saleProfitService;
     private final PaymentDepositService paymentDepositService;
+    private final AuctionQueryDslRepository auctionQueryDslRepository;
 
     public AuctionCreateResponseDto createAuctionService(Long sellerId,
             AuctionCreateRequestDto requestDto) {
@@ -115,7 +117,7 @@ public class AuctionService {
     public Page<AuctionSearchResponseDto> findAllAuction(Pageable pageable,
             String keyboardName, String auctionTitle, String sellerName) {
 
-        return auctionRepository.findAllAuction(pageable,
+        return auctionQueryDslRepository.findAllAuction(pageable,
                 keyboardName, auctionTitle, sellerName);
     }
 
