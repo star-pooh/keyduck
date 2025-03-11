@@ -31,9 +31,9 @@ public class SchedulerService {
         this.entityManager = entityManager;
     }
 
-    @Scheduled(cron = "*/20 * * * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 0/1 * * *", zone = "Asia/Seoul")
     @Transactional
-    public void auctionStart() {
+    public void auctionOpen() {
         List<Auction> startTargetAuctionList =
                 auctionQueryDslRepository.findStartTargetAuction(LocalDateTime.now());
 
@@ -44,10 +44,10 @@ public class SchedulerService {
 
         for (Auction startTargetAuction : startTargetAuctionList) {
             try {
-                auctionService.startAuction(startTargetAuction);
+                auctionService.openAuction(startTargetAuction);
                 entityManager.flush();
 
-                log.info("auctionStatus : {}", startTargetAuction.getAuctionStatus());
+                log.info("auctionId : {}, auctionStatus : {}", startTargetAuction.getId(), startTargetAuction.getAuctionStatus());
             } catch (Exception e) {
                 log.error("auctionId : {}, auctionTitle : {} status change failed",
                         startTargetAuction.getId(), startTargetAuction.getTitle(), e);
@@ -56,9 +56,9 @@ public class SchedulerService {
         }
     }
 
-    @Scheduled(cron = "*/20 * * * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 0/1 * * *", zone = "Asia/Seoul")
     @Transactional
-    public void auctionEnd() {
+    public void auctionClose() {
         List<Auction> endTargetAuctionList =
                 auctionQueryDslRepository.findEndTargetAuction(LocalDateTime.now());
 
@@ -69,10 +69,10 @@ public class SchedulerService {
 
         for (Auction endTargetAuction : endTargetAuctionList) {
             try {
-                auctionService.endAuction(endTargetAuction);
+                auctionService.closeAuction(endTargetAuction);
                 entityManager.flush();
 
-                log.info("auctionStatus : {}", endTargetAuction.getAuctionStatus());
+                log.info("auctionId : {}, auctionStatus : {}", endTargetAuction.getId(), endTargetAuction.getAuctionStatus());
 
             } catch (Exception e) {
                 log.error("auctionId : {}, auctionTitle : {} close failed",

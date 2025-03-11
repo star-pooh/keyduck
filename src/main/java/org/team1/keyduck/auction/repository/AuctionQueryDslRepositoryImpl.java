@@ -94,7 +94,6 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
                         .and(auction.auctionEndDate.month().eq(now.getMonthValue()))
                         .and(auction.auctionEndDate.dayOfMonth().eq(now.getDayOfMonth()))
                         .and(auction.auctionEndDate.hour().eq(now.getHour()))
-                        .and(auction.auctionEndDate.minute().eq(now.getMinute()))
                         .and(auction.auctionStatus.eq(AuctionStatus.IN_PROGRESS))
                 )
                 .fetch();
