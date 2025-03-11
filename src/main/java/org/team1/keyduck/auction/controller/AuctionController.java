@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.team1.keyduck.auction.dto.request.AuctionCreateRequestDto;
 import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
 import org.team1.keyduck.auction.dto.response.AuctionCreateResponseDto;
@@ -25,7 +26,7 @@ import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.common.dto.ApiResponse;
 import org.team1.keyduck.common.exception.SuccessCode;
 
-@RestController
+@Controller
 @RequestMapping("/api/auctions")
 @RequiredArgsConstructor
 public class AuctionController {
@@ -105,4 +106,14 @@ public class AuctionController {
         return new ResponseEntity<>(response, response.getStatus());
     }
 
+
+    @GetMapping("/main")
+    public String findAllAuctionWithHtml(Pageable pageable, Model model) {
+
+        Page<AuctionSearchResponseDto> response = auctionService.findAllAuction(pageable,
+                null, null, null);
+
+        model.addAttribute("auctions", response);
+        return "main";
+    }
 }
