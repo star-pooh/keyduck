@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.team1.keyduck.common.exception.DataInvalidException;
-import org.team1.keyduck.common.util.ErrorCode;
+import org.team1.keyduck.common.exception.ErrorCode;
 
 @Service
 @RequiredArgsConstructor

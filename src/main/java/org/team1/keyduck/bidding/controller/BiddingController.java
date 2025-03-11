@@ -16,7 +16,7 @@ import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 import org.team1.keyduck.bidding.dto.response.SuccessBiddingResponseDto;
 import org.team1.keyduck.bidding.service.BiddingService;
 import org.team1.keyduck.common.dto.ApiResponse;
-import org.team1.keyduck.common.util.SuccessCode;
+import org.team1.keyduck.common.exception.SuccessCode;
 
 @RestController
 @RequiredArgsConstructor

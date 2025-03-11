@@ -2,7 +2,7 @@ package org.team1.keyduck.member.dto.request;
 
 import lombok.Getter;
 import org.team1.keyduck.common.exception.DataInvalidException;
-import org.team1.keyduck.common.util.ErrorCode;
+import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.member.entity.Address;
 
 @Getter

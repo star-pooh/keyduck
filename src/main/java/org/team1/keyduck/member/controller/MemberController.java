@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.common.dto.ApiResponse;
-import org.team1.keyduck.common.util.SuccessCode;
+import org.team1.keyduck.common.exception.SuccessCode;
 import org.team1.keyduck.member.dto.request.MemberUpdatePasswordRequestDto;
 import org.team1.keyduck.member.dto.request.MemberUpdateRequestDto;
 import org.team1.keyduck.member.dto.response.MemberReadResponseDto;

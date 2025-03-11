@@ -9,10 +9,10 @@ import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
+import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.PaymentCancelException;
 import org.team1.keyduck.common.exception.PaymentConfirmException;
 import org.team1.keyduck.common.util.Constants;
-import org.team1.keyduck.common.util.ErrorCode;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
@@ -22,7 +22,7 @@ import org.team1.keyduck.payment.processor.PaymentProcessor;
 import org.team1.keyduck.payment.repository.PaymentRepository;
 import org.team1.keyduck.payment.util.PaymentCancelErrorCode;
 import org.team1.keyduck.payment.util.PaymentConfirmErrorCode;
-import org.team1.keyduck.rabbitmq.PaymentFailMessagePublisher;
+import org.team1.keyduck.rabbitmq.publisher.payment.PaymentFailMessagePublisher;
 
 @Service
 @RequiredArgsConstructor
@@ -64,10 +64,6 @@ public class PaymentService {
                 // 결제 승인 요청
                 JSONObject approvalResult = paymentProcessor.approvalPaymentRequest(jsonObject,
                         idempotencyKey);
-
-                if (true) {
-                    throw new IOException("test IOException");
-                }
 
                 String code = (String) approvalResult.get("code");
 
@@ -114,7 +110,6 @@ public class PaymentService {
                         ErrorMessageParameter.PAYMENT_INFO));
 
         // 결제 승인 데이터 생성
-//        Payment confirmPaymentData = paymentProcessor.getConfirmPaymentData(jsonObject);
         Payment confirmPaymentData = paymentProcessor.getPaymentData(jsonObject, false);
         foundedPayment.updatePaymentInfo(confirmPaymentData);
 
@@ -168,7 +163,6 @@ public class PaymentService {
                         ErrorMessageParameter.PAYMENT_INFO));
 
         // 결제 취소 데이터 생성
-//        Payment confirmPaymentData = paymentProcessor.getConfirmPaymentData(jsonObject);
         Payment confirmPaymentData = paymentProcessor.getPaymentData(jsonObject, true);
         foundedPayment.updatePaymentInfo(confirmPaymentData);
     }

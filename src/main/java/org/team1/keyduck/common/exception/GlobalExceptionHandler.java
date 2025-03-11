@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.team1.keyduck.common.dto.ApiResponse;
-import org.team1.keyduck.common.util.ErrorCode;
 
 @Slf4j
 @RestControllerAdvice

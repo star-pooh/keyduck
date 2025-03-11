@@ -2,8 +2,8 @@ package org.team1.keyduck.common.dto;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import org.team1.keyduck.common.exception.SuccessCode;
 import org.team1.keyduck.common.util.BaseEnumCode;
-import org.team1.keyduck.common.util.SuccessCode;
 
 @Getter
 public class ApiResponse<T> {

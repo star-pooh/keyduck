@@ -23,6 +23,7 @@ public class RabbitMqConfig {
         return QueueBuilder.durable(rabbitMqProperties.getQueueName())
                 .deadLetterExchange(rabbitMqProperties.getDeadLetterExchangeName())
                 .deadLetterRoutingKey(rabbitMqProperties.getDeadLetterRoutingKey())
+                .maxLength(100L) // 결제 승인 실패 메시지를 100개까지만 저장
                 .build();
     }
 
@@ -41,11 +42,6 @@ public class RabbitMqConfig {
         return new DirectExchange(rabbitMqProperties.getDeadLetterExchangeName());
     }
 
-    /**
-     * queue와 exchange를 binding하고 routing key를 이용하여 빈 생성
-     * <p>
-     * 즉, exchange에 queue를 등록
-     */
     @Bean
     public Binding binding(Queue queue, DirectExchange directExchange) {
         return BindingBuilder.bind(queue).to(directExchange)
@@ -68,14 +64,8 @@ public class RabbitMqConfig {
         return connectionFactory;
     }
 
-//    @Bean
-//    public MessageConverter jackson2JsonMessageConverter() {
-//        return new Jackson2JsonMessageConverter();
-//    }
-
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-        //        rabbitTemplate.setMessageConverter(jackson2JsonMessageConverter());
         return new RabbitTemplate(connectionFactory);
     }
 }

@@ -24,7 +24,7 @@ import org.team1.keyduck.common.exception.DataDuplicateException;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataUnauthorizedAccessException;
-import org.team1.keyduck.common.util.ErrorCode;
+import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.keyboard.repository.KeyboardRepository;

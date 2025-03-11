@@ -15,7 +15,7 @@ import org.team1.keyduck.common.config.JwtUtil;
 import org.team1.keyduck.common.exception.DataDuplicateException;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
-import org.team1.keyduck.common.util.ErrorCode;
+import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
 import org.team1.keyduck.common.service.CommonService;
 import org.team1.keyduck.common.util.ErrorMessageParameter;

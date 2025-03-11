@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.team1.keyduck.common.exception.DataInvalidException;
-import org.team1.keyduck.common.util.ErrorCode;
+import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.payment.entity.Payment;
@@ -103,32 +103,13 @@ public class PaymentProcessorImpl implements PaymentProcessor {
                 .build();
     }
 
-//    /**
-//     * 결제 내역 DB를 갱신하기 위한 Payment 데이터 생성
-//     *
-//     * @param jsonObject 토스페이먼츠에서 보내준 payment 객체 정보
-//     * @return 결제 내역 DB를 갱신하기 위한 Payment 데이터
-//     */
-//    @Override
-//    public Payment getConfirmPaymentData(JSONObject jsonObject) {
-//        JSONObject easyPay = (JSONObject) jsonObject.get("easyPay");
-//
-//        String paymentMethod = (String) jsonObject.get("method");
-//        String easyPayType = easyPay != null ? easyPay.get("provider").toString() : null;
-//        String paymentStatus = (String) jsonObject.get("status");
-//        String requestedAt = (String) jsonObject.get("requestedAt");
-//        String approvedAt = (String) jsonObject.get("approvedAt");
-//
-//        return Payment.builder()
-//                .paymentMethod(PaymentMethod.getPaymentType(paymentMethod))
-//                .easyPayType(easyPayType)
-//                .paymentStatus(PaymentStatus.valueOf(paymentStatus))
-//                .requestedAt(
-//                        LocalDateTime.parse(requestedAt.substring(0, requestedAt.indexOf("+"))))
-//                .approvedAt(LocalDateTime.parse(approvedAt.substring(0, approvedAt.indexOf("+"))))
-//                .build();
-//    }
-
+    /**
+     * 결제 내역 데이터 생성
+     *
+     * @param jsonObject      토스페이먼츠에서 보내준 결제 승인/취소 객체 정보
+     * @param isCancelRequest true : 결제 취소 요청 / false : 결제 승인 요청
+     * @return 결제 내역 DB를 갱신하기 위한 Payment 데이터
+     */
     @Override
     public Payment getPaymentData(JSONObject jsonObject, boolean isCancelRequest) {
         JSONArray cancels = null;
@@ -169,46 +150,11 @@ public class PaymentProcessorImpl implements PaymentProcessor {
         return executeHttpUrlConnection(cancelUrl, jsonObject, idempotencyKey);
     }
 
-//    @Override
-//    public Payment getCancelPaymentData(JSONObject jsonObject) {
-//        JSONObject easyPay = (JSONObject) jsonObject.get("easyPay");
-//        JSONObject cancels = (JSONObject) jsonObject.get("cancels");
-//
-//        String paymentMethod = (String) jsonObject.get("method");
-//        String easyPayType = easyPay != null ? easyPay.get("provider").toString() : null;
-//        String paymentStatus = (String) jsonObject.get("status");
-//        String requestedAt = (String) jsonObject.get("requestedAt");
-//        String approvedAt = (String) jsonObject.get("approvedAt");
-//        String transactionKey = (String) jsonObject.get("transactionKey");
-//
-//        return Payment.builder()
-//                .paymentMethod(PaymentMethod.getPaymentType(paymentMethod))
-//                .easyPayType(easyPayType)
-//                .paymentStatus(PaymentStatus.valueOf(paymentStatus))
-//                .requestedAt(
-//                        LocalDateTime.parse(requestedAt.substring(0, requestedAt.indexOf("+"))))
-//                .approvedAt(LocalDateTime.parse(approvedAt.substring(0, approvedAt.indexOf("+"))))
-//                .build();
-//    }
-
-    private JSONObject createCancelRequestJsonObject() throws ParseException {
-        JSONParser parser = new JSONParser();
-        String cancelReasonJsonBody = "{\"cancelReason\":\"server error\"}";
-
-        return (JSONObject) parser.parse(cancelReasonJsonBody);
-    }
-
     private JSONObject executeHttpUrlConnection(String strUrl, JSONObject jsonObject,
             UUID idempotencyKey) throws IOException, ParseException {
         String authorization = createAuthorization();
-
-        URL url = new URL(strUrl);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("Authorization", authorization);
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("Idempotency-Key", idempotencyKey.toString());
-        connection.setRequestMethod("POST");
-        connection.setDoOutput(true);
+        HttpURLConnection connection = createHttpUrlConnection(strUrl, idempotencyKey,
+                authorization);
 
         try (OutputStream outputStream = connection.getOutputStream()) {
             outputStream.write(jsonObject.toString().getBytes(StandardCharsets.UTF_8));
@@ -221,5 +167,27 @@ public class PaymentProcessorImpl implements PaymentProcessor {
                 Reader reader = new InputStreamReader(responseStream, StandardCharsets.UTF_8)) {
             return (JSONObject) PARSER.parse(reader);
         }
+    }
+
+    private HttpURLConnection createHttpUrlConnection(String strUrl, UUID idempotencyKey,
+            String authorization) throws IOException {
+        URL url = new URL(strUrl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization", authorization);
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty("Idempotency-Key", idempotencyKey.toString());
+        connection.setRequestMethod("POST");
+        connection.setConnectTimeout(60000); // 요청을 1분동안 지속함
+        connection.setReadTimeout(60000); // 응답을 1분동안 기다림
+        connection.setDoOutput(true);
+
+        return connection;
+    }
+
+    private JSONObject createCancelRequestJsonObject() throws ParseException {
+        JSONParser parser = new JSONParser();
+        String cancelReasonJsonBody = "{\"cancelReason\":\"server error\"}";
+
+        return (JSONObject) parser.parse(cancelReasonJsonBody);
     }
 }

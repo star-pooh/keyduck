@@ -1,8 +1,10 @@
-package org.team1.keyduck.common.util;
+package org.team1.keyduck.common.exception;
 
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import org.team1.keyduck.common.util.BaseEnumCode;
+import org.team1.keyduck.common.util.ErrorMessage;
 
 @Getter
 public enum ErrorCode implements BaseEnumCode {

@@ -24,7 +24,7 @@ import org.team1.keyduck.auction.dto.response.AuctionUpdateResponseDto;
 import org.team1.keyduck.auction.service.AuctionService;
 import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.common.dto.ApiResponse;
-import org.team1.keyduck.common.util.SuccessCode;
+import org.team1.keyduck.common.exception.SuccessCode;
 
 @Controller
 @RequestMapping("/api/auctions")

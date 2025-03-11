@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.common.dto.ApiResponse;
-import org.team1.keyduck.common.util.SuccessCode;
+import org.team1.keyduck.common.exception.SuccessCode;
 import org.team1.keyduck.payment.dto.TempPaymentRequestDto;
 import org.team1.keyduck.payment.service.PaymentProcessService;
 import org.team1.keyduck.payment.service.TempPaymentService;

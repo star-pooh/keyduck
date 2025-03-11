@@ -1,4 +1,4 @@
-package org.team1.keyduck.rabbitmq;
+package org.team1.keyduck.rabbitmq.consumer.payment;
 
 import com.rabbitmq.client.Channel;
 import lombok.RequiredArgsConstructor;
@@ -16,18 +16,20 @@ public class PaymentFailMessageConsumer {
 
     private final PaymentProcessService paymentProcessService;
 
-    @RabbitListener(queues = "${rabbitmq.queue.name}")
+    @RabbitListener(queues = "${rabbitmq.queue.name}", ackMode = "MANUAL")
     public void consumePaymentFailMessage(String paymentKey,
             @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag, Channel channel) throws Exception {
         try {
             log.info("consume payment fail message - paymentKey : {}", paymentKey);
 
             paymentProcessService.paymentCancelProcess(paymentKey);
+            // 결제 취소 요청에 성공한 메시지를 삭제함
             channel.basicAck(deliveryTag, false);
         } catch (Exception e) {
             log.error("move to dlq - paymentKey : {}", paymentKey);
-            channel.basicNack(deliveryTag, false, false);
 
+            // 결제 취소 요청에 실패한 메시지를 DLQ로 보냄
+            channel.basicNack(deliveryTag, false, false);
             throw e;
         }
     }

@@ -6,7 +6,6 @@ import org.springframework.core.MethodParameter;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.team1.keyduck.common.util.ErrorCode;
 
 @Getter
 public class RequestBodyValidException extends MethodArgumentNotValidException {

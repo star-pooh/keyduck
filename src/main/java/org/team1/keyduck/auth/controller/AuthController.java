@@ -18,7 +18,7 @@ import org.team1.keyduck.auth.dto.response.MemberCreateResponseDto;
 import org.team1.keyduck.auth.dto.response.SigninResponseDto;
 import org.team1.keyduck.auth.service.AuthService;
 import org.team1.keyduck.common.dto.ApiResponse;
-import org.team1.keyduck.common.util.SuccessCode;
+import org.team1.keyduck.common.exception.SuccessCode;
 import org.team1.keyduck.member.entity.MemberRole;
 
 @Controller

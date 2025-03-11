@@ -1,4 +1,4 @@
-package org.team1.keyduck.rabbitmq;
+package org.team1.keyduck.rabbitmq.publisher.payment;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
