@@ -3,12 +3,14 @@ package org.team1.keyduck.payment.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.util.Constants;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
+import org.team1.keyduck.email.dto.EmailEvent;
 import org.team1.keyduck.email.dto.MemberEmailRequestDto;
 import org.team1.keyduck.email.service.EmailService;
 import org.team1.keyduck.member.entity.Member;
@@ -28,6 +30,7 @@ public class PaymentService {
     private final EmailService emailService;
 
     private final PaymentProcessor paymentProcessor;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public PaymentDto createPayment(String jsonBody, Long memberId) throws Exception {
@@ -54,7 +57,8 @@ public class PaymentService {
                         savedPayment.getPaymentMethod()
                 )
         );
-        emailService.sendMemberEmail(savedPayment.getMember().getId(), emailRequestDto);
+        applicationEventPublisher.publishEvent(
+                new EmailEvent(savedPayment.getMember().getId(), emailRequestDto));
 
         return PaymentDto.of(savedPayment);
     }
