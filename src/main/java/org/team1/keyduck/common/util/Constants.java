@@ -20,7 +20,9 @@ public class Constants {
             "/api/auth",
             "/payment_login",
             "/token_verify",
-            "/style"
+            "/style",
+
+            "/send/message"
     );
 
     public static final int PAYMENT_CONFIRM_MAX_RETRIES = 3;

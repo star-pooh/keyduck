@@ -51,6 +51,7 @@ public class SecurityConfig {
                         .requestMatchers("/payment_login.html", "/style.css", "/token_verify.js")
                         .permitAll()
                         .requestMatchers("/api/payment/**").permitAll()
+                        .requestMatchers("/send/message").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();
