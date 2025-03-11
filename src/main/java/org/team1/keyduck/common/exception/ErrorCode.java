@@ -51,7 +51,6 @@ public enum ErrorCode {
     FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, "FORBIDDEN_001", ErrorMessage.FORBIDDEN_ACCESS),
     FORBIDDEN_PAYMENT_LOGIN_FORM(HttpStatus.FORBIDDEN, "FORBIDDEN_002",
             ErrorMessage.FORBIDDEN_PAYMENT_LOGIN_FORM),
-    EMAIL_SENDING_FORBIDDEN(HttpStatus.FORBIDDEN,"FORBIDDEN_003",ErrorMessage.EMAIL_SEND_ERROR),
 
     // 404 NOT_FOUND
     NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "NOTFOUND_001", ErrorMessage.NOT_FOUND_VALUE),
@@ -62,11 +61,9 @@ public enum ErrorCode {
 
     // 500 INTERNAL_SERVER_ERROR
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_001",
-            ErrorMessage.INTERNAL_SERVER_ERROR),
+            ErrorMessage.INTERNAL_SERVER_ERROR);
 
-    EMAIL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_002",
-            ErrorMessage.EMAIL_SEND_ERROR);
-
+    
     private final HttpStatus status;
     private final String code;
     private final String message;
