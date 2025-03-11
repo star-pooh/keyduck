@@ -12,7 +12,7 @@ public interface AuctionQueryDslRepository {
     Page<AuctionSearchResponseDto> findAllAuction(Pageable pageable, String keyboardName,
             String auctionTitle, String sellerName);
 
-    List<Auction> findStartTargetAuction(LocalDateTime now);
+    List<Auction> findOpenTargetAuction(LocalDateTime now);
 
-    List<Auction> findEndTargetAuction(LocalDateTime now);
+    List<Auction> findCloseTargetAuction(LocalDateTime now);
 }

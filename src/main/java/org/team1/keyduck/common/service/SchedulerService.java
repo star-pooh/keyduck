@@ -34,23 +34,23 @@ public class SchedulerService {
     @Scheduled(cron = "0 0 0/1 * * *", zone = "Asia/Seoul")
     @Transactional
     public void auctionOpen() {
-        List<Auction> startTargetAuctionList =
-                auctionQueryDslRepository.findStartTargetAuction(LocalDateTime.now());
+        List<Auction> openTargetAuctionList =
+                auctionQueryDslRepository.findOpenTargetAuction(LocalDateTime.now());
 
-        if (startTargetAuctionList.isEmpty()) {
+        if (openTargetAuctionList.isEmpty()) {
             log.info("start target auction list is empty");
             return;
         }
 
-        for (Auction startTargetAuction : startTargetAuctionList) {
+        for (Auction openTargetAuction : openTargetAuctionList) {
             try {
-                auctionService.openAuction(startTargetAuction);
+                auctionService.openAuction(openTargetAuction);
                 entityManager.flush();
 
-                log.info("auctionId : {}, auctionStatus : {}", startTargetAuction.getId(), startTargetAuction.getAuctionStatus());
+                log.info("auctionId : {}, auctionStatus : {}", openTargetAuction.getId(), openTargetAuction.getAuctionStatus());
             } catch (Exception e) {
                 log.error("auctionId : {}, auctionTitle : {} status change failed",
-                        startTargetAuction.getId(), startTargetAuction.getTitle(), e);
+                        openTargetAuction.getId(), openTargetAuction.getTitle(), e);
                 throw e;
             }
         }
@@ -59,24 +59,24 @@ public class SchedulerService {
     @Scheduled(cron = "0 0 0/1 * * *", zone = "Asia/Seoul")
     @Transactional
     public void auctionClose() {
-        List<Auction> endTargetAuctionList =
-                auctionQueryDslRepository.findEndTargetAuction(LocalDateTime.now());
+        List<Auction> closeTargetAuctionList =
+                auctionQueryDslRepository.findCloseTargetAuction(LocalDateTime.now());
 
-        if (endTargetAuctionList.isEmpty()) {
+        if (closeTargetAuctionList.isEmpty()) {
             log.info("end target auction list is empty");
             return;
         }
 
-        for (Auction endTargetAuction : endTargetAuctionList) {
+        for (Auction closeTargetAuction : closeTargetAuctionList) {
             try {
-                auctionService.closeAuction(endTargetAuction);
+                auctionService.closeAuction(closeTargetAuction);
                 entityManager.flush();
 
-                log.info("auctionId : {}, auctionStatus : {}", endTargetAuction.getId(), endTargetAuction.getAuctionStatus());
+                log.info("auctionId : {}, auctionStatus : {}", closeTargetAuction.getId(), closeTargetAuction.getAuctionStatus());
 
             } catch (Exception e) {
                 log.error("auctionId : {}, auctionTitle : {} close failed",
-                        endTargetAuction.getId(), endTargetAuction.getTitle(), e);
+                        closeTargetAuction.getId(), closeTargetAuction.getTitle(), e);
                 throw e;
             }
         }
