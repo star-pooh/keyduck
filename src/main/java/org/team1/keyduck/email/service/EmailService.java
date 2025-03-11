@@ -3,6 +3,8 @@ package org.team1.keyduck.email.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +20,7 @@ import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.email.dto.GeneralEmailRequestDto;
 import org.team1.keyduck.email.dto.MemberEmailRequestDto;
+import org.team1.keyduck.email.dto.MultipleEmailRequestDto;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.thymeleaf.context.Context;
@@ -87,6 +90,7 @@ public class EmailService {
         }
     }
 
+    //멤버정보에서 가져온 이메일로 보내기
     public void sendMemberEmail(Long memberId, MemberEmailRequestDto memberEmailRequestDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
@@ -125,6 +129,35 @@ public class EmailService {
             log.error("이메일 전송 실패 - 메세징 서버 오류");
             throw new EmailSendErrorException(ErrorCode.EMAIL_SERVER_ERROR,
                     ErrorMessageParameter.EMAIL_MESSAGING_SEVER_ERROR);
+        }
+    }
+
+    //여러명에게 한번에 보내기
+    public void sendMultipleEmails(MultipleEmailRequestDto requestDto) {
+        List<Member> members = memberRepository.findAllById(requestDto.getMemberIds());
+
+        if (members.isEmpty()) {
+            throw new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER, "멤버 목록");
+        }
+        MemberEmailRequestDto memberEmailRequestDto = new MemberEmailRequestDto(
+                requestDto.getEmailTitle(),
+                requestDto.getEmailContent()
+        );
+        List<String> successEmails = new ArrayList<>();
+        List<String> failedEmails = new ArrayList<>();
+
+        for (Member member : members) {
+            try {
+                sendMemberEmail(member.getId(), memberEmailRequestDto);
+                successEmails.add(member.getEmail());
+            } catch (EmailSendErrorException e) {
+                log.error("이메일 전송실패 -{}", member.getEmail(), e);
+                failedEmails.add(member.getEmail());
+            }
+        }
+        log.info("이메일 전송 완료 - 성공: {}", successEmails);
+        if (!failedEmails.isEmpty()) {
+            log.warn("이메일 전송 실패 - 실패: {}", failedEmails);
         }
     }
 }

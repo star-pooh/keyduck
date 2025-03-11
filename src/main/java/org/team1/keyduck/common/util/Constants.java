@@ -17,13 +17,18 @@ public class Constants {
     public static final String PASSWORD_REGEXP = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,16}";
 
     public static final List<String> WHITE_LIST = List.of(
-            "/api/payment/process",
-            "/api/payment/success",
-            "/api/auth",
-            "/payment_login",
+            "/style",
             "/token_verify",
-            "/style"
+            "/login",
+            "/main",
+            "/payment_",
+            "/api/auth",
+            "/api/auctions/main"
     );
+
+    public static final String AUCTION_CREATED_MAIL_TITLE = "경매가 성공적으로 생성되었습니다.";
+
+    public static final String AUCTION_CREATED_MAIL_CONTENTS = "%s님의 키보드 %s의 경매 %s가 정상적으로 등록되었습니다.";
 
     public static final int PAYMENT_CONFIRM_MAX_RETRIES = 3;
 }
