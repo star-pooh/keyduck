@@ -11,10 +11,10 @@ import org.team1.keyduck.common.util.ValidationErrorMessage;
 @AllArgsConstructor
 public class MemberEmailRequestDto {
 
-    @NotBlank(message = ValidationErrorMessage.EMAIL_TITLE_IS_NOT_NULL)
+    @NotBlank(message = ValidationErrorMessage.EMAIL_TITLE_NOT_NULL)
     private String emailTitle;
 
-    @NotBlank(message = ValidationErrorMessage.EMAIL_CONTENT_IS_NOT_NULL)
+    @NotBlank(message = ValidationErrorMessage.EMAIL_CONTENT_NOT_NULL)
     private String emailContent;
 
 
