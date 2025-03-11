@@ -1,7 +1,7 @@
 package org.team1.keyduck.common.dto;
 
 import lombok.Getter;
-import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.ErrorCode;
 
 
 @Getter

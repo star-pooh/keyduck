@@ -10,7 +10,7 @@ import org.team1.keyduck.auth.service.JwtBlacklistService;
 import org.team1.keyduck.common.exception.DataDuplicateException;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
-import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.ErrorCode;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
 import org.team1.keyduck.common.service.CommonService;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
@@ -46,7 +46,8 @@ public class MemberService {
                 ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
 
         if (memberRepository.existsByEmail(requestDto.getEmail())) {
-            throw new DataDuplicateException(ErrorCode.DUPLICATE_EMAIL, ErrorMessageParameter.EMAIL);
+            throw new DataDuplicateException(ErrorCode.DUPLICATE_EMAIL,
+                    ErrorMessageParameter.EMAIL);
         }
 
         member.updateMember(requestDto);

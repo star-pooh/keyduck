@@ -1,12 +1,11 @@
-package org.team1.keyduck.common.exception;
+package org.team1.keyduck.common.util;
 
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import org.team1.keyduck.common.util.ErrorMessage;
 
 @Getter
-public enum ErrorCode {
+public enum ErrorCode implements BaseEnumCode {
     // 400 BAD_REQUEST
     // INVALID(유효하지 않은 값)
     INVALID_DATA_VALUE(HttpStatus.BAD_REQUEST, "BAD_INVALID_001", ErrorMessage.INVALID_VALUE),
@@ -77,5 +76,20 @@ public enum ErrorCode {
     public String getMessage(Object arg) {
         return arg != null ? String.format(this.message, arg) : this.message;
     }
+
+//    @Override
+//    public HttpStatus getStatus() {
+//        return status;
+//    }
+//
+//    @Override
+//    public String getCode() {
+//        return code;
+//    }
+//
+//    @Override
+//    public String getMessage() {
+//        return message;
+//    }
 }
 

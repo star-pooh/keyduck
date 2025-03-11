@@ -9,7 +9,7 @@ import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.common.exception.DataDuplicateException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataUnauthorizedAccessException;
-import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.ErrorCode;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.keyboard.dto.request.KeyboardCreateRequestDto;

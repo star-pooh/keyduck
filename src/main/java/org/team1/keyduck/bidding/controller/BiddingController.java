@@ -16,7 +16,7 @@ import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 import org.team1.keyduck.bidding.dto.response.SuccessBiddingResponseDto;
 import org.team1.keyduck.bidding.service.BiddingService;
 import org.team1.keyduck.common.dto.ApiResponse;
-import org.team1.keyduck.common.exception.SuccessCode;
+import org.team1.keyduck.common.util.SuccessCode;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,35 +28,35 @@ public class BiddingController {
     //생성
     @PostMapping("/{auctionId}")
     public ResponseEntity<ApiResponse<Void>> createBidding(
-        @PathVariable("auctionId") Long auctionId,
-        @RequestParam(value = "price", required = true) Long price,
-        @AuthenticationPrincipal AuthMember authMember) {
+            @PathVariable("auctionId") Long auctionId,
+            @RequestParam(value = "price", required = true) Long price,
+            @AuthenticationPrincipal AuthMember authMember) {
         biddingService.createBidding(auctionId, price, authMember);
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS),
-            SuccessCode.CREATE_SUCCESS.getStatus());
+                SuccessCode.CREATE_SUCCESS.getStatus());
 
     }
 
     //조회(경매별 입찰내역)
     @GetMapping("/{auctionId}")
     public ResponseEntity<ApiResponse<List<BiddingResponseDto>>> getBiddingList(
-        @PathVariable Long auctionId) {
+            @PathVariable Long auctionId) {
         List<BiddingResponseDto> biddingResponseDtos = biddingService.getBiddingByAuction(
-            auctionId);
+                auctionId);
         return new ResponseEntity<>(
-            ApiResponse.success(SuccessCode.READ_SUCCESS, biddingResponseDtos),
-            SuccessCode.READ_SUCCESS.getStatus());
+                ApiResponse.success(SuccessCode.READ_SUCCESS, biddingResponseDtos),
+                SuccessCode.READ_SUCCESS.getStatus());
     }
 
     //낙찰내역 조회
     @GetMapping("/success")
     public ResponseEntity<ApiResponse<Page<SuccessBiddingResponseDto>>> getSuccessBidding(
-        @AuthenticationPrincipal AuthMember authMember,
-        @RequestParam(defaultValue = "1") int page) {
+            @AuthenticationPrincipal AuthMember authMember,
+            @RequestParam(defaultValue = "1") int page) {
         Page<SuccessBiddingResponseDto> successBiddingResponseDtoPage = biddingService.getSuccessBidding(
-            authMember.getId(), page);
+                authMember.getId(), page);
         return new ResponseEntity<>(
-            ApiResponse.success(SuccessCode.READ_SUCCESS, successBiddingResponseDtoPage),
-            SuccessCode.READ_SUCCESS.getStatus());
+                ApiResponse.success(SuccessCode.READ_SUCCESS, successBiddingResponseDtoPage),
+                SuccessCode.READ_SUCCESS.getStatus());
     }
 }

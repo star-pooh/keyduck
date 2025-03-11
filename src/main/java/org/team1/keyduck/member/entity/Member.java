@@ -19,7 +19,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.team1.keyduck.common.entity.BaseTime;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotMatchException;
-import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.ErrorCode;
 import org.team1.keyduck.common.util.Constants;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.dto.request.MemberUpdateRequestDto;

@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.team1.keyduck.common.exception.DataInvalidException;
-import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.ErrorCode;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.entity.MemberRole;
 

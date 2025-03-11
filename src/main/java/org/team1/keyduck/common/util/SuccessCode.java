@@ -1,4 +1,4 @@
-package org.team1.keyduck.common.exception;
+package org.team1.keyduck.common.util;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

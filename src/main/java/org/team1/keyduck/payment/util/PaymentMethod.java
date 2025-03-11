@@ -2,7 +2,7 @@ package org.team1.keyduck.payment.util;
 
 import java.util.Arrays;
 import org.team1.keyduck.common.exception.DataNotFoundException;
-import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.ErrorCode;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
 
 public enum PaymentMethod {

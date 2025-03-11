@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.common.dto.ApiResponse;
-import org.team1.keyduck.common.exception.SuccessCode;
+import org.team1.keyduck.common.util.SuccessCode;
 import org.team1.keyduck.payment.dto.TempPaymentRequestDto;
 import org.team1.keyduck.payment.service.PaymentProcessService;
 import org.team1.keyduck.payment.service.TempPaymentService;
@@ -39,7 +39,7 @@ public class PaymentController {
             @AuthenticationPrincipal AuthMember authMember,
             @RequestBody String jsonBody) throws Exception {
         // 결제 승인 정보를 결제 내역 DB에 저장
-        paymentProcessService.paymentProcess(jsonBody, authMember.getId());
+        paymentProcessService.paymentConfirmProcess(jsonBody, authMember.getId());
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS),
                 SuccessCode.CREATE_SUCCESS.getStatus());
     }

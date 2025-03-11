@@ -1,6 +1,7 @@
 package org.team1.keyduck.common.exception;
 
 import lombok.Getter;
+import org.team1.keyduck.common.util.ErrorCode;
 
 @Getter
 public class DataDuplicateException extends RuntimeException {

@@ -17,15 +17,16 @@ public class Constants {
     public static final String PASSWORD_REGEXP = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,16}";
 
     public static final List<String> WHITE_LIST = List.of(
-            "/api/payment/process",
-            "/api/payment/success",
-            "/api/auth",
-            "/payment_login",
-            "/token_verify",
             "/style",
+            "/token_verify",
+            "/login",
+            "/main",
+            "/payment_",
+            "/api/auth",
+            "/api/auctions/main",
 
             "/send/message"
     );
 
-    public static final int PAYMENT_CONFIRM_MAX_RETRIES = 3;
+    public static final int PAYMENT_REQUEST_MAX_RETRIES = 3;
 }

@@ -3,7 +3,7 @@ package org.team1.keyduck.payment.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.team1.keyduck.common.exception.DataNotFoundException;
-import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.ErrorCode;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.payment.entity.TempPayment;
 import org.team1.keyduck.payment.repository.TempPaymentRepository;

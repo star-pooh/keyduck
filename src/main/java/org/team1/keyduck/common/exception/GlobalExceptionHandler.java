@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.team1.keyduck.common.dto.ApiResponse;
+import org.team1.keyduck.common.util.ErrorCode;
 
 @Slf4j
 @RestControllerAdvice
@@ -85,6 +86,17 @@ public class GlobalExceptionHandler {
             PaymentConfirmException exception) {
         ApiResponse<Void> apiResponse = ApiResponse.error(
                 exception.getPaymentConfirmErrorCode(), exception.getMessage());
+
+        log.info("\n{},{},\n{}", apiResponse.getCode(), getStackTrace(exception.getStackTrace()),
+                apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+    }
+
+    @ExceptionHandler(PaymentCancelException.class)
+    public ResponseEntity<ApiResponse<Void>> handlePaymentCancelException(
+            PaymentCancelException exception) {
+        ApiResponse<Void> apiResponse = ApiResponse.error(
+                exception.getPaymentCancelErrorCode(), exception.getMessage());
 
         log.info("\n{},{},\n{}", apiResponse.getCode(), getStackTrace(exception.getStackTrace()),
                 apiResponse.getMessage());

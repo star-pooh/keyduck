@@ -3,10 +3,11 @@ package org.team1.keyduck.payment.util;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.team1.keyduck.common.util.BaseEnumCode;
 
 @Getter
 @RequiredArgsConstructor
-public enum PaymentConfirmErrorCode {
+public enum PaymentConfirmErrorCode implements BaseEnumCode {
     ALREADY_PROCESSED_PAYMENT(HttpStatus.BAD_REQUEST, "PAYMENT_CONFIRM_001", "이미 처리된 결제 입니다."),
     PROVIDER_ERROR(HttpStatus.BAD_REQUEST, "PAYMENT_CONFIRM_002",
             "일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요."),

@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.UUID;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -18,7 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.team1.keyduck.common.exception.DataInvalidException;
-import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.ErrorCode;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.payment.entity.Payment;
@@ -102,14 +103,40 @@ public class PaymentProcessorImpl implements PaymentProcessor {
                 .build();
     }
 
-    /**
-     * 결제 내역 DB를 갱신하기 위한 Payment 데이터 생성
-     *
-     * @param jsonObject 토스페이먼츠에서 보내준 payment 객체 정보
-     * @return 결제 내역 DB를 갱신하기 위한 Payment 데이터
-     */
+//    /**
+//     * 결제 내역 DB를 갱신하기 위한 Payment 데이터 생성
+//     *
+//     * @param jsonObject 토스페이먼츠에서 보내준 payment 객체 정보
+//     * @return 결제 내역 DB를 갱신하기 위한 Payment 데이터
+//     */
+//    @Override
+//    public Payment getConfirmPaymentData(JSONObject jsonObject) {
+//        JSONObject easyPay = (JSONObject) jsonObject.get("easyPay");
+//
+//        String paymentMethod = (String) jsonObject.get("method");
+//        String easyPayType = easyPay != null ? easyPay.get("provider").toString() : null;
+//        String paymentStatus = (String) jsonObject.get("status");
+//        String requestedAt = (String) jsonObject.get("requestedAt");
+//        String approvedAt = (String) jsonObject.get("approvedAt");
+//
+//        return Payment.builder()
+//                .paymentMethod(PaymentMethod.getPaymentType(paymentMethod))
+//                .easyPayType(easyPayType)
+//                .paymentStatus(PaymentStatus.valueOf(paymentStatus))
+//                .requestedAt(
+//                        LocalDateTime.parse(requestedAt.substring(0, requestedAt.indexOf("+"))))
+//                .approvedAt(LocalDateTime.parse(approvedAt.substring(0, approvedAt.indexOf("+"))))
+//                .build();
+//    }
+
     @Override
-    public Payment getConfirmPaymentData(JSONObject jsonObject) {
+    public Payment getPaymentData(JSONObject jsonObject, boolean isCancelRequest) {
+        JSONArray cancels = null;
+
+        if (isCancelRequest) {
+            cancels = (JSONArray) jsonObject.get("cancels");
+        }
+
         JSONObject easyPay = (JSONObject) jsonObject.get("easyPay");
 
         String paymentMethod = (String) jsonObject.get("method");
@@ -117,11 +144,16 @@ public class PaymentProcessorImpl implements PaymentProcessor {
         String paymentStatus = (String) jsonObject.get("status");
         String requestedAt = (String) jsonObject.get("requestedAt");
         String approvedAt = (String) jsonObject.get("approvedAt");
+        String transactionKey =
+                cancels != null
+                        ? ((JSONObject) cancels.get(0)).get("transactionKey").toString()
+                        : null;
 
         return Payment.builder()
                 .paymentMethod(PaymentMethod.getPaymentType(paymentMethod))
                 .easyPayType(easyPayType)
                 .paymentStatus(PaymentStatus.valueOf(paymentStatus))
+                .cancelTransactionKey(transactionKey)
                 .requestedAt(
                         LocalDateTime.parse(requestedAt.substring(0, requestedAt.indexOf("+"))))
                 .approvedAt(LocalDateTime.parse(approvedAt.substring(0, approvedAt.indexOf("+"))))
@@ -136,6 +168,28 @@ public class PaymentProcessorImpl implements PaymentProcessor {
 
         return executeHttpUrlConnection(cancelUrl, jsonObject, idempotencyKey);
     }
+
+//    @Override
+//    public Payment getCancelPaymentData(JSONObject jsonObject) {
+//        JSONObject easyPay = (JSONObject) jsonObject.get("easyPay");
+//        JSONObject cancels = (JSONObject) jsonObject.get("cancels");
+//
+//        String paymentMethod = (String) jsonObject.get("method");
+//        String easyPayType = easyPay != null ? easyPay.get("provider").toString() : null;
+//        String paymentStatus = (String) jsonObject.get("status");
+//        String requestedAt = (String) jsonObject.get("requestedAt");
+//        String approvedAt = (String) jsonObject.get("approvedAt");
+//        String transactionKey = (String) jsonObject.get("transactionKey");
+//
+//        return Payment.builder()
+//                .paymentMethod(PaymentMethod.getPaymentType(paymentMethod))
+//                .easyPayType(easyPayType)
+//                .paymentStatus(PaymentStatus.valueOf(paymentStatus))
+//                .requestedAt(
+//                        LocalDateTime.parse(requestedAt.substring(0, requestedAt.indexOf("+"))))
+//                .approvedAt(LocalDateTime.parse(approvedAt.substring(0, approvedAt.indexOf("+"))))
+//                .build();
+//    }
 
     private JSONObject createCancelRequestJsonObject() throws ParseException {
         JSONParser parser = new JSONParser();
