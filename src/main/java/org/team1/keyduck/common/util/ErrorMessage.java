@@ -10,7 +10,7 @@ public class ErrorMessage {
     public static final String DUPLICATE_USE = "해당 %s은(는) 이미 사용 중입니다.";
     public static final String DUPLICATE_DELETE = "이미 삭제된 %s 입니다.";
     public static final String NOT_FOUND_VALUE = "해당 %s을(를) 찾을 수 없습니다.";
-    public static final String EMAIL_SEND_ERROR = "이메일 전송 실패 - %";
+    public static final String EMAIL_SEND_ERROR = "이메일 전송 실패 - %s";
 
     // 중복되지 않는 메시지
     // 400 BAD_REQUEST
@@ -23,11 +23,12 @@ public class ErrorMessage {
     public static final String REQUIRED_TOKEN = "JWT 토큰이 필요합니다.";
     public static final String INVALID_TOKEN = "잘못된 JWT 토큰 입니다.";
     public static final String UNSUPPORTED_TOKEN = "지원되지 않는 JWT 토큰 입니다.";
-    public static final String NOT_MODIFIABLE_AND_DELETEABLE = "진행 중이거나 종료된 경매는 수정 및 삭제할 수 없습니다.";
+    public static final String NOT_MODIFIABLE_AND_DELETABLE = "진행 중이거나 종료된 경매는 수정 및 삭제할 수 없습니다.";
     public static final String BEFORE_INFO_NOT_AVAILABLE = "이전 정보와 같은 %s로 변경할 수 없습니다.";
     public static final String EMPTY_REQUEST_BODY = "하나 이상의 수정 내용이 필요합니다.";
     public static final String DUPLICATE_KEYBOARD = "같은 키보드로 여러 개의 경매를 생성할 수 없습니다.";
     public static final String NOT_MODIFIABLE_DELETED_KEYBOARD = "삭제된 키보드는 수정할 수 없습니다.";
+    public static final String NOT_DELETABLE_KEYBOARD_DUE_TO_AUCTION = "경매에 등록된 키보드는 삭제할 수 없습니다.";
 
     // 401 UNAUTHORIZED
     public static final String UNAUTHORIZED_ACCESS = "인증이 필요한 접근입니다.";

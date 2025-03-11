@@ -84,7 +84,7 @@ public class BiddingServiceTest {
                         .keyboard(keyboard)
                         .startPrice(1000L)
                         .currentPrice(1000L)
-                        .biddingUnit(100)
+                        .biddingUnit(100L)
                         .auctionStartDate(LocalDateTime.now())
                         .auctionEndDate(LocalDateTime.now().plusDays(1))
                         .auctionStatus(AuctionStatus.IN_PROGRESS)
