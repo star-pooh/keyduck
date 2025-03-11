@@ -80,6 +80,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
+    @ExceptionHandler(EmailSendErrorException.class)
+    public ResponseEntity<ApiResponse> handleEmailSendErrorException(
+            EmailSendErrorException exception) {
+        ApiResponse apiResponse = ApiResponse.error(
+                exception.getErrorCode(), exception.getMessage());
+        log.info("\n{},{},\n{}", apiResponse.getCode(), getStackTrace(exception.getStackTrace()),
+                apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+    }
+
 
     // @RequestBody를 @Valid 해서 에러가 발생한 경우
     @ExceptionHandler(MethodArgumentNotValidException.class)

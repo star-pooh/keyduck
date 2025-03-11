@@ -68,7 +68,7 @@ dependencies {
     // Spring Security Test
     testImplementation 'org.springframework.security:spring-security-test'
 
-    //  cache
+    // cache
     implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
 
     // web socket
@@ -79,6 +79,12 @@ dependencies {
 
     // jsr310
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3'
+
+    // Mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    // thymeleaf(for email service)
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 }
 
 tasks.named('test') {

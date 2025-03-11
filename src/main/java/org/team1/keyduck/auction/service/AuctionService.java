@@ -2,9 +2,11 @@ package org.team1.keyduck.auction.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.dto.request.AuctionCreateRequestDto;
 import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
@@ -14,6 +16,7 @@ import org.team1.keyduck.auction.dto.response.AuctionSearchResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionUpdateResponseDto;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
+import org.team1.keyduck.auction.repository.AuctionQueryDslRepository;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
@@ -31,6 +34,7 @@ import org.team1.keyduck.payment.service.SaleProfitService;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuctionService {
 
     private final AuctionRepository auctionRepository;
@@ -38,6 +42,7 @@ public class AuctionService {
     private final BiddingRepository biddingRepository;
     private final SaleProfitService saleProfitService;
     private final PaymentDepositService paymentDepositService;
+    private final AuctionQueryDslRepository auctionQueryDslRepository;
 
     public AuctionCreateResponseDto createAuctionService(Long sellerId,
             AuctionCreateRequestDto requestDto) {
@@ -116,7 +121,7 @@ public class AuctionService {
     public Page<AuctionSearchResponseDto> findAllAuction(Pageable pageable,
             String keyboardName, String auctionTitle, String sellerName) {
 
-        return auctionRepository.findAllAuction(pageable,
+        return auctionQueryDslRepository.findAllAuction(pageable,
                 keyboardName, auctionTitle, sellerName);
     }
 
@@ -136,6 +141,14 @@ public class AuctionService {
         }
 
         findAuction.updateAuctionStatus(AuctionStatus.IN_PROGRESS);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void startAuction(Auction targetAuction) {
+        targetAuction.updateAuctionStatus(AuctionStatus.IN_PROGRESS);
+
+        log.info("auctionId : {}, auctionTitle : {}, in progress status change success",
+                targetAuction.getId(), targetAuction.getTitle());
     }
 
     @Transactional
