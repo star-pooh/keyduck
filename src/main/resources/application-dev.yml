@@ -30,6 +30,8 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
+      repositories:
+        enabled: false
 
 jwt:
   secret:
