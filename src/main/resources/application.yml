@@ -36,10 +36,10 @@ spring:
       mail.starttls.enable: true
       mail.smtp.auth: true
 
-    thymeleaf:
-      prefix: classpath:/templates/
-      suffix: .html
-      cache: false
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
 
 jwt:
   secret:
@@ -50,6 +50,3 @@ payment:
     test-client-api-key: ${PAYMENT_CLIENT_API_KEY}
     test-secret-api-key: ${PAYMENT_SECRET_API_KEY}
     payment-url: ${PAYMENT_URL}
-
-
-
