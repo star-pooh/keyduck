@@ -53,7 +53,6 @@ public class SecurityConfig {
                         .requestMatchers("/login.html", "/main.html", "/payment_*.html")
                         .permitAll()
                         .requestMatchers("/api/payment/**").permitAll()
-                        .requestMatchers("/send/message").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();

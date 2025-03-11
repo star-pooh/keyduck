@@ -85,7 +85,16 @@ public class GlobalExceptionHandler {
             PaymentConfirmException exception) {
         ApiResponse<Void> apiResponse = ApiResponse.error(
                 exception.getPaymentConfirmErrorCode(), exception.getMessage());
+        log.info("\n{},{},\n{}", apiResponse.getCode(), getStackTrace(exception.getStackTrace()),
+                apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+    }
 
+    @ExceptionHandler(EmailSendErrorException.class)
+    public ResponseEntity<ApiResponse<Void>> handleEmailSendErrorException(
+            EmailSendErrorException exception) {
+        ApiResponse<Void> apiResponse = ApiResponse.error(
+                exception.getErrorCode(), exception.getMessage());
         log.info("\n{},{},\n{}", apiResponse.getCode(), getStackTrace(exception.getStackTrace()),
                 apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());

@@ -11,7 +11,6 @@
 <table>
   <thead>
   <tr>
-    <th>경매 ID</th>
     <th>경매 제목</th>
     <th>키보드 이름</th>
     <th>현재가</th>
@@ -22,7 +21,6 @@
   </thead>
   <tbody>
   <tr th:each="auction : ${auctions}">
-    <td th:text="${auction.auctionId}"></td>
     <td th:text="${auction.title}"></td>
     <td th:text="${auction.keyboardName}"></td>
     <td th:text="${#numbers.formatInteger(auction.currentPrice, 3, 'COMMA') + '원'}"></td>

@@ -11,7 +11,7 @@
 
 <body>
 <div class="wrapper">
-  <form id="paymentForm">
+  <form id="loginForm">
     <label for="email">이메일:</label>
     <input type="text" id="email" name="email" required/>
     <br/>
@@ -25,7 +25,7 @@
 </div>
 
 <script>
-  const form = document.getElementById("paymentForm");
+  const form = document.getElementById("loginForm");
 
   form.addEventListener("submit", function (event) {
     event.preventDefault(); // 기본 폼 제출 방지
