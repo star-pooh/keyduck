@@ -15,9 +15,9 @@ import org.team1.keyduck.common.dto.ApiResponse;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataNotFoundException.class)
-    public ResponseEntity<ApiResponse> handleDataNotFoundException(
+    public ResponseEntity<ApiResponse<Void>> handleDataNotFoundException(
             DataNotFoundException exception) {
-        ApiResponse apiResponse = ApiResponse.error(
+        ApiResponse<Void> apiResponse = ApiResponse.error(
                 exception.getErrorCode(), exception.getMessage());
 
         log.info("\n{},{},\n{}", apiResponse.getCode(), getStackTrace(exception.getStackTrace()),
@@ -26,9 +26,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DataDuplicateException.class)
-    public ResponseEntity<ApiResponse> handleDataDuplicateException(
+    public ResponseEntity<ApiResponse<Void>> handleDataDuplicateException(
             DataDuplicateException exception) {
-        ApiResponse apiResponse = ApiResponse.error(
+        ApiResponse<Void> apiResponse = ApiResponse.error(
                 exception.getErrorCode(), exception.getMessage());
 
         log.info("\n{},{},\n{}", apiResponse.getCode(), getStackTrace(exception.getStackTrace()),
@@ -37,9 +37,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DataNotMatchException.class)
-    public ResponseEntity<ApiResponse> handleDataNotMatchException(
+    public ResponseEntity<ApiResponse<Void>> handleDataNotMatchException(
             DataNotMatchException exception) {
-        ApiResponse apiResponse = ApiResponse.error(
+        ApiResponse<Void> apiResponse = ApiResponse.error(
                 exception.getErrorCode(), exception.getMessage());
 
         log.info("\n{},{},\n{}", apiResponse.getCode(), getStackTrace(exception.getStackTrace()),
@@ -48,9 +48,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DataUnauthorizedAccessException.class)
-    public ResponseEntity<ApiResponse> handleDataUnauthorizedAccessException(
+    public ResponseEntity<ApiResponse<Void>> handleDataUnauthorizedAccessException(
             DataUnauthorizedAccessException exception) {
-        ApiResponse apiResponse = ApiResponse.error(
+        ApiResponse<Void> apiResponse = ApiResponse.error(
                 exception.getErrorCode(), exception.getMessage());
 
         log.info("\n{},{},\n{}", apiResponse.getCode(), getStackTrace(exception.getStackTrace()),
@@ -59,9 +59,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DataInvalidException.class)
-    public ResponseEntity<ApiResponse> handleDataNotValidException(
+    public ResponseEntity<ApiResponse<Void>> handleDataNotValidException(
             DataInvalidException exception) {
-        ApiResponse apiResponse = ApiResponse.error(
+        ApiResponse<Void> apiResponse = ApiResponse.error(
                 exception.getErrorCode(), exception.getMessage());
 
         log.info("\n{},{},\n{}", apiResponse.getCode(), getStackTrace(exception.getStackTrace()),
@@ -70,36 +70,45 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(OperationNotAllowedException.class)
-    public ResponseEntity<ApiResponse> handleOperationNotAllowedException(
+    public ResponseEntity<ApiResponse<Void>> handleOperationNotAllowedException(
             OperationNotAllowedException exception) {
-        ApiResponse apiResponse = ApiResponse.error(
+        ApiResponse<Void> apiResponse = ApiResponse.error(
                 exception.getErrorCode(), exception.getMessage());
 
+        log.info("\n{},{},\n{}", apiResponse.getCode(), getStackTrace(exception.getStackTrace()),
+                apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+    }
+
+    @ExceptionHandler(PaymentConfirmException.class)
+    public ResponseEntity<ApiResponse<Void>> handlePaymentConfirmException(
+            PaymentConfirmException exception) {
+        ApiResponse<Void> apiResponse = ApiResponse.error(
+                exception.getPaymentConfirmErrorCode(), exception.getMessage());
         log.info("\n{},{},\n{}", apiResponse.getCode(), getStackTrace(exception.getStackTrace()),
                 apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
     @ExceptionHandler(EmailSendErrorException.class)
-    public ResponseEntity<ApiResponse> handleEmailSendErrorException(
+    public ResponseEntity<ApiResponse<Void>> handleEmailSendErrorException(
             EmailSendErrorException exception) {
-        ApiResponse apiResponse = ApiResponse.error(
+        ApiResponse<Void> apiResponse = ApiResponse.error(
                 exception.getErrorCode(), exception.getMessage());
         log.info("\n{},{},\n{}", apiResponse.getCode(), getStackTrace(exception.getStackTrace()),
                 apiResponse.getMessage());
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
-
     // @RequestBody를 @Valid 해서 에러가 발생한 경우
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(
+    public ResponseEntity<ApiResponse<Void>> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException exception) {
         RequestBodyValidException customException = new RequestBodyValidException(
                 exception.getParameter(), exception.getBindingResult(),
                 ErrorCode.INVALID_DATA_VALUE);
 
-        ApiResponse apiResponse = ApiResponse.error(customException.getErrorCode(),
+        ApiResponse<Void> apiResponse = ApiResponse.error(customException.getErrorCode(),
                 customException.getErrorMessage());
 
         log.info("\n{},{},\n{}", apiResponse.getCode(), getStackTrace(exception.getStackTrace()),
@@ -109,9 +118,9 @@ public class GlobalExceptionHandler {
 
     // @RequestParam를 @Valid 해서 에러가 발생한 경우
     @ExceptionHandler(HandlerMethodValidationException.class)
-    public ResponseEntity<ApiResponse> handleHandlerMethodValidationExceptionException(
+    public ResponseEntity<ApiResponse<Void>> handleHandlerMethodValidationExceptionException(
             HandlerMethodValidationException exception) {
-        ApiResponse apiResponse = ApiResponse.error(ErrorCode.INVALID_DATA_VALUE,
+        ApiResponse<Void> apiResponse = ApiResponse.error(ErrorCode.INVALID_DATA_VALUE,
                 Arrays.toString(exception.getDetailMessageArguments()));
 
         log.info("\n{},{},\n{}", apiResponse.getCode(), getStackTrace(exception.getStackTrace()),
@@ -120,8 +129,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse> handleException(Exception exception) {
-        ApiResponse apiResponse = ApiResponse.error(
+    public ResponseEntity<ApiResponse<Void>> handleException(Exception exception) {
+        ApiResponse<Void> apiResponse = ApiResponse.error(
                 ErrorCode.INTERNAL_SERVER_ERROR);
 
         log.info("\n{},{},\n{}", apiResponse.getCode(), getStackTrace(exception.getStackTrace()),

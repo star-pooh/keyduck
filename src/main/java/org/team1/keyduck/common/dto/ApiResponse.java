@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.SuccessCode;
+import org.team1.keyduck.payment.util.PaymentConfirmErrorCode;
 
 @Getter
 public class ApiResponse<T> {
@@ -40,4 +41,8 @@ public class ApiResponse<T> {
                 errorMessage, null);
     }
 
+    public static <T> ApiResponse<T> error(PaymentConfirmErrorCode errorCode, String errorMessage) {
+        return new ApiResponse<>(errorCode.getStatus(), errorCode.getCode(),
+                errorMessage, null);
+    }
 }

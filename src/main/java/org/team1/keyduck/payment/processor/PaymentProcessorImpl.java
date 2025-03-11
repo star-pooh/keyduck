@@ -9,6 +9,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.UUID;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -20,8 +21,8 @@ import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.payment.entity.Payment;
-import org.team1.keyduck.payment.entity.PaymentMethod;
-import org.team1.keyduck.payment.entity.PaymentStatus;
+import org.team1.keyduck.payment.util.PaymentMethod;
+import org.team1.keyduck.payment.util.PaymentStatus;
 
 @Component
 public class PaymentProcessorImpl implements PaymentProcessor {
@@ -65,18 +66,21 @@ public class PaymentProcessorImpl implements PaymentProcessor {
     /**
      * 결제 승인 API 호출 (서버 -> 토스페이먼츠)
      *
-     * @param jsonObject JSON 형태로 변환된 결제 정보 데이터
+     * @param jsonObject     JSON 형태로 변환된 결제 정보 데이터
+     * @param idempotencyKey 멱등키
      * @return 토스페이먼츠에서 보내준 payment 객체
      * @throws Exception exception
      */
     @Override
-    public JSONObject requestPaymentApproval(JSONObject jsonObject) throws Exception {
+    public JSONObject approvalPaymentRequest(JSONObject jsonObject, UUID idempotencyKey)
+            throws Exception {
         String authorization = createAuthorization();
 
         URL url = new URL(paymentUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization", authorization);
         connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty("Idempotency-Key", idempotencyKey.toString());
         connection.setRequestMethod("POST");
         connection.setDoOutput(true);
 
@@ -96,16 +100,34 @@ public class PaymentProcessorImpl implements PaymentProcessor {
     /**
      * 결제 내역 DB에 저장하기 위한 Payment 데이터 생성
      *
-     * @param jsonObject 토스페이먼츠에서 보내준 payment 객체 정보
-     * @param member     결제를 진행한 멤버 정보
+     * @param jsonObject JSON 형태로 변환된 결제 정보 데이터
+     * @param member     결제 요청 멤버 정보
      * @return 결제 내역 DB에 저장하기 위한 Payment 데이터
      */
     @Override
-    public Payment createPaymentData(JSONObject jsonObject, Member member) {
+    public Payment getCreatePaymentData(JSONObject jsonObject, Member member) {
+        String paymentKey = (String) jsonObject.get("paymentKey");
+        String orderId = (String) jsonObject.get("orderId");
+        String amount = (String) jsonObject.get("amount");
+
+        return Payment.builder()
+                .member(member)
+                .paymentKey(paymentKey)
+                .orderId(orderId)
+                .amount(Long.valueOf(amount))
+                .build();
+    }
+
+    /**
+     * 결제 내역 DB를 갱신하기 위한 Payment 데이터 생성
+     *
+     * @param jsonObject 토스페이먼츠에서 보내준 payment 객체 정보
+     * @return 결제 내역 DB를 갱신하기 위한 Payment 데이터
+     */
+    @Override
+    public Payment getConfirmPaymentData(JSONObject jsonObject) {
         JSONObject easyPay = (JSONObject) jsonObject.get("easyPay");
 
-        String orderId = (String) jsonObject.get("orderId");
-        Long amount = (Long) jsonObject.get("totalAmount");
         String paymentMethod = (String) jsonObject.get("method");
         String easyPayType = easyPay != null ? easyPay.get("provider").toString() : null;
         String paymentStatus = (String) jsonObject.get("status");
@@ -113,9 +135,6 @@ public class PaymentProcessorImpl implements PaymentProcessor {
         String approvedAt = (String) jsonObject.get("approvedAt");
 
         return Payment.builder()
-                .member(member)
-                .orderId(orderId)
-                .amount(amount)
                 .paymentMethod(PaymentMethod.getPaymentType(paymentMethod))
                 .easyPayType(easyPayType)
                 .paymentStatus(PaymentStatus.valueOf(paymentStatus))
