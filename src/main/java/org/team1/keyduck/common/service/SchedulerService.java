@@ -56,8 +56,8 @@ public class SchedulerService {
         }
     }
 
-    @Scheduled(cron = "0 0 0/1 * * *", zone = "Asia/Seoul")
-    @jakarta.transaction.Transactional
+    @Scheduled(cron = "*/20 * * * * *", zone = "Asia/Seoul")
+    @Transactional
     public void auctionEnd() {
         List<Auction> endTargetAuctionList =
                 auctionQueryDslRepository.findEndTargetAuction(LocalDateTime.now());
@@ -68,16 +68,18 @@ public class SchedulerService {
         }
 
         for (Auction endTargetAuction : endTargetAuctionList) {
-            Member winner = biddingRepository.findByMaxPriceAuctionId(endTargetAuction.getId());
-            endTargetAuction.updateSuccessBiddingMember(winner);
+            try {
+                auctionService.endAuction(endTargetAuction);
+                entityManager.flush();
 
-            paymentDepositService.refundPaymentDeposit(endTargetAuction.getId());
-            saleProfitService.saleProfit(endTargetAuction.getId());
+                log.info("auctionStatus : {}", endTargetAuction.getAuctionStatus());
 
-            endTargetAuction.updateAuctionStatus(AuctionStatus.CLOSED);
-
-            log.info("auctionId : {}, auctionTitle : {}, closed status change success",
-                    endTargetAuction.getId(), endTargetAuction.getTitle());
+            } catch (Exception e) {
+                log.error("auctionId : {}, auctionTitle : {} close failed",
+                        endTargetAuction.getId(), endTargetAuction.getTitle(), e);
+                throw e;
+            }
         }
     }
+
 }

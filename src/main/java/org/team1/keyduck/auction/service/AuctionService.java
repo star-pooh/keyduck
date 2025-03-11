@@ -173,4 +173,23 @@ public class AuctionService {
 
         findAuction.updateAuctionStatus(AuctionStatus.CLOSED);
     }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void endAuction(Auction targetAuction) {
+        if (!targetAuction.getAuctionStatus().equals(AuctionStatus.IN_PROGRESS)) {
+            throw new DataInvalidException(ErrorCode.INVALID_STATUS,
+                    ErrorMessageParameter.AUCTION_STATUS);
+        }
+
+        Member winnerMember = biddingRepository.findByMaxPriceAuctionId(targetAuction.getId());
+        targetAuction.updateSuccessBiddingMember(winnerMember);
+
+        paymentDepositService.refundPaymentDeposit(targetAuction.getId());
+        saleProfitService.saleProfit(targetAuction.getId());
+
+        targetAuction.updateAuctionStatus(AuctionStatus.CLOSED);
+
+        log.info("auctionId : {}, auctionTitle : {}, closed status change success",
+                targetAuction.getId(), targetAuction.getTitle());
+    }
 }
