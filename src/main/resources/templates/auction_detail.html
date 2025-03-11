@@ -134,7 +134,6 @@
             return;
           }
           fetchAuctionData(auctionId);
-          connectWebSocket(auctionId);
         }
       });
     } catch (error) {
@@ -193,8 +192,10 @@
 
         biddingList.appendChild(row);
       });
+      if (auction.auctionStatus === "IN_PROGRESS") {
+        connectWebSocket(id);
+      }
     })
-
     .catch(error => {
       console.error("API 호출 중 오류 발생:", error);
       alert("경매 정보를 불러오는데 실패했습니다.");
