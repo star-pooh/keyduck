@@ -1,5 +1,6 @@
 package org.team1.keyduck.payment.processor;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -30,8 +31,11 @@ public class PaymentProcessorImpl implements PaymentProcessor {
     @Value("${payment.toss.test-secret-api-key}")
     private String secretKey;
 
-    @Value("${payment.toss.payment-url}")
-    private String paymentUrl;
+    @Value("${payment.toss.payment-confirm-url}")
+    private String paymentConfirmUrl;
+
+    @Value("${payment.toss.payment-cancel-url}")
+    private String paymentCancelUrl;
 
     private static final JSONParser PARSER = new JSONParser();
 
@@ -74,27 +78,7 @@ public class PaymentProcessorImpl implements PaymentProcessor {
     @Override
     public JSONObject approvalPaymentRequest(JSONObject jsonObject, UUID idempotencyKey)
             throws Exception {
-        String authorization = createAuthorization();
-
-        URL url = new URL(paymentUrl);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("Authorization", authorization);
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("Idempotency-Key", idempotencyKey.toString());
-        connection.setRequestMethod("POST");
-        connection.setDoOutput(true);
-
-        try (OutputStream outputStream = connection.getOutputStream()) {
-            outputStream.write(jsonObject.toString().getBytes(StandardCharsets.UTF_8));
-        }
-
-        try (InputStream responseStream =
-                connection.getResponseCode() == HttpStatus.OK.value()
-                        ? connection.getInputStream()
-                        : connection.getErrorStream();
-                Reader reader = new InputStreamReader(responseStream, StandardCharsets.UTF_8)) {
-            return (JSONObject) PARSER.parse(reader);
-        }
+        return executeHttpUrlConnection(paymentConfirmUrl, jsonObject, idempotencyKey);
     }
 
     /**
@@ -142,5 +126,46 @@ public class PaymentProcessorImpl implements PaymentProcessor {
                         LocalDateTime.parse(requestedAt.substring(0, requestedAt.indexOf("+"))))
                 .approvedAt(LocalDateTime.parse(approvedAt.substring(0, approvedAt.indexOf("+"))))
                 .build();
+    }
+
+    @Override
+    public JSONObject cancelPaymentRequest(String paymentKey, UUID idempotencyKey)
+            throws Exception {
+        String cancelUrl = paymentCancelUrl.replace("{paymentKey}", paymentKey);
+        JSONObject jsonObject = createCancelRequestJsonObject();
+
+        return executeHttpUrlConnection(cancelUrl, jsonObject, idempotencyKey);
+    }
+
+    private JSONObject createCancelRequestJsonObject() throws ParseException {
+        JSONParser parser = new JSONParser();
+        String cancelReasonJsonBody = "{\"cancelReason\":\"server error\"}";
+
+        return (JSONObject) parser.parse(cancelReasonJsonBody);
+    }
+
+    private JSONObject executeHttpUrlConnection(String strUrl, JSONObject jsonObject,
+            UUID idempotencyKey) throws IOException, ParseException {
+        String authorization = createAuthorization();
+
+        URL url = new URL(strUrl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization", authorization);
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty("Idempotency-Key", idempotencyKey.toString());
+        connection.setRequestMethod("POST");
+        connection.setDoOutput(true);
+
+        try (OutputStream outputStream = connection.getOutputStream()) {
+            outputStream.write(jsonObject.toString().getBytes(StandardCharsets.UTF_8));
+        }
+
+        try (InputStream responseStream =
+                connection.getResponseCode() == HttpStatus.OK.value()
+                        ? connection.getInputStream()
+                        : connection.getErrorStream();
+                Reader reader = new InputStreamReader(responseStream, StandardCharsets.UTF_8)) {
+            return (JSONObject) PARSER.parse(reader);
+        }
     }
 }
