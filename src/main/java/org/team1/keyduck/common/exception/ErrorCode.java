@@ -3,10 +3,11 @@ package org.team1.keyduck.common.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import org.team1.keyduck.common.util.BaseEnumCode;
 import org.team1.keyduck.common.util.ErrorMessage;
 
 @Getter
-public enum ErrorCode {
+public enum ErrorCode implements BaseEnumCode {
     // 400 BAD_REQUEST
     // INVALID(유효하지 않은 값)
     INVALID_DATA_VALUE(HttpStatus.BAD_REQUEST, "BAD_INVALID_001", ErrorMessage.INVALID_VALUE),
@@ -64,7 +65,7 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_001",
             ErrorMessage.INTERNAL_SERVER_ERROR);
 
-    
+
     private final HttpStatus status;
     private final String code;
     private final String message;

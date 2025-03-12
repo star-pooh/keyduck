@@ -46,7 +46,8 @@ public class MemberService {
                 ErrorCode.NOT_FOUND_MEMBER, ErrorMessageParameter.MEMBER));
 
         if (memberRepository.existsByEmail(requestDto.getEmail())) {
-            throw new DataDuplicateException(ErrorCode.DUPLICATE_EMAIL, ErrorMessageParameter.EMAIL);
+            throw new DataDuplicateException(ErrorCode.DUPLICATE_EMAIL,
+                    ErrorMessageParameter.EMAIL);
         }
 
         member.updateMember(requestDto);

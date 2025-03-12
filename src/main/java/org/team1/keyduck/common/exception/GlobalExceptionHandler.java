@@ -100,6 +100,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
     }
 
+    @ExceptionHandler(PaymentCancelException.class)
+    public ResponseEntity<ApiResponse<Void>> handlePaymentCancelException(
+            PaymentCancelException exception) {
+        ApiResponse<Void> apiResponse = ApiResponse.error(
+                exception.getPaymentCancelErrorCode(), exception.getMessage());
+
+        log.info("\n{},{},\n{}", apiResponse.getCode(), getStackTrace(exception.getStackTrace()),
+                apiResponse.getMessage());
+        return new ResponseEntity<>(apiResponse, apiResponse.getStatus());
+    }
+
     // @RequestBody를 @Valid 해서 에러가 발생한 경우
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Void>> handleMethodArgumentNotValidException(

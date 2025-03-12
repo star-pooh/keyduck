@@ -39,7 +39,7 @@ public class PaymentController {
             @AuthenticationPrincipal AuthMember authMember,
             @RequestBody String jsonBody) throws Exception {
         // 결제 승인 정보를 결제 내역 DB에 저장
-        paymentProcessService.paymentProcess(jsonBody, authMember.getId());
+        paymentProcessService.paymentConfirmProcess(jsonBody, authMember.getId());
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS),
                 SuccessCode.CREATE_SUCCESS.getStatus());
     }

@@ -61,6 +61,9 @@ public class Payment extends BaseTime {
     @Column
     private PaymentStatus paymentStatus;
 
+    @Column(length = 64)
+    private String cancelTransactionKey;
+
     // 결제가 일어난 날짜와 시간
     @Column
     private LocalDateTime requestedAt;
@@ -72,7 +75,7 @@ public class Payment extends BaseTime {
     @Builder
     public Payment(Member member, String paymentKey, String orderId, Long amount,
             PaymentMethod paymentMethod, String easyPayType, PaymentStatus paymentStatus,
-            LocalDateTime requestedAt, LocalDateTime approvedAt) {
+            String cancelTransactionKey, LocalDateTime requestedAt, LocalDateTime approvedAt) {
         this.member = member;
         this.paymentKey = paymentKey;
         this.orderId = orderId;
@@ -80,6 +83,7 @@ public class Payment extends BaseTime {
         this.paymentMethod = paymentMethod;
         this.easyPayType = easyPayType;
         this.paymentStatus = paymentStatus;
+        this.cancelTransactionKey = cancelTransactionKey;
         this.requestedAt = requestedAt;
         this.approvedAt = approvedAt;
     }

@@ -33,8 +33,7 @@ public class BiddingController {
             @PathVariable("auctionId") Long auctionId,
             @RequestParam(value = "price", required = true) Long price,
             @AuthenticationPrincipal AuthMember authMember) {
-        biddingService.createBidding(auctionId, price,
-                authMember);
+        biddingService.createBidding(auctionId, price, authMember);
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS),
                 SuccessCode.CREATE_SUCCESS.getStatus());
 

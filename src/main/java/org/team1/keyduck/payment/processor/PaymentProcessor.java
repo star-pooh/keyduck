@@ -15,5 +15,8 @@ public interface PaymentProcessor {
 
     Payment getCreatePaymentData(JSONObject jsonObject, Member member);
 
-    Payment getConfirmPaymentData(JSONObject jsonObject);
+    JSONObject cancelPaymentRequest(String paymentKey, UUID idempotencyKey)
+            throws Exception;
+
+    Payment getPaymentData(JSONObject jsonObject, boolean isCancelRequest);
 }

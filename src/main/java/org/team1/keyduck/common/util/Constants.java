@@ -32,7 +32,7 @@ public class Constants {
 
     public static final String AUCTION_CREATED_MAIL_CONTENTS = "%s님의 키보드 %s의 경매 %s가 정상적으로 등록되었습니다.";
 
-    public static final int PAYMENT_CONFIRM_MAX_RETRIES = 3;
+    public static final int PAYMENT_REQUEST_MAX_RETRIES = 3;
 
     public static final String PAYMENT_COMPLETION_EMAIL_TITLE = "키덕키덕 충전 완료 - 입찰을 시작해보세요!";
 

@@ -34,12 +34,11 @@ dependencies {
     // Jpa
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    // h2
+    // H2
     testImplementation 'com.h2database:h2'
 
-    // datafaker
+    // Data Faker
     testImplementation 'net.datafaker:datafaker:2.4.2'
-
 
     // Querydsl
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
@@ -68,7 +67,7 @@ dependencies {
     // Spring Security Test
     testImplementation 'org.springframework.security:spring-security-test'
 
-    // web socket
+    // Web Socket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
     // Redis
@@ -80,8 +79,11 @@ dependencies {
     // Mail
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
-    // thymeleaf(for email service)
+    // Thymeleaf(for email service)
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
+    // RabbitMQ
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
 }
 
 tasks.named('test') {

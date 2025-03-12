@@ -2,9 +2,8 @@ package org.team1.keyduck.common.dto;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.SuccessCode;
-import org.team1.keyduck.payment.util.PaymentConfirmErrorCode;
+import org.team1.keyduck.common.util.BaseEnumCode;
 
 @Getter
 public class ApiResponse<T> {
@@ -31,17 +30,13 @@ public class ApiResponse<T> {
                 successCode.getMessage(), null);
     }
 
-    public static <T> ApiResponse<T> error(ErrorCode errorCode) {
+    public static <T, E extends BaseEnumCode> ApiResponse<T> error(E errorCode) {
         return new ApiResponse<>(errorCode.getStatus(), errorCode.getCode(),
                 errorCode.getMessage(), null);
     }
 
-    public static <T> ApiResponse<T> error(ErrorCode errorCode, String errorMessage) {
-        return new ApiResponse<>(errorCode.getStatus(), errorCode.getCode(),
-                errorMessage, null);
-    }
-
-    public static <T> ApiResponse<T> error(PaymentConfirmErrorCode errorCode, String errorMessage) {
+    public static <T, E extends BaseEnumCode> ApiResponse<T> error(E errorCode,
+            String errorMessage) {
         return new ApiResponse<>(errorCode.getStatus(), errorCode.getCode(),
                 errorMessage, null);
     }
