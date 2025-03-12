@@ -68,13 +68,22 @@ dependencies {
     // Spring Security Test
     testImplementation 'org.springframework.security:spring-security-test'
 
-    //  cache
+    // cache
     implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
 
-    //Mail
+    // web socket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // jsr310
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3'
+
+    // Mail
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
-    //thymeleaf(for email service)
+    // thymeleaf(for email service)
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 }
 

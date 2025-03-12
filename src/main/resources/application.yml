@@ -41,6 +41,14 @@ spring:
     suffix: .html
     cache: false
 
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      repositories:
+        enabled: false
+
+
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}
@@ -50,3 +58,6 @@ payment:
     test-client-api-key: ${PAYMENT_CLIENT_API_KEY}
     test-secret-api-key: ${PAYMENT_SECRET_API_KEY}
     payment-url: ${PAYMENT_URL}
+
+
+

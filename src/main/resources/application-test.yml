@@ -19,6 +19,12 @@ spring:
   config:
     import: optional:file:.env[.properties]
 
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      repositories:
+        enabled: false
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}

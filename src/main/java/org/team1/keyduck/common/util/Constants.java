@@ -23,7 +23,9 @@ public class Constants {
             "/main",
             "/payment_",
             "/api/auth",
-            "/api/auctions/main"
+            "/api/auctions/main",
+            "/auction_detail",
+            "/ws/auction"
     );
 
     public static final String AUCTION_CREATED_MAIL_TITLE = "경매가 성공적으로 생성되었습니다.";
