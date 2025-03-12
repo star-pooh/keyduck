@@ -1,4 +1,4 @@
-package org.team1.keyduck.payment.entity;
+package org.team1.keyduck.payment.util;
 
 import lombok.Getter;
 

@@ -22,7 +22,6 @@
   </thead>
   <tbody>
   <tr th:each="auction : ${auctions}">
-    <td th:text="${auction.auctionId}"></td>
     <td>
       <a th:href="@{/auction_detail.html(auctionId=${auction.auctionId})}"
          th:text="${auction.title}"></a>
