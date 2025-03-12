@@ -58,14 +58,14 @@ public class BiddingService {
     }
 
     private void validateBiddingPrice(Long price, Auction auction) {
-        // 입찰가가 최소 입찰 단위 금액의 배수만큼 증가해야함
-        long priceDifference = price - auction.getStartPrice();
 
+        long priceDifference = price - auction.getStartPrice();
+        //비딩 금액이 현재가보다 낮으면 안됨
         if (price.equals(auction.getImmediatePurchasePrice())
                 && price > auction.getCurrentPrice()) {
             return;
         }
-
+        //입찰 금액이 단위의 배수여야함
         if (priceDifference % auction.getBiddingUnit() != 0) {
             throw new DataInvalidException(ErrorCode.INVALID_BIDDING_PRICE_UNIT, null);
         }
