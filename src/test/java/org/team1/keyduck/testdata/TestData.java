@@ -11,9 +11,9 @@ import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.payment.entity.Payment;
 import org.team1.keyduck.payment.entity.PaymentDeposit;
-import org.team1.keyduck.payment.entity.PaymentMethod;
-import org.team1.keyduck.payment.entity.PaymentStatus;
 import org.team1.keyduck.payment.entity.TempPayment;
+import org.team1.keyduck.payment.util.PaymentMethod;
+import org.team1.keyduck.payment.util.PaymentStatus;
 
 public class TestData {
 

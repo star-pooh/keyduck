@@ -23,5 +23,5 @@ public class ErrorMessageParameter {
     public static final String PAYMENT_METHOD = "결제 수단";
     public static final String PAYMENT_AMOUNT = "결제 금액";
     public static final String TEMP_PAYMENT_INFO = "결제 금액 정보";
-    
+    public static final String PAYMENT_INFO = "결제 정보";
 }

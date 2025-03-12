@@ -9,15 +9,12 @@ import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.team1.keyduck.auth.dto.request.MemberCreateRequestDto;
-import org.team1.keyduck.auth.dto.request.PaymentFormRequestDto;
 import org.team1.keyduck.auth.dto.request.SigninRequestDto;
 import org.team1.keyduck.auth.dto.response.MemberCreateResponseDto;
-import org.team1.keyduck.auth.dto.response.PaymentFormResponseDto;
 import org.team1.keyduck.auth.dto.response.SigninResponseDto;
 import org.team1.keyduck.auth.service.AuthService;
 import org.team1.keyduck.common.dto.ApiResponse;
@@ -56,24 +53,24 @@ public class AuthController {
         return new ResponseEntity<>(response, response.getStatus());
     }
 
-    @PostMapping("/payment")
-    public ResponseEntity<ApiResponse<PaymentFormResponseDto>> paymentFormSignin(
-            @RequestBody PaymentFormRequestDto dto, HttpServletResponse response, Model model) {
-        PaymentFormResponseDto responseDto = authService.paymentFormLogin(dto);
-        String bearerToken = URLEncoder.encode(responseDto.getToken(), StandardCharsets.UTF_8);
-
-        response.setHeader("Authorization", bearerToken);
-        model.addAttribute("paymentAmount", dto.getAmount());
-
-        return new ResponseEntity<>(ApiResponse.success(SuccessCode.CREATE_SUCCESS, responseDto),
-                SuccessCode.CREATE_SUCCESS.getStatus());
-    }
-
     @PostMapping("/verify")
     public ResponseEntity<ApiResponse<Void>> verifyJwtToken(HttpServletRequest request) {
         authService.verifyJwtToken(request);
 
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.TOKEN_VERIFY_SUCCESS),
                 SuccessCode.TOKEN_VERIFY_SUCCESS.getStatus());
+    }
+
+    @PostMapping("/form/login")
+    public ResponseEntity<ApiResponse<Void>> formLogin(
+            @Valid @RequestBody SigninRequestDto dto, HttpServletResponse httpServletResponse) {
+        SigninResponseDto responseDto = authService.login(dto);
+        String bearerToken = URLEncoder.encode(responseDto.getBearerToken(),
+                StandardCharsets.UTF_8);
+
+        httpServletResponse.setHeader("Authorization", bearerToken);
+
+        return new ResponseEntity<>(ApiResponse.success(SuccessCode.LOGIN_SUCCESS),
+                SuccessCode.LOGIN_SUCCESS.getStatus());
     }
 }
