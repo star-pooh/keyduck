@@ -44,7 +44,7 @@ public class BiddingService {
 
         //경매가 진행 중이어야 가능
         if (!auction.getAuctionStatus().equals(AuctionStatus.IN_PROGRESS)) {
-            throw new DataInvalidException(ErrorCode.AUCTION_NOT_IN_PROGRESS, null);
+            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_IN_PROGRESS, null);
         }
         //비딩 횟수가 열번째 미만이어야함
         long biddingCount = biddingRepository.countByMember_IdAndAuction_Id(authMember.getId(),
