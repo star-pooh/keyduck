@@ -47,6 +47,13 @@ spring:
     username: ${RABBITMQ_USERNAME}
     password: ${RABBITMQ_PASSWORD}
 
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      repositories:
+        enabled: false
+
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}

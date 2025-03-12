@@ -10,7 +10,6 @@ public class ErrorMessage {
     public static final String DUPLICATE_USE = "해당 %s은(는) 이미 사용 중입니다.";
     public static final String DUPLICATE_DELETE = "이미 삭제된 %s 입니다.";
     public static final String NOT_FOUND_VALUE = "해당 %s을(를) 찾을 수 없습니다.";
-    public static final String EMAIL_SEND_ERROR = "이메일 전송 실패 - %s";
 
     // 중복되지 않는 메시지
     // 400 BAD_REQUEST

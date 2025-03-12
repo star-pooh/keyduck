@@ -120,7 +120,8 @@ public class AuctionService {
                         ErrorMessageParameter.AUCTION));
 
         // 경매 입찰 내역 조회
-        List<BiddingResponseDto> responseDto = biddingRepository.findAllByAuctionId(auctionId)
+        List<BiddingResponseDto> responseDto = biddingRepository.findAllByAuctionIdOrderByCreatedAt(
+                        auctionId)
                 .stream()
                 .map(BiddingResponseDto::of)
                 .toList();
@@ -137,53 +138,25 @@ public class AuctionService {
                 keyboardName, auctionTitle, sellerName);
     }
 
-    @Transactional
-    public void openAuction(Long memberId, Long auctionId) {
-        Auction findAuction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
-                        ErrorMessageParameter.AUCTION));
-
-        if (!findAuction.getAuctionStatus().equals(AuctionStatus.NOT_STARTED)) {
-            throw new DataInvalidException(ErrorCode.INVALID_STATUS,
-                    ErrorMessageParameter.AUCTION_STATUS);
-        }
-
-        if (!findAuction.getKeyboard().getMember().getId().equals(memberId)) {
-            throw new DataUnauthorizedAccessException(ErrorCode.FORBIDDEN_ACCESS, null);
-        }
-
-        findAuction.updateAuctionStatus(AuctionStatus.IN_PROGRESS);
-    }
-
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void startAuction(Auction targetAuction) {
+    public void openAuction(Auction targetAuction) {
         targetAuction.updateAuctionStatus(AuctionStatus.IN_PROGRESS);
 
         log.info("auctionId : {}, auctionTitle : {}, in progress status change success",
                 targetAuction.getId(), targetAuction.getTitle());
     }
 
-    @Transactional
-    public void closeAuction(Long id, Long auctionId) {
-        Auction findAuction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
-                        ErrorMessageParameter.AUCTION));
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void closeAuction(Auction targetAuction) {
+        Member winnerMember = biddingRepository.findByMaxPriceAuctionId(targetAuction.getId());
+        targetAuction.updateSuccessBiddingMember(winnerMember);
 
-        if (!findAuction.getAuctionStatus().equals(AuctionStatus.IN_PROGRESS)) {
-            throw new DataInvalidException(ErrorCode.INVALID_STATUS,
-                    ErrorMessageParameter.AUCTION_STATUS);
-        }
+        paymentDepositService.refundPaymentDeposit(targetAuction.getId());
+        saleProfitService.saleProfit(targetAuction.getId());
 
-        if (!findAuction.getKeyboard().getMember().getId().equals(id)) {
-            throw new DataUnauthorizedAccessException(ErrorCode.FORBIDDEN_ACCESS, null);
-        }
+        targetAuction.updateAuctionStatus(AuctionStatus.CLOSED);
 
-        Member winnerMember = biddingRepository.findByMaxPriceAuctionId(auctionId);
-        findAuction.updateSuccessBiddingMember(winnerMember);
-
-        paymentDepositService.refundPaymentDeposit(auctionId);
-        saleProfitService.saleProfit(auctionId);
-
-        findAuction.updateAuctionStatus(AuctionStatus.CLOSED);
+        log.info("auctionId : {}, auctionTitle : {}, closed status change success",
+                targetAuction.getId(), targetAuction.getTitle());
     }
 }

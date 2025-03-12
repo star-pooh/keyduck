@@ -2,6 +2,7 @@ package org.team1.keyduck.bidding.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,6 +22,7 @@ import org.team1.keyduck.common.exception.SuccessCode;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/biddings")
+@Slf4j
 public class BiddingController {
 
     private final BiddingService biddingService;

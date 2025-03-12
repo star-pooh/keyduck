@@ -13,6 +13,7 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.EmailSendErrorException;
@@ -73,24 +74,17 @@ public class EmailService {
             log.info("이메일 전송완료: {}, 내용:{}", recipientEmail, emailContent);
         } catch (MailSendException e) {
             log.error("이메일 전송 실패 - 네트워크 문제 또는 잘못된 이메일 주소", e);
-            throw new EmailSendErrorException(ErrorCode.EMAIL_SERVER_ERROR,
-                    ErrorMessageParameter.EMAIL_NETWORK_ERROR);
         } catch (MailAuthenticationException e) {
             log.error("이메일 전송 실패 - 차단 등 인증 오류");
-            throw new EmailSendErrorException(ErrorCode.EMAIL_SENDING_FORBIDDEN,
-                    ErrorMessageParameter.EMAIL_AUTHENTICATION_ERROR);
         } catch (MailException e) {
             log.error("이메일 전송 실패 - SMTP 서버 문제", e);
-            throw new EmailSendErrorException(ErrorCode.EMAIL_SERVER_ERROR,
-                    ErrorMessageParameter.EMAIL_SMTP_SEVER_ERROR);
         } catch (MessagingException e) {
             log.error("이메일 전송 실패 - 메세징 서버 오류");
-            throw new EmailSendErrorException(ErrorCode.EMAIL_SERVER_ERROR,
-                    ErrorMessageParameter.EMAIL_MESSAGING_SEVER_ERROR);
         }
     }
 
     //멤버정보에서 가져온 이메일로 보내기
+    @Async
     public void sendMemberEmail(Long memberId, MemberEmailRequestDto memberEmailRequestDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
@@ -115,20 +109,12 @@ public class EmailService {
             log.info("이메일 전송 완료: '{}'", memberEmailRequestDto.getEmailTitle());
         } catch (MailSendException e) {
             log.error("이메일 전송 실패 - 네트워크 문제 또는 잘못된 이메일 주소", e);
-            throw new EmailSendErrorException(ErrorCode.EMAIL_SERVER_ERROR,
-                    ErrorMessageParameter.EMAIL_NETWORK_ERROR);
         } catch (MailAuthenticationException e) {
             log.error("이메일 전송 실패 - 차단 등 인증 오류");
-            throw new EmailSendErrorException(ErrorCode.EMAIL_SENDING_FORBIDDEN,
-                    ErrorMessageParameter.EMAIL_AUTHENTICATION_ERROR);
         } catch (MailException e) {
             log.error("이메일 전송 실패 - SMTP 서버 문제", e);
-            throw new EmailSendErrorException(ErrorCode.EMAIL_SERVER_ERROR,
-                    ErrorMessageParameter.EMAIL_SMTP_SEVER_ERROR);
         } catch (MessagingException e) {
             log.error("이메일 전송 실패 - 메세징 서버 오류");
-            throw new EmailSendErrorException(ErrorCode.EMAIL_SERVER_ERROR,
-                    ErrorMessageParameter.EMAIL_MESSAGING_SEVER_ERROR);
         }
     }
 

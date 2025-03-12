@@ -50,9 +50,11 @@ public class SecurityConfig {
                         .hasRole("CUSTOMER")
                         .requestMatchers("/style.css", "/token_verify.js")
                         .permitAll()
-                        .requestMatchers("/login.html", "/main.html", "/payment_*.html")
+                        .requestMatchers("/login.html", "/main.html", "/payment_*.html",
+                                "/auction_detail.html")
                         .permitAll()
                         .requestMatchers("/api/payment/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();

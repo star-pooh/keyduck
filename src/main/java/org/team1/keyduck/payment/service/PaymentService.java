@@ -6,6 +6,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
@@ -14,6 +15,8 @@ import org.team1.keyduck.common.exception.PaymentCancelException;
 import org.team1.keyduck.common.exception.PaymentConfirmException;
 import org.team1.keyduck.common.util.Constants;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
+import org.team1.keyduck.email.dto.EmailEvent;
+import org.team1.keyduck.email.dto.MemberEmailRequestDto;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.repository.MemberRepository;
 import org.team1.keyduck.payment.dto.PaymentDto;
@@ -34,6 +37,7 @@ public class PaymentService {
     private final MemberRepository memberRepository;
     private final PaymentProcessor paymentProcessor;
     private final PaymentFailMessagePublisher paymentFailMessagePublisher;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public void validatePaymentData(String jsonBody, Long memberId) {
         JSONObject jsonObject = paymentProcessor.parseJsonBody(jsonBody);
@@ -50,8 +54,17 @@ public class PaymentService {
 
         JSONObject jsonObject = paymentProcessor.parseJsonBody(jsonBody);
         Payment payment = paymentProcessor.getCreatePaymentData(jsonObject, foundedMember);
-
         paymentRepository.save(payment);
+
+        // 결제 내역 이메일로 알림주기
+        MemberEmailRequestDto emailRequestDto = new MemberEmailRequestDto(
+                Constants.PAYMENT_COMPLETION_EMAIL_TITLE,
+                String.format(Constants.PAYMENT_COMPLETION_EMAIL_CONTENTS, payment.getAmount(),
+                        payment.getPaymentMethod()
+                )
+        );
+        applicationEventPublisher.publishEvent(
+                new EmailEvent(payment.getMember().getId(), emailRequestDto));
     }
 
     public JSONObject approvalPaymentRequest(String jsonBody) throws Exception {

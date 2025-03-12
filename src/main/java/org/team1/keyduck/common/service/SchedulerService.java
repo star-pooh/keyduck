@@ -9,8 +9,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.entity.Auction;
+import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.repository.AuctionQueryDslRepository;
 import org.team1.keyduck.auction.service.AuctionService;
+import org.team1.keyduck.member.entity.Member;
 
 @Service
 @Slf4j
@@ -29,28 +31,55 @@ public class SchedulerService {
         this.entityManager = entityManager;
     }
 
-    @Scheduled(cron = "*/20 * * * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 0/1 * * *", zone = "Asia/Seoul")
     @Transactional
-    public void auctionStart() {
-        List<Auction> startTargetAuctionList =
-                auctionQueryDslRepository.findStartTargetAuction(LocalDateTime.now());
+    public void auctionOpen() {
+        List<Auction> openTargetAuctionList =
+                auctionQueryDslRepository.findOpenTargetAuction(LocalDateTime.now());
 
-        if (startTargetAuctionList.isEmpty()) {
+        if (openTargetAuctionList.isEmpty()) {
             log.info("start target auction list is empty");
             return;
         }
 
-        for (Auction startTargetAuction : startTargetAuctionList) {
+        for (Auction openTargetAuction : openTargetAuctionList) {
             try {
-                auctionService.startAuction(startTargetAuction);
+                auctionService.openAuction(openTargetAuction);
                 entityManager.flush();
 
-                log.info("auctionStatus : {}", startTargetAuction.getAuctionStatus());
+                log.info("auctionId : {}, auctionStatus : {}", openTargetAuction.getId(), openTargetAuction.getAuctionStatus());
             } catch (Exception e) {
                 log.error("auctionId : {}, auctionTitle : {} status change failed",
-                        startTargetAuction.getId(), startTargetAuction.getTitle(), e);
+                        openTargetAuction.getId(), openTargetAuction.getTitle(), e);
                 throw e;
             }
         }
     }
+
+    @Scheduled(cron = "0 0 0/1 * * *", zone = "Asia/Seoul")
+    @Transactional
+    public void auctionClose() {
+        List<Auction> closeTargetAuctionList =
+                auctionQueryDslRepository.findCloseTargetAuction(LocalDateTime.now());
+
+        if (closeTargetAuctionList.isEmpty()) {
+            log.info("end target auction list is empty");
+            return;
+        }
+
+        for (Auction closeTargetAuction : closeTargetAuctionList) {
+            try {
+                auctionService.closeAuction(closeTargetAuction);
+                entityManager.flush();
+
+                log.info("auctionId : {}, auctionStatus : {}", closeTargetAuction.getId(), closeTargetAuction.getAuctionStatus());
+
+            } catch (Exception e) {
+                log.error("auctionId : {}, auctionTitle : {} close failed",
+                        closeTargetAuction.getId(), closeTargetAuction.getTitle(), e);
+                throw e;
+            }
+        }
+    }
+
 }
