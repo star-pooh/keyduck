@@ -65,7 +65,7 @@ public enum ErrorCode implements BaseEnumCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_001",
             ErrorMessage.INTERNAL_SERVER_ERROR);
 
-    
+
     private final HttpStatus status;
     private final String code;
     private final String message;
@@ -79,20 +79,5 @@ public enum ErrorCode implements BaseEnumCode {
     public String getMessage(Object arg) {
         return arg != null ? String.format(this.message, arg) : this.message;
     }
-
-//    @Override
-//    public HttpStatus getStatus() {
-//        return status;
-//    }
-//
-//    @Override
-//    public String getCode() {
-//        return code;
-//    }
-//
-//    @Override
-//    public String getMessage() {
-//        return message;
-//    }
 }
 
