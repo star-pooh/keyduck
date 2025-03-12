@@ -53,6 +53,7 @@ public class PaymentService {
 
         JSONObject jsonObject = paymentProcessor.parseJsonBody(jsonBody);
         Payment payment = paymentProcessor.getCreatePaymentData(jsonObject, foundedMember);
+        paymentRepository.save(payment);
 
         // 결제 내역 이메일로 알림주기
         MemberEmailRequestDto emailRequestDto = new MemberEmailRequestDto(
@@ -63,8 +64,6 @@ public class PaymentService {
         );
         applicationEventPublisher.publishEvent(
                 new EmailEvent(payment.getMember().getId(), emailRequestDto));
-
-        paymentRepository.save(payment);
     }
 
     public JSONObject approvalPaymentRequest(String jsonBody) throws Exception {
