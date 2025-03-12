@@ -203,7 +203,7 @@
   }
 
   function connectWebSocket(auctionId) {
-    const socket = new SockJS('http://localhost:8080/ws/auction');
+    const socket = new SockJS('https://keyducks.com/ws/auction');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
       console.log("WebSocket 연결 성공" + frame);
