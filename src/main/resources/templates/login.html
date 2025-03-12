@@ -6,12 +6,12 @@
   <link rel="stylesheet" type="text/css" href="/style.css"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>결제용 로그인 창</title>
+  <title>로그인 페이지</title>
 </head>
 
 <body>
 <div class="wrapper">
-  <form id="paymentForm">
+  <form id="loginForm">
     <label for="email">이메일:</label>
     <input type="text" id="email" name="email" required/>
     <br/>
@@ -20,28 +20,22 @@
     <input type="password" id="password" name="password" required/>
     <br/>
 
-    <label for="amount">결제 금액:</label>
-    <input type="number" id="amount" name="amount" required/>
-    <br/>
-
-    <button type="submit">결제하기</button>
+    <button type="submit">로그인</button>
   </form>
 </div>
-</body>
 
 <script>
-  const form = document.getElementById("paymentForm");
+  const form = document.getElementById("loginForm");
 
   form.addEventListener("submit", function (event) {
     event.preventDefault(); // 기본 폼 제출 방지
 
     const requestData = {
       email: document.getElementById("email").value,
-      password: document.getElementById("password").value,
-      amount: document.getElementById("amount").value
+      password: document.getElementById("password").value
     };
 
-    fetch("/api/auth/payment", {
+    fetch("/api/auth/form/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -49,8 +43,9 @@
       body: JSON.stringify(requestData)
     })
     .then(response => {
-      console.log(response);
       if (!response.ok) {
+        console.log(response);
+
         return response.json().then(errorData => {
           console.log(errorData);
           throw new Error(errorData.message);
@@ -59,11 +54,9 @@
 
       const token = response.headers.get("Authorization");
       sessionStorage.setItem('Authorization', token);
-
-      return response.json();
     })
-    .then(data => {
-      window.location.href = `/api/payment/process?amount=${data.data.amount}`;
+    .then(() => {
+      window.location.href = `/api/auctions/main`;
     })
     .catch(error => {
       console.log(error)
@@ -71,4 +64,5 @@
     });
   });
 </script>
+</body>
 </html>
