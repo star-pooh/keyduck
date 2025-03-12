@@ -42,7 +42,7 @@ public class Constants {
 
     public static final String AUCTION_OPEN_MAIL_CONTENTS = "%s님의 키보드 %s의 경매 %s가 시작되었습니다.";
 
-    public static final String AUCTION_CLOSE_MAIL_TITLE = "경매에 낙찰 되었습니다..";
+    public static final String AUCTION_CLOSE_MAIL_TITLE = "경매에 낙찰 되었습니다.";
 
     public static final String AUCTION_CLOSE_MAIL_CONTENTS = "%s님이 참여하신 키보드 %s의 경매 %s에서 낙찰되셨습니다.";
 
