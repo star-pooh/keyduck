@@ -41,7 +41,11 @@ public class BiddingEventListener implements MessageListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void publishBidding(BiddingResponseDto biddingResponseDto) {
-        log.info("Publishing bidding event: {}", biddingResponseDto);
-        redisTemplate.convertAndSend(topic.getTopic(), biddingResponseDto);
+        try {
+            redisTemplate.convertAndSend(topic.getTopic(), biddingResponseDto);
+            log.info("Redis publish success");
+        } catch (Exception e) {
+            log.error("Redis publish error", e);
+        }
     }
 }
