@@ -1,30 +1,26 @@
 package org.team1.keyduck.auth.service;
 
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import java.util.concurrent.TimeUnit;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.team1.keyduck.common.config.JwtUtil;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class JwtBlacklistService {
 
-    private final Cache<String, Boolean> blacklistCache;
-
-    public JwtBlacklistService() {
-        this.blacklistCache = Caffeine.newBuilder()
-                .expireAfterWrite(6, TimeUnit.HOURS)
-                .maximumSize(10_000)
-                .build();
-    }
+    private final StringRedisTemplate redisTemplate;
+    private final JwtUtil jwtUtil;
 
     public void addToBlacklist(String token) {
-        blacklistCache.put(token, true);
+        redisTemplate.opsForValue().set(token, "blacklist", 6, TimeUnit.HOURS);
     }
 
     public boolean isBlacklisted(String token) {
-        return blacklistCache.getIfPresent(token) != null;
+        return Boolean.TRUE.equals(redisTemplate.hasKey(token));
     }
 }

@@ -1,7 +1,9 @@
 package org.team1.keyduck.auction.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.team1.keyduck.testdata.TestData.TEST_AUCTION1;
@@ -47,7 +49,8 @@ class AuctionServiceTest {
         Auction auction = TEST_AUCTION1;
 
         when(auctionRepository.findById(TEST_AUCTION_ID1)).thenReturn(Optional.of(auction));
-        when(biddingRepository.findAllByAuctionId(TEST_AUCTION_ID1)).thenReturn(TEST_BIDDINGS);
+        when(biddingRepository.findAllByAuctionIdOrderByCreatedAt(TEST_AUCTION_ID1)).thenReturn(
+                TEST_BIDDINGS);
 
         // List<Bidding> → List<BiddingResponseDto> 변환
         List<BiddingResponseDto> responseDtos = TEST_BIDDINGS.stream()
@@ -96,12 +99,14 @@ class AuctionServiceTest {
 
         List<AuctionSearchResponseDto> mockResults = List.of(mockDto1, mockDto2, mockDto3);
 
-        Page<AuctionSearchResponseDto> mockPage = new PageImpl<>(mockResults, pageable, mockResults.size());
+        Page<AuctionSearchResponseDto> mockPage = new PageImpl<>(mockResults, pageable,
+                mockResults.size());
 
         when(auctionRepository.findAllAuction(pageable, null, null, null)).thenReturn(mockPage);
 
         // when
-        Page<AuctionSearchResponseDto> result = auctionService.findAllAuction(pageable, null, null, null);
+        Page<AuctionSearchResponseDto> result = auctionService.findAllAuction(pageable, null, null,
+                null);
 
         // then
         assertEquals(3, result.getTotalElements());
@@ -117,7 +122,8 @@ class AuctionServiceTest {
         when(auctionRepository.findAllAuction(pageable, null, null, null)).thenReturn(responseDto);
 
         // when
-        Page<AuctionSearchResponseDto> result = auctionService.findAllAuction(pageable, null, null, null);
+        Page<AuctionSearchResponseDto> result = auctionService.findAllAuction(pageable, null, null,
+                null);
 
         // then
         assertTrue(result.isEmpty());

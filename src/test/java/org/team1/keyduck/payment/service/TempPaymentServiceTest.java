@@ -45,7 +45,7 @@ public class TempPaymentServiceTest {
 
     @Test
     @DisplayName("성공_임시 결제 내역의 금액과 실제 결제 요청의 금액이 일치하는지 확인")
-    public void successValidPaymentAmount() {
+    public void successValidatePaymentAmount() {
 
         // when
         when(tempPaymentRepository.findByOrderId(any(String.class))).thenReturn(
@@ -61,7 +61,7 @@ public class TempPaymentServiceTest {
 
     @Test
     @DisplayName("실패_임시 결제 내역의 금액과 실제 결제 요청의 금액이 일치하는지 검증 시 임시 결제 내역이 존재하지 않음")
-    public void failValidPaymentAmountWithNotFoundTempPayment() {
+    public void failValidatePaymentAmountWithNotFoundTempPayment() {
 
         // when
         when(tempPaymentRepository.findByOrderId(any(String.class))).thenThrow(
@@ -79,7 +79,7 @@ public class TempPaymentServiceTest {
 
     @Test
     @DisplayName("실패_임시 결제 내역의 멤버 정보와 실제 결제 요청의 멤버 정보가 일치하지 않음")
-    public void failValidPaymentAmountNotMatchMemberId() {
+    public void failValidatePaymentAmountNotMatchMemberId() {
 
         // when
         when(tempPaymentRepository.findByOrderId(any(String.class))).thenReturn(
@@ -95,7 +95,7 @@ public class TempPaymentServiceTest {
 
     @Test
     @DisplayName("실패_임시 결제 내역의 금액 정보와 실제 결제 요청의 금액 정보가 일치하지 않음")
-    public void failValidPaymentAmountNotMatchPaymentAmount() {
+    public void failValidatePaymentAmountNotMatchPaymentAmount() {
 
         // when
         when(tempPaymentRepository.findByOrderId(any(String.class))).thenReturn(

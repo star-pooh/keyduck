@@ -43,4 +43,6 @@ public class ErrorMessage {
 
     // 500 INTERNAL_SERVER_ERROR
     public static final String INTERNAL_SERVER_ERROR = "서버 내부 오류가 발생했습니다.";
+
+
 }

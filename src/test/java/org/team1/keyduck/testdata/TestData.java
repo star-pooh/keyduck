@@ -11,9 +11,9 @@ import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.payment.entity.Payment;
 import org.team1.keyduck.payment.entity.PaymentDeposit;
-import org.team1.keyduck.payment.entity.PaymentMethod;
-import org.team1.keyduck.payment.entity.PaymentStatus;
 import org.team1.keyduck.payment.entity.TempPayment;
+import org.team1.keyduck.payment.util.PaymentMethod;
+import org.team1.keyduck.payment.util.PaymentStatus;
 
 public class TestData {
 
@@ -201,6 +201,7 @@ public class TestData {
     public final static Long IMMEDIATE_PURCHASE_PRICE1 = 100000L;
     public final static AuctionStatus AUCTION_STATUS1 = AuctionStatus.IN_PROGRESS;
     public final static AuctionStatus AUCTION_STATUS2 = AuctionStatus.NOT_STARTED;
+    public final static AuctionStatus AUCTION_STATUS3 = AuctionStatus.CLOSED;
     public final static Auction TEST_AUCTION3 = Auction.builder()
             .keyboard(TEST_KEYBOARD1).startPrice(START_PRICE1).currentPrice(START_PRICE1)
             .biddingUnit(BIDDING_UNIT1).auctionStatus(AUCTION_STATUS1).build();
