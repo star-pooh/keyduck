@@ -13,7 +13,6 @@ import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.PaymentConfirmException;
 import org.team1.keyduck.common.util.Constants;
-import org.team1.keyduck.common.util.Constants;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.email.dto.EmailEvent;
 import org.team1.keyduck.email.dto.MemberEmailRequestDto;
@@ -54,6 +53,16 @@ public class PaymentService {
 
         JSONObject jsonObject = paymentProcessor.parseJsonBody(jsonBody);
         Payment payment = paymentProcessor.getCreatePaymentData(jsonObject, foundedMember);
+
+        // 결제 내역 이메일로 알림주기
+        MemberEmailRequestDto emailRequestDto = new MemberEmailRequestDto(
+                Constants.PAYMENT_COMPLETION_EMAIL_TITLE,
+                String.format(Constants.PAYMENT_COMPLETION_EMAIL_CONTENTS, payment.getAmount(),
+                        payment.getPaymentMethod()
+                )
+        );
+        applicationEventPublisher.publishEvent(
+                new EmailEvent(payment.getMember().getId(), emailRequestDto));
 
         paymentRepository.save(payment);
     }
@@ -100,18 +109,9 @@ public class PaymentService {
                 log.error("결제 승인 중 예기치 못한 예외 발생");
                 throw e;
             }
-            // 결제 내역 이메일로 알림주기
-            MemberEmailRequestDto emailRequestDto = new MemberEmailRequestDto(
-                    Constants.PAYMENT_COMPLETION_EMAIL_TITLE,
-                    String.format(Constants.PAYMENT_COMPLETION_EMAIL_CONTENTS, savedPayment.getAmount(),
-                            savedPayment.getPaymentMethod()
-                    )
-            );
-            applicationEventPublisher.publishEvent(
-                    new EmailEvent(savedPayment.getMember().getId(), emailRequestDto));
-
         }
         return null;
+    }
 
     @Transactional
     public PaymentDto updatePayment(JSONObject jsonObject) {
