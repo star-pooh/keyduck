@@ -87,26 +87,6 @@ public class AuctionController {
                 SuccessCode.READ_SUCCESS.getStatus());
     }
 
-    @PatchMapping("/{auctionId}/open")
-    public ResponseEntity<ApiResponse<Void>> openAuction(
-            @AuthenticationPrincipal AuthMember authMember,
-            @PathVariable Long auctionId) {
-        auctionService.openAuction(authMember.getId(), auctionId);
-        ApiResponse<Void> response = ApiResponse.success(SuccessCode.UPDATE_SUCCESS);
-        return new ResponseEntity<>(response, response.getStatus());
-    }
-
-    @PatchMapping("/{auctionId}/close")
-    public ResponseEntity<ApiResponse<Void>> closeAuction(
-            @AuthenticationPrincipal AuthMember authMember,
-            @PathVariable Long auctionId
-    ) {
-        auctionService.closeAuction(authMember.getId(), auctionId);
-        ApiResponse<Void> response = ApiResponse.success(SuccessCode.UPDATE_SUCCESS);
-        return new ResponseEntity<>(response, response.getStatus());
-    }
-
-
     @GetMapping("/main")
     public String findAllAuctionWithHtml(Pageable pageable, Model model) {
 

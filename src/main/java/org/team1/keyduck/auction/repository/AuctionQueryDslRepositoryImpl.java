@@ -76,13 +76,25 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
     }
 
     @Override
-    public List<Auction> findStartTargetAuction(LocalDateTime now) {
+    public List<Auction> findOpenTargetAuction(LocalDateTime now) {
         return queryFactory.selectFrom(auction)
                 .where(auction.auctionStartDate.year().eq(now.getYear())
                         .and(auction.auctionStartDate.month().eq(now.getMonthValue()))
                         .and(auction.auctionStartDate.dayOfMonth().eq(now.getDayOfMonth()))
                         .and(auction.auctionStartDate.hour().eq(now.getHour()))
                         .and(auction.auctionStatus.eq(AuctionStatus.NOT_STARTED))
+                )
+                .fetch();
+    }
+
+    @Override
+    public List<Auction> findCloseTargetAuction(LocalDateTime now) {
+        return queryFactory.selectFrom(auction)
+                .where(auction.auctionEndDate.year().eq(now.getYear())
+                        .and(auction.auctionEndDate.month().eq(now.getMonthValue()))
+                        .and(auction.auctionEndDate.dayOfMonth().eq(now.getDayOfMonth()))
+                        .and(auction.auctionEndDate.hour().eq(now.getHour()))
+                        .and(auction.auctionStatus.eq(AuctionStatus.IN_PROGRESS))
                 )
                 .fetch();
     }
