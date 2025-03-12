@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
@@ -27,6 +29,7 @@ import org.team1.keyduck.bidding.dto.response.SuccessBiddingResponseDto;
 import org.team1.keyduck.bidding.entity.Bidding;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
 import org.team1.keyduck.common.exception.DataInvalidException;
+import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
@@ -301,5 +304,85 @@ public class BiddingServiceTest {
         assertEquals("입찰가가 1회 입찰 시 가능한 최대 금액(최소 입찰 금액 단위의 10배)을 초과하였습니다.",
                 exception1.getErrorCode().getMessage());
     }
+
+    @Test
+    @DisplayName("입찰 조회 성공")
+    public void getBiddingsByAuctionId() {
+        //given
+        //Mock Auction 객체 생성 및 설정
+        Auction auction = mock(Auction.class);
+        when(auction.getTitle()).thenReturn("Auction Title");
+        when(auction.getId()).thenReturn(1L);
+
+        //Mock Member 객체 생성 및 설정
+        Member member = mock(Member.class);
+        when(member.getName()).thenReturn("member Name");
+
+        Bidding mockBidding1 = mock(Bidding.class);
+        Bidding mockBidding2 = mock(Bidding.class);
+        Bidding mockBidding3 = mock(Bidding.class);
+
+        //Mock Bidding 객체가 getMember() 호출 시 mockMember 반환하도록 설정
+        when(mockBidding1.getMember()).thenReturn(member);
+        when(mockBidding2.getMember()).thenReturn(member);
+        when(mockBidding3.getMember()).thenReturn(member);
+        when(mockBidding1.getAuction()).thenReturn(auction);
+        when(mockBidding2.getAuction()).thenReturn(auction);
+        when(mockBidding3.getAuction()).thenReturn(auction);
+        List<Bidding> biddingList = List.of(mockBidding1, mockBidding2, mockBidding3);
+
+        //when
+        when(auctionRepository.existsById(auction.getId())).thenReturn(true);
+        when(biddingRepository.findByAuctionIdOrderByPriceDesc(auction.getId())).thenReturn(
+                biddingList);
+
+        List<BiddingResponseDto> result = biddingService.getBiddingByAuction(auction.getId());
+
+        //then
+        assertEquals(3, result.size());
+    }
+
+    @Test
+    @DisplayName("입찰 조회 실패: 없는 경매일 경우")
+    public void getBiddingFailWhenauctionNotFound() {
+        //given
+        Long auctionId = 100L;
+        when(auctionRepository.existsById(auctionId)).thenReturn(false);
+
+        //then
+        DataNotFoundException exception1 = assertThrows(
+                DataNotFoundException.class,
+                () -> biddingService.getBiddingByAuction(auctionId)
+        );
+        assertEquals("해당 경매을(를) 찾을 수 없습니다.", exception1.getMessage());
+    }
+
+    @Test
+    @DisplayName("낙찰 조회 성공")
+    public void getSuccessBidding() {
+        //given
+        Long memberId = TestData.TEST_ID4;
+
+        Auction mockAuction1 = mock(Auction.class);
+        Auction mockAuction2 = mock(Auction.class);
+        List<Auction> closedAuctions = List.of(mockAuction1, mockAuction2);
+
+        Member member = mock(Member.class);
+        when(member.getId()).thenReturn(memberId);
+
+        when(mockAuction1.getMember()).thenReturn(member);
+        when(mockAuction2.getMember()).thenReturn(member);
+
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
+        when(auctionRepository.findAllByMember_IdAndAuctionStatus(memberId, AuctionStatus.CLOSED))
+                .thenReturn(closedAuctions);
+
+        //when
+        Page<SuccessBiddingResponseDto> result = biddingService.getSuccessBidding(memberId, 1);
+
+        //then
+        assertEquals(2, result.getContent().size());
+    }
+
 
 }
