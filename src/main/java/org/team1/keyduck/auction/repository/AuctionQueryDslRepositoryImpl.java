@@ -10,7 +10,6 @@ import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,7 +26,6 @@ import org.springframework.stereotype.Repository;
 import org.team1.keyduck.auction.dto.response.AuctionSearchResponseDto;
 import org.team1.keyduck.auction.dto.response.QAuctionSearchResponseDto;
 import org.team1.keyduck.auction.entity.Auction;
-import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 
 @Repository
@@ -75,8 +73,8 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
         Long totalCount = Optional.ofNullable(queryFactory.select(
                         auction.count())
                 .from(auction)
-                .innerJoin(auction.keyboard, keyboard)
-                .innerJoin(keyboard.member, member)
+                .leftJoin(auction.keyboard, keyboard)
+                .leftJoin(auction.member, member)
                 .where(
                         countKeyboard(keyboardName),
                         countAuctionTitle(auctionTitle),
@@ -136,7 +134,6 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
 
         return auction.keyboard.member.name.like("%" + sellerName + "%");
     }
-
 
 
     private BooleanExpression keyboard(String keyboardName) {
