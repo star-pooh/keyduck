@@ -28,8 +28,8 @@
         <td id="keyboard-description"></td>
       </tr>
       <tr>
-        <th class="text-start">경매 시작가</th>
-        <td id="start-price"></td>
+        <th class="text-start">즉시 구매가</th>
+        <td id="immediate-purchase-price"></td>
       </tr>
       <tr>
         <th class="text-start">입찰 단위</th>
@@ -152,7 +152,7 @@
       document.getElementById("title").textContent = auction.title;
       document.getElementById("keyboard-name").textContent = auction.keyboard.name;
       document.getElementById("keyboard-description").textContent = auction.keyboard.description;
-      document.getElementById("start-price").textContent =
+      document.getElementById("immediate-purchase-price").textContent =
           formatCurrency(auction.immediatePurchasePrice) + "원";
       document.getElementById("bidding-unit").textContent =
           formatCurrency(auction.biddingUnit) + "원";
