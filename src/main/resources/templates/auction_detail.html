@@ -2,98 +2,88 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" href="/tab_icon.png" sizes="16x16"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet">
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>경매 상세 정보 및 입찰</title>
-  <style>
-    .container {
-      width: 80%;
-      margin: auto;
-      padding: 20px;
-    }
-
-    .current-price {
-      color: red;
-      font-weight: bold;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: center;
-    }
-
-    th {
-      background-color: #f2f2f2;
-    }
-
-    .bid-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .bid-input {
-      padding: 5px;
-    }
-
-    .bid-button {
-      padding: 5px 10px;
-      background-color: #3182F6;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .bid-button:hover {
-      background-color: #FF2424;
-    }
-  </style>
 </head>
 <body>
-<div class="container">
-  <h2>경매 상세 정보</h2>
-  <p><strong>경매 이름:</strong> <span id="title"></span></p>
-  <p><strong>키보드 이름:</strong> <span id="keyboard-name"></span></p>
-  <p><strong>키보드 설명:</strong> <span id="keyboard-description"></span></p>
-  <p><strong>경매 시작가:</strong> <span id="start-price"></span></p>
-  <p><strong>입찰 단위:</strong> <span id="bidding-unit"></span></p>
-  <p><strong>현재가:</strong> <span id="current-price" class="current-price"></span></p>
-  <p><strong>경매 시작 시간:</strong> <span id="auction-start"></span></p>
-  <p><strong>경매 종료 시간:</strong> <span id="auction-end"></span></p>
-  <p><strong>경매 상태:</strong> <span id="auction-status"></span></p>
-  <p><strong>낙찰자:</strong> <span id="winner-name"></span></p>
-
-  <div class="bid-header">
-    <h3>입찰 내역</h3>
-    <div>
-      <label for="bidding">입찰금액:</label>
-      <input type="number" id="bidding" class="bid-input" name="price" required/>
-      <button class="bid-button" onclick="submitBid()">입찰하기</button>
-    </div>
+<div class="container mt-5">
+  <div class="mb-4">
+    <h2>경매 상세 정보</h2>
+    <table class="table table-bordered">
+      <tbody>
+      <tr>
+        <th class="text-start">경매 이름</th>
+        <td id="title"></td>
+      </tr>
+      <tr>
+        <th class="text-start">키보드 이름</th>
+        <td id="keyboard-name"></td>
+      </tr>
+      <tr>
+        <th class="text-start">키보드 설명</th>
+        <td id="keyboard-description"></td>
+      </tr>
+      <tr>
+        <th class="text-start">경매 시작가</th>
+        <td id="start-price"></td>
+      </tr>
+      <tr>
+        <th class="text-start">입찰 단위</th>
+        <td id="bidding-unit"></td>
+      </tr>
+      <tr>
+        <th class="text-start">현재가</th>
+        <td id="current-price" class="current-price text-danger fw-bold"></td>
+      </tr>
+      <tr>
+        <th class="text-start">경매 시작 시간</th>
+        <td id="auction-start"></td>
+      </tr>
+      <tr>
+        <th class="text-start">경매 종료 시간</th>
+        <td id="auction-end"></td>
+      </tr>
+      <tr>
+        <th class="text-start">경매 상태</th>
+        <td id="auction-status"></td>
+      </tr>
+      <tr>
+        <th class="text-start">낙찰자</th>
+        <td id="winner-name"></td>
+      </tr>
+      </tbody>
+    </table>
   </div>
 
-  <table>
-    <thead>
-    <tr>
-      <th>입찰자</th>
-      <th>입찰 가격</th>
-      <th>입찰 시간</th>
-    </tr>
-    </thead>
-    <tbody id="bidding-list"></tbody>
-  </table>
+  <div class="mt-4 d-flex align-items-center justify-content-end">
+    <label for="bidding" class="form-label mb-0 me-2">입찰 금액:</label>
+    <input type="text" id="bidding" name="bidding" class="form-control w-auto" required/>
+    <button class="btn btn-primary ms-3" onclick="submitBid()">입찰하기</button>
+  </div>
+
+  <div class="mt-4">
+    <h3>입찰 내역</h3>
+    <table class="table table-bordered table-striped">
+      <thead>
+      <tr>
+        <th>입찰자</th>
+        <th>입찰 가격</th>
+        <th>입찰 시간</th>
+      </tr>
+      </thead>
+      <tbody id="bidding-list"></tbody>
+    </table>
+  </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="/utils.js"></script>
 <script>
   const params = new URLSearchParams(window.location.search);
   const auctionId = params.get("auctionId");
@@ -162,9 +152,12 @@
       document.getElementById("title").textContent = auction.title;
       document.getElementById("keyboard-name").textContent = auction.keyboard.name;
       document.getElementById("keyboard-description").textContent = auction.keyboard.description;
-      document.getElementById("start-price").textContent = auction.immediatePurchasePrice + "원";
-      document.getElementById("bidding-unit").textContent = auction.biddingUnit + "원";
-      document.getElementById("current-price").textContent = auction.currentPrice + "원";
+      document.getElementById("start-price").textContent =
+          formatCurrency(auction.immediatePurchasePrice) + "원";
+      document.getElementById("bidding-unit").textContent =
+          formatCurrency(auction.biddingUnit) + "원";
+      document.getElementById("current-price").textContent =
+          formatCurrency(auction.currentPrice) + "원";
       document.getElementById("auction-start").textContent = auction.auctionStartDate;
       document.getElementById("auction-end").textContent = auction.auctionEndDate;
       document.getElementById("auction-status").textContent = auction.auctionStatus;
@@ -181,10 +174,10 @@
         memberCell.textContent = bid.memberName;
 
         const priceCell = document.createElement("td");
-        priceCell.textContent = `${bid.biddingPrice}원`;
+        priceCell.textContent = `${formatCurrency(bid.biddingPrice)}원`;
 
         const timeCell = document.createElement("td");
-        timeCell.textContent = new Date(bid.createdAt).toLocaleString();
+        timeCell.textContent = formatDate(bid.createdAt);
 
         row.appendChild(memberCell);
         row.appendChild(priceCell);
@@ -210,13 +203,15 @@
       stompClient.subscribe(`/topic/auction/${auctionId}`, function (message) {
         const data = JSON.parse(message.body);
         if (data.biddingPrice) {
-          document.getElementById("current-price").textContent = data.biddingPrice + "원";
+          document.getElementById("current-price").textContent =
+              formatCurrency(data.biddingPrice) + "원";
         }
 
         const biddingList = document.getElementById("bidding-list");
         const row = document.createElement("tr");
-        row.innerHTML = `<td>${data.memberName}</td><td>${data.biddingPrice}원</td><td>${new Date(
-            data.createdAt).toLocaleString()}</td>`;
+        row.innerHTML = `<td>${data.memberName}</td>
+            <td>${formatCurrency(data.biddingPrice)}원</td>
+            <td>${formatDate(data.createdAt)}</td>`;
         biddingList.prepend(row);
       });
     }, function (error) {
@@ -224,8 +219,13 @@
     })
   }
 
+  const biddingInput = document.getElementById("bidding");
+
+  amountInputListener(biddingInput);
+
   function submitBid() {
-    const biddingPrice = Number(document.getElementById("bidding").value);
+    const biddingPrice = biddingInput.value.replace(/[^\d]/g, '');
+
     if (!biddingPrice || biddingPrice <= 0) {
       alert("올바른 입찰 금액을 입력하세요.");
       return;
