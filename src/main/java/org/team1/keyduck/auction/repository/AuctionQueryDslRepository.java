@@ -7,5 +7,6 @@ import org.team1.keyduck.auction.dto.response.AuctionSearchResponseDto;
 public interface AuctionQueryDslRepository {
 
     Page<AuctionSearchResponseDto> findAllAuction(Pageable pageable, String keyboardName,
-            String auctionTitle, String sellerName);
+            String auctionTitle, String sellerName, String auctionStatus, String startDate,
+            String endDate);
 }

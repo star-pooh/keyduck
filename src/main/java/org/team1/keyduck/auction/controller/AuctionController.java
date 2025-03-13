@@ -1,5 +1,6 @@
 package org.team1.keyduck.auction.controller;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -77,10 +78,13 @@ public class AuctionController {
     public ResponseEntity<ApiResponse<Page<AuctionSearchResponseDto>>> findAllAuctionAPI(
             Pageable pageable, @RequestParam(required = false) String keyboardName,
             @RequestParam(required = false) String auctionTitle,
-            @RequestParam(required = false) String sellerName) {
+            @RequestParam(required = false) String sellerName,
+            @RequestParam(required = false) String auctionStatus,
+            @RequestParam(required = false) @JsonFormat(pattern = "yyyy-MM-dd") String startDate,
+            @RequestParam(required = false) @JsonFormat(pattern = "yyyy-MM-dd") String endDate) {
 
         Page<AuctionSearchResponseDto> response = auctionService.findAllAuction(pageable,
-                keyboardName, auctionTitle, sellerName);
+                keyboardName, auctionTitle, sellerName, auctionStatus, startDate, endDate);
 
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.READ_SUCCESS, response),
                 SuccessCode.READ_SUCCESS.getStatus());

@@ -113,10 +113,11 @@ public class AuctionService {
     // 경매 다건 조회
     @Transactional(readOnly = true)
     public Page<AuctionSearchResponseDto> findAllAuction(Pageable pageable,
-            String keyboardName, String auctionTitle, String sellerName) {
+            String keyboardName, String auctionTitle, String sellerName, String auctionStatus,
+            String startDate, String endDate) {
 
         return auctionRepository.findAllAuction(pageable,
-                keyboardName, auctionTitle, sellerName);
+                keyboardName, auctionTitle, sellerName, auctionStatus, startDate, endDate);
     }
 
     @Transactional
