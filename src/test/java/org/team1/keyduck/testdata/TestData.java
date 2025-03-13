@@ -266,7 +266,13 @@ public class TestData {
     public final static Bidding TEST_BIDDING2 = new Bidding(TEST_AUCTION1, TEST_MEMBER3,
             TEST_BIDDING_PRICE2);
 
-    public final static List<Bidding> TEST_BIDDINGS = List.of(TEST_BIDDING1, TEST_BIDDING2);
+    public final static Long TEST_BIDDING_ID3 = 3L;
+    public final static Long TEST_BIDDING_PRICE3 = 80000L;
+    public final static LocalDateTime TEST_BIDDING_CREATED_AT3 = LocalDateTime.now().minusHours(5);
+    public final static Bidding TEST_BIDDING3 = new Bidding(TEST_AUCTION1, TEST_MEMBER4,
+            TEST_BIDDING_PRICE3);
+
+    public final static List<Bidding> TEST_BIDDINGS = List.of(TEST_BIDDING1, TEST_BIDDING2,TEST_BIDDING3);
 
 
     //token

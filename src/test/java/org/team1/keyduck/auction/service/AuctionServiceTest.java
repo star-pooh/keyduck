@@ -25,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.team1.keyduck.auction.dto.response.AuctionReadResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionSearchResponseDto;
 import org.team1.keyduck.auction.entity.Auction;
+import org.team1.keyduck.auction.repository.AuctionQueryDslRepository;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
@@ -38,6 +39,9 @@ class AuctionServiceTest {
 
     @Mock
     private BiddingRepository biddingRepository;
+
+    @Mock
+    private AuctionQueryDslRepository auctionQueryDslRepository;
 
     @InjectMocks
     private AuctionService auctionService;
@@ -102,7 +106,7 @@ class AuctionServiceTest {
         Page<AuctionSearchResponseDto> mockPage = new PageImpl<>(mockResults, pageable,
                 mockResults.size());
 
-        when(auctionRepository.findAllAuction(pageable, null, null, null)).thenReturn(mockPage);
+        when(auctionQueryDslRepository.findAllAuction(pageable, null, null, null)).thenReturn(mockPage);
 
         // when
         Page<AuctionSearchResponseDto> result = auctionService.findAllAuction(pageable, null, null,
@@ -119,7 +123,7 @@ class AuctionServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         Page<AuctionSearchResponseDto> responseDto = new PageImpl<>(List.of(), pageable, 0);
-        when(auctionRepository.findAllAuction(pageable, null, null, null)).thenReturn(responseDto);
+        when(auctionQueryDslRepository.findAllAuction(pageable, null, null, null)).thenReturn(responseDto);
 
         // when
         Page<AuctionSearchResponseDto> result = auctionService.findAllAuction(pageable, null, null,
