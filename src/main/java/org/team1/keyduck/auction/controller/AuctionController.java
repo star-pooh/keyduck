@@ -95,7 +95,7 @@ public class AuctionController {
     public String findAllAuctionWithHtml(Pageable pageable, Model model) {
 
         Page<AuctionSearchResponseDto> response = auctionService.findAllAuction(pageable,
-                null, null, null);
+                null, null, null, null, null, null);
 
         model.addAttribute("auctions", response);
         return "main";
