@@ -10,6 +10,7 @@ import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,6 +26,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.team1.keyduck.auction.dto.response.AuctionSearchResponseDto;
 import org.team1.keyduck.auction.dto.response.QAuctionSearchResponseDto;
+import org.team1.keyduck.auction.entity.Auction;
+import org.team1.keyduck.auction.entity.AuctionStatus;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 
 @Repository
@@ -86,6 +89,30 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
         return new PageImpl<>(auctionList, pageable, totalCount);
     }
 
+    @Override
+    public List<Auction> findOpenTargetAuction(LocalDateTime now) {
+        return queryFactory.selectFrom(auction)
+                .where(auction.auctionStartDate.year().eq(now.getYear())
+                        .and(auction.auctionStartDate.month().eq(now.getMonthValue()))
+                        .and(auction.auctionStartDate.dayOfMonth().eq(now.getDayOfMonth()))
+                        .and(auction.auctionStartDate.hour().eq(now.getHour()))
+                        .and(auction.auctionStatus.eq(AuctionStatus.NOT_STARTED))
+                )
+                .fetch();
+    }
+
+    @Override
+    public List<Auction> findCloseTargetAuction(LocalDateTime now) {
+        return queryFactory.selectFrom(auction)
+                .where(auction.auctionEndDate.year().eq(now.getYear())
+                        .and(auction.auctionEndDate.month().eq(now.getMonthValue()))
+                        .and(auction.auctionEndDate.dayOfMonth().eq(now.getDayOfMonth()))
+                        .and(auction.auctionEndDate.hour().eq(now.getHour()))
+                        .and(auction.auctionStatus.eq(AuctionStatus.IN_PROGRESS))
+                )
+                .fetch();
+    }
+
     private BooleanExpression countAuctionTitle(String auctionTitle) {
         if (auctionTitle == null) {
             return null;
@@ -109,6 +136,7 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
 
         return auction.keyboard.member.name.like("%" + sellerName + "%");
     }
+
 
 
     private BooleanExpression keyboard(String keyboardName) {

@@ -1,4 +1,4 @@
-package org.team1.keyduck.payment.entity;
+package org.team1.keyduck.payment.util;
 
 import java.util.Arrays;
 import org.team1.keyduck.common.exception.DataNotFoundException;

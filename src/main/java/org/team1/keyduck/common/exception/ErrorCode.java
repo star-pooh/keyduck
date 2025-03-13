@@ -3,10 +3,11 @@ package org.team1.keyduck.common.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import org.team1.keyduck.common.util.BaseEnumCode;
 import org.team1.keyduck.common.util.ErrorMessage;
 
 @Getter
-public enum ErrorCode {
+public enum ErrorCode implements BaseEnumCode {
     // 400 BAD_REQUEST
     // INVALID(유효하지 않은 값)
     INVALID_DATA_VALUE(HttpStatus.BAD_REQUEST, "BAD_INVALID_001", ErrorMessage.INVALID_VALUE),
@@ -58,10 +59,12 @@ public enum ErrorCode {
     NOT_FOUND_AUCTION(HttpStatus.NOT_FOUND, "NOTFOUND_003", ErrorMessage.NOT_FOUND_VALUE),
     NOT_FOUND_PAYMENT_METHOD(HttpStatus.NOT_FOUND, "NOTFOUND_004", ErrorMessage.NOT_FOUND_VALUE),
     NOT_FOUND_TEMP_PAYMENT(HttpStatus.NOT_FOUND, "NOTFOUND_005", ErrorMessage.NOT_FOUND_VALUE),
+    NOT_FOUND_PAYMENT(HttpStatus.NOT_FOUND, "NOTFOUND_006", ErrorMessage.NOT_FOUND_VALUE),
 
     // 500 INTERNAL_SERVER_ERROR
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_001",
             ErrorMessage.INTERNAL_SERVER_ERROR);
+
 
     private final HttpStatus status;
     private final String code;

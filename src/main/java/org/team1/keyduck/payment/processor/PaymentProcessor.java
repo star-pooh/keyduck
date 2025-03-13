@@ -1,5 +1,6 @@
 package org.team1.keyduck.payment.processor;
 
+import java.util.UUID;
 import org.json.simple.JSONObject;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.payment.entity.Payment;
@@ -10,7 +11,12 @@ public interface PaymentProcessor {
 
     String createAuthorization();
 
-    JSONObject requestPaymentApproval(JSONObject jsonObject) throws Exception;
+    JSONObject approvalPaymentRequest(JSONObject jsonObject, UUID idempotencyKey) throws Exception;
 
-    Payment createPaymentData(JSONObject jsonObject, Member member);
+    Payment getCreatePaymentData(JSONObject jsonObject, Member member);
+
+    JSONObject cancelPaymentRequest(String paymentKey, UUID idempotencyKey)
+            throws Exception;
+
+    Payment getPaymentData(JSONObject jsonObject, boolean isCancelRequest);
 }

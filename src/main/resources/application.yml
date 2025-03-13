@@ -27,6 +27,33 @@ spring:
     password: ${RDS_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_ADDRESS} #지메일 계정
+    password: ${MAIL_PASSWORD} #앱 비밀번호-공백없이
+    properties:
+      mail.starttls.enable: true
+      mail.smtp.auth: true
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      repositories:
+        enabled: false
+
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}
@@ -37,5 +64,14 @@ payment:
     test-secret-api-key: ${PAYMENT_SECRET_API_KEY}
     payment-url: ${PAYMENT_URL}
 
-
-
+rabbitmq:
+  queue:
+    name: ${RABBITMQ_QUEUE_NAME}
+    dead-letter-exchange: ${RABBITMQ_DEAD_LETTER_EXCHANGE_NAME}
+    dead-letter-routing-key: ${RABBITMQ_DEAD_LETTER_ROUTING_KEY}
+  exchange:
+    name: ${RABBITMQ_EXCHANGE_NAME}
+  routing:
+    key: ${RABBITMQ_ROUTING_KEY}
+  dlq:
+    name: ${RABBITMQ_DEAD_LETTER_QUEUE_NAME}
