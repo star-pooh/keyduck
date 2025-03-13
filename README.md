@@ -176,34 +176,87 @@
 
   
 </details>
-<br>
 
+
+## ❓기술적 의사 결정❓
+#### [📚 CI&CD - GitHubAction을 사용한 이유](https://www.notion.so/teamsparta/CI-CD-GitHubAction-1b52dc3ef514808a9748da4cf45e880a?pvs=4)
+
+
+
+<br>
 ## 💥트러블 슈팅💥
 <details>
-  <summary> <strong>😎홍은기😎</strong> </summary>
+  <summary> <strong>쿼리 횟수, 불 필요한 데이터 조회</strong> </summary>
+  
+  [문제 인식]
+
+1. 조회 기능 테스트를 해보고자 Postman을 이용한 검색 실행
+2. 조회 1번에 4번의 쿼리문이 발생하고, 불필요한 컬럼까지 조회되는 것을 발견
+
+[해결 방안]
+
+1. 조인을 이용하여 불필요한 쿼리가 발생하지 않도록 수정
+2. 기존에 auction에 대한 모든 컬럼을 조회하도록 되어있던 코드를
+   필요한 컬럼만 조회하도록 코드 수정
+    
+
+[해결 과정]
+
+![그림1.png](attachment:749f44d4-ed14-47fa-a31d-5ca6e6087478:%EA%B7%B8%EB%A6%BC1.png)
+
+![그림2.png](attachment:0d8d9700-fba0-45f8-92a1-80b685e171c1:%EA%B7%B8%EB%A6%BC2.png)
+
+[해결 결과]
+
+![그림3.png](attachment:5ce19f6a-ed5e-4d58-b4e5-aefb794b23b7:%EA%B7%B8%EB%A6%BC3.png)
   
 </details>
 
 <details>
-  <summary> <strong>🤗임희현🤗</strong> </summary>
+  <summary> <strong>사용자 정의함수 등록</strong> </summary>
   
     
 </details>
 
 <details>
-  <summary> <strong>😏장지원😏</strong> </summary>
+  <summary> <strong>CountQuery</strong> </summary>
   
 
 </details>
 
 <details>
-  <summary> <strong>🤩송진솔🤩</strong> </summary>
+  <summary> <strong>경매 현재가 및 입찰 내역 업데이트 문제</strong> </summary>
   
  
 </details>
 
 <details>
-  <summary> <strong>😆신가을😆</strong> </summary>
+  <summary> <strong>다중 서버 환경에서의 실시간 데이터 공유 문제</strong> </summary>
+  
+</details>
+
+<details>
+  <summary> <strong>CI&CD 과정에서 데이터베이스 연결 실패</strong> </summary>
+  
+</details>
+
+<details>
+  <summary> <strong>Redis 직렬화/역직렬화 LocalDateTime 문제</strong> </summary>
+  
+</details>
+
+<details>
+  <summary> <strong>EC2 환경에서 화면 이동이 정상적으로 동작하지 않는 문제</strong> </summary>
+  
+</details>
+
+<details>
+  <summary> <strong>경매의 현재가가 예상가와 다른 문제</strong> </summary>
+  
+</details>
+
+<details>
+  <summary> <strong>이메일 전송에 실패했을 때 트랜잭션이 롤백하는 문제</strong> </summary>
   
 </details>
 <br>
