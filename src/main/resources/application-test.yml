@@ -11,6 +11,11 @@ spring:
     hibernate:
       ddl-auto: update
 
+  cache:
+    type: caffeine
+    caffeine:
+      spec: expireAfterWrite=6h
+
   config:
     import: optional:file:.env[.properties]
 
