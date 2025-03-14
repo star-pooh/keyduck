@@ -152,8 +152,9 @@
       document.getElementById("title").textContent = auction.title;
       document.getElementById("keyboard-name").textContent = auction.keyboard.name;
       document.getElementById("keyboard-description").textContent = auction.keyboard.description;
-      document.getElementById("immediate-purchase-price").textContent =
-          formatCurrency(auction.immediatePurchasePrice) + "원";
+      document.getElementById(
+          "immediate-purchase-price").textContent = auction.immediatePurchasePrice != null
+          ? formatCurrency(auction.immediatePurchasePrice) + "원" : " - ";
       document.getElementById("bidding-unit").textContent =
           formatCurrency(auction.biddingUnit) + "원";
       document.getElementById("current-price").textContent =
