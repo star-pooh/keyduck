@@ -1,11 +1,8 @@
 # 👑키덕키덕👑
 ### ⌨키보드를 좋아하거나 나만의 키보드를 원하는 사람들을 위한 커스텀 키보드 ${\textsf{\color{green}경매}}$ 사이트
-### 프로젝트 기간 : 2025/02/10 ~ 2025/03/17
+### 📆프로젝트 기간 : 2025/02/10 ~ 2025/03/17
 
-### 프로젝트 목표 : 
-<br>
--
-<br>
+
 <br>
 <p align="center">
 <img src="https://github.com/user-attachments/assets/dc439ee5-15c1-4aaa-aa2a-55b673a9da50" height=230px>
@@ -100,11 +97,11 @@
 <img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">&nbsp;
 <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">&nbsp;
 <img src="https://img.shields.io/badge/springboot web-6DB33F?style=for-the-badge&logoColor=white">&nbsp;
+<img src="https://img.shields.io/badge/thymeleaf-7952B3?style=for-the-badge&logo=Thymeleaf&logoColor=white">&nbsp;
 
 
 ### 🔹 infra
 <img src="https://img.shields.io/badge/ec2-DC382D?style=for-the-badge&logo=amazonec2&logoColor=white">&nbsp;
-<img src="https://img.shields.io/badge/s3-02303A?style=for-the-badge&logo=amazon s3&logoColor=white">&nbsp;
 <img src="https://img.shields.io/badge/rds-47A248?style=for-the-badge&logo=amazonRDS&logoColor=white">&nbsp;
 <img src="https://img.shields.io/badge/github actions-A86454?style=for-the-badge&logo=githubactions&logoColor=white">&nbsp;
 <img src="https://img.shields.io/badge/docker-DD0031?style=for-the-badge&logo=docker&logoColor=white">&nbsp;
@@ -143,7 +140,8 @@
         - 하나의 경매에 최대 10회까지만 입찰 가능
         - 한 번의 입찰에 가능한 입찰 금액은 현재가 + 최소 입찰단위 * 10 제한
 - 경매 포인트 충전 : 토스페이먼츠
-- 이메일 알림 서비스 : 포인트 결제내역 및 경매 낙찰 시 알림성 이메일 전송
+- 이메일 알림 서비스 : 포인트 결제내역 및 경매 낙찰, 경매 시작/종료 시 알림성 이메일 전송
+- 스케줄러 : 경매 시작, 종료 자동 관리
 
 </details>
 
@@ -165,13 +163,27 @@
 
 ## 👏성능 개선👏
 <details>
-  <summary> 1. ✨ </summary>
+  <summary> <Strong>1. ✨블랙 리스트 관리</Strong> </summary>
 
   
 </details>
 
 <details>
-<summary> 2. ✨ </summary>
+<summary> <Strong>2. ✨실시간 입찰내역, 현재가 업데이트</Strong> </summary>
+  
+
+  
+</details>
+
+<details>
+<summary> <Strong>3. ✨경매 조회 기능</Strong> </summary>
+  
+
+  
+</details>
+
+<details>
+<summary> <Strong>4. ✨결제 실패 관리</Strong> </summary>
   
 
   
