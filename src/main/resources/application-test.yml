@@ -40,7 +40,8 @@ payment:
   toss:
     test-client-api-key: ${PAYMENT_CLIENT_API_KEY}
     test-secret-api-key: ${PAYMENT_SECRET_API_KEY}
-    payment-url: ${PAYMENT_URL}
+    payment-confirm-url: ${PAYMENT_CONFIRM_URL}
+    payment-cancel-url: ${PAYMENT_CANCEL_URL}
 
 rabbitmq:
   queue:
