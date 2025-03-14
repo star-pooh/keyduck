@@ -39,7 +39,8 @@ public class JwtFilter implements Filter {
 
         String url = httpRequest.getRequestURI();
 
-        if (Constants.WHITE_LIST.stream().anyMatch(url::startsWith)) {
+        if (Constants.WHITE_LIST.stream().anyMatch(url::startsWith)
+                || Constants.WHITE_LIST.stream().anyMatch(url::endsWith)) {
             chain.doFilter(request, response);
             return;
         }

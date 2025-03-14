@@ -3,6 +3,8 @@ package org.team1.keyduck.auction.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ import org.team1.keyduck.common.exception.DataUnauthorizedAccessException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.util.Constants;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
+import org.team1.keyduck.email.dto.EmailEvent;
 import org.team1.keyduck.email.dto.MemberEmailRequestDto;
 import org.team1.keyduck.email.service.EmailService;
 import org.team1.keyduck.keyboard.entity.Keyboard;
@@ -48,6 +51,7 @@ public class AuctionService {
     private final SaleProfitService saleProfitService;
     private final PaymentDepositService paymentDepositService;
     private final AuctionQueryDslRepository auctionQueryDslRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public AuctionCreateResponseDto createAuctionService(Long sellerId,
             AuctionCreateRequestDto requestDto) {
@@ -144,6 +148,15 @@ public class AuctionService {
 
         log.info("auctionId : {}, auctionTitle : {}, in progress status change success",
                 targetAuction.getId(), targetAuction.getTitle());
+
+        MemberEmailRequestDto emailRequestDto = new MemberEmailRequestDto(
+                Constants.AUCTION_OPEN_MAIL_TITLE,
+                String.format(Constants.AUCTION_OPEN_MAIL_CONTENTS,
+                        targetAuction.getKeyboard().getMember().getName(),
+                        targetAuction.getKeyboard().getName(), targetAuction.getTitle())
+        );
+        applicationEventPublisher.publishEvent(
+                new EmailEvent(targetAuction.getKeyboard().getMember().getId(), emailRequestDto));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -158,5 +171,14 @@ public class AuctionService {
 
         log.info("auctionId : {}, auctionTitle : {}, closed status change success",
                 targetAuction.getId(), targetAuction.getTitle());
+
+        MemberEmailRequestDto emailRequestDto = new MemberEmailRequestDto(
+                Constants.AUCTION_CLOSE_MAIL_TITLE,
+                String.format(Constants.AUCTION_CLOSE_MAIL_CONTENTS,
+                        targetAuction.getMember().getName(),
+                        targetAuction.getKeyboard().getName(), targetAuction.getTitle())
+        );
+        applicationEventPublisher.publishEvent(
+                new EmailEvent(targetAuction.getMember().getId(), emailRequestDto));
     }
 }
