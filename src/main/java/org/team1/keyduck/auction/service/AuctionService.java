@@ -3,15 +3,14 @@ package org.team1.keyduck.auction.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.dto.request.AuctionCreateRequestDto;
 import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
 import org.team1.keyduck.auction.dto.response.AuctionCreateResponseDto;
-import org.team1.keyduck.auction.dto.response.AuctionReadAllResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionReadResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionSearchResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionUpdateResponseDto;
@@ -131,11 +130,11 @@ public class AuctionService {
 
     // 경매 다건 조회
     @Transactional(readOnly = true)
-    public Page<AuctionSearchResponseDto> findAllAuction(Pageable pageable,
+    public Slice<AuctionSearchResponseDto> findAllAuction(Long lastId, Pageable pageable,
             String keyboardName, String auctionTitle, String sellerName, String auctionStatus,
             String startDate, String endDate) {
 
-        return auctionQueryDslRepository.findAllAuction(pageable,
+        return auctionQueryDslRepository.findAllAuction(lastId, pageable,
                 keyboardName, auctionTitle, sellerName, auctionStatus, startDate, endDate);
     }
 
