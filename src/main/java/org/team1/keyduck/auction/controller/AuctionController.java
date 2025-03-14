@@ -64,8 +64,7 @@ public class AuctionController {
     // 경매 단건 조회 API
     @GetMapping("/{auctionId}")
     public ResponseEntity<ApiResponse<AuctionReadResponseDto>> findAuctionAPI(
-            @PathVariable Long auctionId,
-            @AuthenticationPrincipal AuthMember authMember) {
+            @PathVariable Long auctionId) {
 
         AuctionReadResponseDto response = auctionService.findAuction(auctionId);
 

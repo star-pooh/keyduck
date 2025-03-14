@@ -14,5 +14,4 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("select m from Member m where m.id = :id and m.isDeleted = :isDeleted")
     Optional<Member> findByIdAndIsDeleted(Long id, boolean isDeleted);
 
-    Optional<Member> findByEmailAndIsDeletedFalse(String email);
 }

@@ -6,10 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.team1.keyduck.auth.dto.request.MemberCreateRequestDto;
-import org.team1.keyduck.auth.dto.request.PaymentFormRequestDto;
 import org.team1.keyduck.auth.dto.request.SigninRequestDto;
 import org.team1.keyduck.auth.dto.response.MemberCreateResponseDto;
-import org.team1.keyduck.auth.dto.response.PaymentFormResponseDto;
 import org.team1.keyduck.auth.dto.response.SigninResponseDto;
 import org.team1.keyduck.common.config.JwtUtil;
 import org.team1.keyduck.common.exception.DataDuplicateException;
@@ -31,7 +29,6 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    private final JwtBlacklistService jwtBlacklistService;
     private final CommonService commonService;
 
     public SigninResponseDto login(SigninRequestDto signinRequest) {
@@ -69,26 +66,6 @@ public class AuthService {
                 .build();
 
         return MemberCreateResponseDto.of(memberRepository.save(member));
-    }
-
-    public PaymentFormResponseDto paymentFormLogin(PaymentFormRequestDto dto) {
-        Member member = memberRepository.findByEmailAndIsDeletedFalse(dto.getEmail())
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.LOGIN_FAILED, null));
-
-        if (member.isDeleted()) {
-            throw new DataInvalidException(ErrorCode.DUPLICATE_DELETED,
-                    ErrorMessageParameter.MEMBER);
-        }
-
-        if (member.getMemberRole().equals(MemberRole.SELLER)) {
-            throw new OperationNotAllowedException(ErrorCode.FORBIDDEN_PAYMENT_LOGIN_FORM, null);
-        }
-
-        commonService.comparePassword(dto.getPassword(), member.getPassword());
-
-        String bearerToken = jwtUtil.createToken(member.getId(), member.getMemberRole());
-
-        return new PaymentFormResponseDto(bearerToken, dto.getAmount());
     }
 
     public void verifyJwtToken(HttpServletRequest request) {
