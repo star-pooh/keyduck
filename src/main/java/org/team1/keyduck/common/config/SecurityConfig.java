@@ -48,9 +48,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/biddings/*").hasRole("CUSTOMER")
                         .requestMatchers(HttpMethod.GET, "/api/biddings/success")
                         .hasRole("CUSTOMER")
-                        .requestMatchers("/style.css", "/token_verify.js")
+                        .requestMatchers("/style.css", "/*.js", "/*.png")
                         .permitAll()
-                        .requestMatchers("/login.html", "/main.html", "/payment_*.html",
+                        .requestMatchers("/login.*", "/main.html", "/payment_*.html",
                                 "/auction_detail.html")
                         .permitAll()
                         .requestMatchers("/api/payment/**").permitAll()
