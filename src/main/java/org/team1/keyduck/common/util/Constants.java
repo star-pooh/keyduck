@@ -18,14 +18,15 @@ public class Constants {
 
     public static final List<String> WHITE_LIST = List.of(
             "/style",
-            "/token_verify",
             "/login",
             "/main",
             "/payment_",
             "/api/auth",
             "/api/auctions/main",
             "/auction_detail",
-            "/ws/auction"
+            "/ws/auction",
+            ".js",
+            ".png"
     );
 
     public static final String AUCTION_CREATED_MAIL_TITLE = "경매가 성공적으로 생성되었습니다.";

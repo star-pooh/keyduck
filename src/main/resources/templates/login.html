@@ -2,28 +2,39 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8"/>
-  <link rel="icon" href="https://static.toss.im/icons/png/4x/icon-toss-logo.png"/>
-  <link rel="stylesheet" type="text/css" href="/style.css"/>
+  <link rel="icon" href="/tab_icon.png" sizes="16x16"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet">
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>로그인 페이지</title>
 </head>
 
 <body>
-<div class="wrapper">
-  <form id="loginForm">
-    <label for="email">이메일:</label>
-    <input type="text" id="email" name="email" required/>
-    <br/>
+<div class="container d-flex flex-column justify-content-center align-items-center vh-100">
+  <div class="w-100 text-center mb-3" style="max-width: 300px;">
+    <img src="/login.png" alt="로그인 이미지" class="img-fluid" style="max-width: 100%; height: auto;">
+  </div>
 
-    <label for="password">비밀번호:</label>
-    <input type="password" id="password" name="password" required/>
-    <br/>
+  <div class="card p-4 shadow-sm text-center w-100" style="max-width: 500px;">
+    <h3 class="mb-3">로그인</h3>
+    <form id="loginForm">
+      <div class="mb-3">
+        <label for="email" class="form-label d-block text-start">이메일:</label>
+        <input type="text" id="email" name="email" class="form-control w-100" required>
+      </div>
 
-    <button type="submit">로그인</button>
-  </form>
+      <div class="mb-3">
+        <label for="password" class="form-label d-block text-start">비밀번호:</label>
+        <input type="password" id="password" name="password" class="form-control w-100" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">로그인</button>
+    </form>
+  </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
   const form = document.getElementById("loginForm");
 
