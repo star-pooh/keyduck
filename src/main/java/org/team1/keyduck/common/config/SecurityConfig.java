@@ -50,7 +50,7 @@ public class SecurityConfig {
                         .hasRole("CUSTOMER")
                         .requestMatchers("/style.css", "/*.js", "/*.png")
                         .permitAll()
-                        .requestMatchers("/login.*", "/main.html", "/payment_*.html",
+                        .requestMatchers("/login.*", "/join.html", "/main.html", "/payment_*.html",
                                 "/auction_detail.html")
                         .permitAll()
                         .requestMatchers("/api/payment/**").permitAll()
