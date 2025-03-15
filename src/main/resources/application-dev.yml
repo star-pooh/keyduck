@@ -2,11 +2,6 @@ spring:
   application:
     name: "keyduck"
 
-  cache:
-    type: caffeine
-    caffeine:
-      spec: expireAfterWrite=6h
-
   config:
     import: optional:file:.env[.properties]
 
@@ -17,12 +12,12 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
-    show-sql: true # 실행되는 SQL 로그 출력
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         format_sql: true # SQL 포맷팅 활성화
+        show-sql: true
     defer-datasource-initialization: true # 데이터 소스 초기화 지연
     database-platform: org.hibernate.dialect.MySQLDialect
 
