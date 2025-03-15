@@ -56,15 +56,6 @@ public class PaymentService {
         Payment payment = paymentProcessor.getCreatePaymentData(jsonObject, foundedMember);
         paymentRepository.save(payment);
 
-        // 결제 내역 이메일로 알림주기
-        MemberEmailRequestDto emailRequestDto = new MemberEmailRequestDto(
-                Constants.PAYMENT_COMPLETION_EMAIL_TITLE,
-                String.format(Constants.PAYMENT_COMPLETION_EMAIL_CONTENTS, payment.getAmount(),
-                        payment.getPaymentMethod()
-                )
-        );
-        applicationEventPublisher.publishEvent(
-                new EmailEvent(payment.getMember().getId(), emailRequestDto));
     }
 
     public JSONObject approvalPaymentRequest(String jsonBody) throws Exception {
@@ -125,6 +116,17 @@ public class PaymentService {
         // 결제 승인 데이터 생성
         Payment confirmPaymentData = paymentProcessor.getPaymentData(jsonObject, false);
         foundedPayment.updatePaymentInfo(confirmPaymentData);
+
+        // 결제 내역 이메일로 알림주기
+        MemberEmailRequestDto emailRequestDto = new MemberEmailRequestDto(
+                Constants.PAYMENT_COMPLETION_EMAIL_TITLE,
+                String.format(Constants.PAYMENT_COMPLETION_EMAIL_CONTENTS,
+                        foundedPayment.getAmount(),
+                        foundedPayment.getPaymentMethod()
+                )
+        );
+        applicationEventPublisher.publishEvent(
+                new EmailEvent(foundedPayment.getMember().getId(), emailRequestDto));
 
         return PaymentDto.of(foundedPayment);
     }
