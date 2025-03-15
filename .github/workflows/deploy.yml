@@ -15,16 +15,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Gradle 캐싱
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: Linux-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            Linux-gradle-
-
       - name: Make .env file from GitHub Secrets
         run: |
           echo "${{ secrets.ENV_SECRET }}" > .env
@@ -36,6 +26,16 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
+          port: 22
+          source: ".env, ./gradlew, ./gradle/wrapper/*, ./build.gradle, ./settings.gradle, ./src, Dockerfile"
+          target: "~/myapp"
+
+      - name: Copy files to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST2 }}
+          username: ubuntu
+          key: ${{ secrets.SSH_KEY2 }}
           port: 22
           source: ".env, ./gradlew, ./gradle/wrapper/*, ./build.gradle, ./settings.gradle, ./src, Dockerfile"
           target: "~/myapp"
@@ -57,6 +57,28 @@ jobs:
             docker stop myapp-container || true
             docker rm myapp-container || true
             echo "Running Docker container..."
-            docker run -d --name myapp-container --env-file .env --env SPRING_PROFILES_ACTIVE= -p 8080:8080 myapp:latest
+            docker run -d --name myapp-container --env-file .env --env SPRING_PROFILES_ACTIVE= --env TZ=Asia/Seoul -p 8080:8080 myapp:latest
+            echo "Cleaning up unused Docker images..."
+            docker image prune -f
+
+
+      - name: Deploy to EC2 and Build Docker Image
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SSH_HOST2 }}
+          username: ubuntu
+          key: ${{ secrets.SSH_KEY2 }}
+          script: |
+            cd ~/myapp
+            echo "Building JAR file on EC2..."
+            chmod +x ./gradlew
+            ./gradlew clean bootJar
+            echo "Building Docker image..."
+            docker build -t myapp:latest .
+            echo "Stopping existing container (if any)..."
+            docker stop myapp-container || true
+            docker rm myapp-container || true
+            echo "Running Docker container..."
+            docker run -d --name myapp-container --env-file .env --env SPRING_PROFILES_ACTIVE= --env TZ=Asia/Seoul -p 8080:8080 myapp:latest
             echo "Cleaning up unused Docker images..."
             docker image prune -f
