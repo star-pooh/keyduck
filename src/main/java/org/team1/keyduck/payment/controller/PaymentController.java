@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.team1.keyduck.auth.entity.AuthMember;
 import org.team1.keyduck.common.dto.ApiResponse;
+import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.exception.OperationNotAllowedException;
 import org.team1.keyduck.common.exception.SuccessCode;
+import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.payment.dto.TempPaymentRequestDto;
 import org.team1.keyduck.payment.service.PaymentProcessService;
 import org.team1.keyduck.payment.service.TempPaymentService;
@@ -21,6 +24,19 @@ public class PaymentController {
 
     private final TempPaymentService tempPaymentService;
     private final PaymentProcessService paymentProcessService;
+
+    @PostMapping("/verify")
+    public ResponseEntity<ApiResponse<Void>> verifyCustomerRole(
+            @AuthenticationPrincipal AuthMember authMember) {
+        MemberRole memberRole = authMember.getMemberRole();
+
+        if (memberRole.equals(MemberRole.SELLER)) {
+            throw new OperationNotAllowedException(ErrorCode.FORBIDDEN_PAYMENT_FROM_SELLER, null);
+        }
+
+        return new ResponseEntity<>(ApiResponse.success(SuccessCode.READ_SUCCESS),
+                SuccessCode.READ_SUCCESS.getStatus());
+    }
 
     @PostMapping("/temp")
     public ResponseEntity<ApiResponse<Void>> saveTempPaymentInfo(
