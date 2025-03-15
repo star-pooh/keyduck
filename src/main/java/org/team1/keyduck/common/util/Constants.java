@@ -19,6 +19,7 @@ public class Constants {
     public static final List<String> WHITE_LIST = List.of(
             "/style",
             "/login",
+            "/join",
             "/main",
             "/payment_",
             "/api/auth",
