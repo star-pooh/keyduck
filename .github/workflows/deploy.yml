@@ -67,7 +67,7 @@ jobs:
             docker stop myapp-container || true
             docker rm myapp-container || true
             echo "Running Docker container..."
-            docker run -d --name myapp-container --env-file .env --env SPRING_PROFILES_ACTIVE= -p 8080:8080 myapp:latest
+            docker run -d --name myapp-container --env-file .env --env SPRING_PROFILES_ACTIVE= --env TZ=Asia/Seoul -p 8080:8080 myapp:latest
             echo "Cleaning up unused Docker images..."
             docker image prune -f
 
@@ -89,6 +89,6 @@ jobs:
             docker stop myapp-container || true
             docker rm myapp-container || true
             echo "Running Docker container..."
-            docker run -d --name myapp-container --env-file .env --env SPRING_PROFILES_ACTIVE= -p 8080:8080 myapp:latest
+            docker run -d --name myapp-container --env-file .env --env SPRING_PROFILES_ACTIVE= --env TZ=Asia/Seoul -p 8080:8080 myapp:latest
             echo "Cleaning up unused Docker images..."
             docker image prune -f
