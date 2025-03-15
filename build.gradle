@@ -84,6 +84,12 @@ dependencies {
 
     // RabbitMQ
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+    // Shedlock Spring
+    implementation 'net.javacrumbs.shedlock:shedlock-spring:6.3.0'
+
+    // Shedlock Provider (Redis)
+    implementation 'net.javacrumbs.shedlock:shedlock-provider-redis-spring:6.3.0'
 }
 
 tasks.named('test') {
