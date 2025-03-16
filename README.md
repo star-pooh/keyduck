@@ -1767,7 +1767,7 @@ public class SchedulerConfig implements SchedulingConfigurer {
 | 홍은기 | [star-pooh](https://github.com/star-pooh) |
 | 임희현 | [HEEHYUN0221](https://github.com/HEEHYUN0221?tab=repositories) |
 | 장지원 | [ijnow](https://github.com/ijnow) |
-| 송진솔 | [solaaac](https://github.com/jinsolsong) |
+| 송진솔 | [solaaac](https://github.com/solaaac) |
 | 신가을 | [Shin-Gaeul](https://github.com/Shin-Gaeul) |
 
 <br> <br>
