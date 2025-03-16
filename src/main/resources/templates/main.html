@@ -55,13 +55,36 @@
 
   button.addEventListener("click", function () {
     const amount = amountInput.value.replace(/[^\d]/g, '');
+    const token = sessionStorage.getItem("Authorization");
 
     if (!amount || amount <= 0) {
       alert("충전 금액을 입력하세요.");
       return;
     }
 
-    window.location.href = `/payment_process.html?amount=` + amount;
+    fetch("/api/payment/verify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        console.log(response);
+
+        return response.json().then(errorData => {
+          console.log(errorData);
+          throw new Error(errorData.message);
+        });
+      }
+    })
+    .then(() => {
+      window.location.href = `/payment_process.html?amount=` + amount;
+    })
+    .catch(error => {
+      alert(error.message);
+    });
   });
 </script>
 </body>

@@ -26,7 +26,6 @@ import org.team1.keyduck.member.entity.Member;
 @Table(name = "auction")
 public class Auction {
 
-    // auction 식별자
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import org.team1.keyduck.common.config.JwtUtil;
 
 @Service
 @Slf4j
@@ -14,7 +13,6 @@ import org.team1.keyduck.common.config.JwtUtil;
 public class JwtBlacklistService {
 
     private final StringRedisTemplate redisTemplate;
-    private final JwtUtil jwtUtil;
 
     public void addToBlacklist(String token) {
         redisTemplate.opsForValue().set(token, "blacklist", 6, TimeUnit.HOURS);

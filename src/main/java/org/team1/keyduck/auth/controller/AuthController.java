@@ -4,6 +4,7 @@ package org.team1.keyduck.auth.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
@@ -54,8 +55,9 @@ public class AuthController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<ApiResponse<Void>> verifyJwtToken(HttpServletRequest request) {
-        authService.verifyJwtToken(request);
+    public ResponseEntity<ApiResponse<Void>> verifyJwtToken(
+            HttpServletRequest request, HttpServletResponse response) throws IOException {
+        authService.verifyJwtToken(request, response);
 
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.TOKEN_VERIFY_SUCCESS),
                 SuccessCode.TOKEN_VERIFY_SUCCESS.getStatus());
