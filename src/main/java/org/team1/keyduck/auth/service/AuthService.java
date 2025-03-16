@@ -4,11 +4,12 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.team1.keyduck.auth.dto.request.MemberCreateRequestDto;
@@ -23,6 +24,7 @@ import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.service.CommonService;
 import org.team1.keyduck.common.util.ErrorMessage;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
+import lombok.extern.slf4j.Slf4j;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
@@ -35,6 +37,7 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+
     private final CommonService commonService;
 
     public SigninResponseDto login(SigninRequestDto signinRequest) {
