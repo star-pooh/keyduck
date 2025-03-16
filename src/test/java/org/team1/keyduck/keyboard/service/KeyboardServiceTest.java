@@ -14,7 +14,6 @@ import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD2;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD3;
 import static org.team1.keyduck.testdata.TestData.TEST_KEYBOARD_ID1;
 import static org.team1.keyduck.testdata.TestData.TEST_MEMBER1;
-import static org.team1.keyduck.testdata.TestData.TEST_MEMBER2;
 
 import java.util.Collections;
 import java.util.List;

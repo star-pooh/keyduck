@@ -9,6 +9,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.team1.keyduck.bidding.entity.QBidding.bidding;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +32,7 @@ import org.team1.keyduck.bidding.repository.BiddingRepository;
 import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
+import org.team1.keyduck.common.util.BiddingEventListener;
 import org.team1.keyduck.member.entity.Member;
 import org.team1.keyduck.member.entity.MemberRole;
 import org.team1.keyduck.member.repository.MemberRepository;
@@ -53,10 +55,12 @@ public class BiddingServiceTest {
     private PaymentDepositService paymentDepositService;
     @Mock
     private SaleProfitService saleProfitService;
+    @Mock
+    private BiddingEventListener biddingEventListener;
 
 
     @Test
-    @DisplayName("성공: 첫번쨰 입찰")
+    @DisplayName("성공: 첫번째 입찰")
     public void successCreateBiddingWithFirstBidding() {
         //given
         Long price = 22000L;
@@ -79,8 +83,11 @@ public class BiddingServiceTest {
         //paymentDepositService 지나가기
         doNothing().when(paymentDepositService)
                 .payBiddingPrice(any(Long.class), any(Long.class), any(Long.class));
-        //생성
-        when(biddingRepository.save(any(Bidding.class))).thenReturn(new Bidding());
+
+        when(biddingRepository.save(any(Bidding.class))).thenReturn(TestData.TEST_BIDDING1);
+
+        // biddingEventListener 지나가기
+        doNothing().when(biddingEventListener).publishBidding(any(BiddingResponseDto.class));
 
         //when
         biddingService.createBidding(auctionId, price, authMember);
@@ -89,6 +96,7 @@ public class BiddingServiceTest {
         verify(biddingRepository, times(1)).save(any(Bidding.class));
         //현재가 업데이트
         assertEquals(price, auction.getCurrentPrice());
+        verify(biddingEventListener, times(1)).publishBidding(any(BiddingResponseDto.class));
     }
 
     @Test
@@ -116,13 +124,17 @@ public class BiddingServiceTest {
         doNothing().when(paymentDepositService)
                 .payBiddingPrice(any(Long.class), any(Long.class), any(Long.class));
 
-        when(biddingRepository.save(any(Bidding.class))).thenReturn(new Bidding());
+        when(biddingRepository.save(any(Bidding.class))).thenReturn(TestData.TEST_BIDDING2);
+
+        // biddingEventListener 지나가기
+        doNothing().when(biddingEventListener).publishBidding(any(BiddingResponseDto.class));
 
         //when
         biddingService.createBidding(auctionId, price, authMember);
         //then
         verify(biddingRepository, times(1)).save(any(Bidding.class));
         assertEquals(price, auction.getCurrentPrice());
+        verify(biddingEventListener, times(1)).publishBidding(any(BiddingResponseDto.class));
     }
 
     @Test
@@ -150,7 +162,7 @@ public class BiddingServiceTest {
         doNothing().when(paymentDepositService)
                 .payBiddingPrice(any(Long.class), any(Long.class), any(Long.class));
 
-        when(biddingRepository.save(any(Bidding.class))).thenReturn(new Bidding());
+        when(biddingRepository.save(any(Bidding.class))).thenReturn(TestData.TEST_BIDDING3);
 
         doNothing().when(saleProfitService).saleProfit(any(Long.class));
         doNothing().when(paymentDepositService).refundPaymentDeposit(any(Long.class));
@@ -311,12 +323,10 @@ public class BiddingServiceTest {
         //given
         //Mock Auction 객체 생성 및 설정
         Auction auction = mock(Auction.class);
-        when(auction.getTitle()).thenReturn("Auction Title");
         when(auction.getId()).thenReturn(1L);
 
         //Mock Member 객체 생성 및 설정
         Member member = mock(Member.class);
-        when(member.getName()).thenReturn("member Name");
 
         Bidding mockBidding1 = mock(Bidding.class);
         Bidding mockBidding2 = mock(Bidding.class);
@@ -383,6 +393,5 @@ public class BiddingServiceTest {
         //then
         assertEquals(2, result.getContent().size());
     }
-
 
 }

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.team1.keyduck.testdata.TestData.TEST_AUCTION1;
@@ -31,6 +32,8 @@ import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.common.exception.DataDuplicateException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataUnauthorizedAccessException;
+import org.team1.keyduck.email.dto.MemberEmailRequestDto;
+import org.team1.keyduck.email.service.EmailService;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.keyboard.repository.KeyboardRepository;
 import org.team1.keyduck.member.entity.Member;
@@ -46,6 +49,9 @@ class AuctionCreateServiceTest {
 
     @Mock
     KeyboardRepository keyboardRepository;
+
+    @Mock
+    private EmailService emailService;
 
     @Test
     @DisplayName("경매 생성 성공")
@@ -66,6 +72,8 @@ class AuctionCreateServiceTest {
         when(Objects.requireNonNull(keyboard).getMember()).thenReturn(member);
         when(member.getId()).thenReturn(TEST_ID1);
         when(auctionRepository.save(any(Auction.class))).thenReturn(TEST_AUCTION1);
+
+        doNothing().when(emailService).sendMemberEmail(any(Long.class), any(MemberEmailRequestDto.class));
 
         //when
         AuctionCreateResponseDto actualResponse = auctionService.createAuctionService(TEST_ID1,
