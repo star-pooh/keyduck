@@ -2,29 +2,26 @@ package org.team1.keyduck.common.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.repository.AuctionQueryDslRepository;
 import org.team1.keyduck.auction.service.AuctionService;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class SchedulerService {
 
     private final AuctionQueryDslRepository auctionQueryDslRepository;
     private final AuctionService auctionService;
 
-
-    public SchedulerService(
-            @Qualifier("auctionQueryDslRepositoryImpl") AuctionQueryDslRepository auctionQueryDslRepository,
-            AuctionService auctionService) {
-        this.auctionQueryDslRepository = auctionQueryDslRepository;
-        this.auctionService = auctionService;
-    }
-
     @Scheduled(cron = "0 0 0/1 * * *", zone = "Asia/Seoul")
+    @SchedulerLock(name = "auctionOpen", lockAtMostFor = "1h", lockAtLeastFor = "5m")
+    @Transactional
     public void auctionOpen() {
         List<Long> openTargetAuctionIdList =
                 auctionQueryDslRepository.findOpenTargetAuction(LocalDateTime.now());
@@ -45,6 +42,8 @@ public class SchedulerService {
     }
 
     @Scheduled(cron = "0 0 0/1 * * *", zone = "Asia/Seoul")
+    @SchedulerLock(name = "auctionClose", lockAtMostFor = "1h", lockAtLeastFor = "5m")
+    @Transactional
     public void auctionClose() {
         List<Long> closeTargetAuctionIdList =
                 auctionQueryDslRepository.findCloseTargetAuction(LocalDateTime.now());
