@@ -21,7 +21,6 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import org.team1.keyduck.auction.dto.response.AuctionSearchResponseDto;
 import org.team1.keyduck.auction.dto.response.QAuctionSearchResponseDto;
-import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
 
 @Repository
@@ -82,8 +81,9 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
     }
 
     @Override
-    public List<Auction> findOpenTargetAuction(LocalDateTime now) {
-        return queryFactory.selectFrom(auction)
+    public List<Long> findOpenTargetAuction(LocalDateTime now) {
+        return queryFactory.select(auction.id)
+                .from(auction)
                 .where(auction.auctionStartDate.year().eq(now.getYear())
                         .and(auction.auctionStartDate.month().eq(now.getMonthValue()))
                         .and(auction.auctionStartDate.dayOfMonth().eq(now.getDayOfMonth()))
@@ -94,8 +94,9 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
     }
 
     @Override
-    public List<Auction> findCloseTargetAuction(LocalDateTime now) {
-        return queryFactory.selectFrom(auction)
+    public List<Long> findCloseTargetAuction(LocalDateTime now) {
+        return queryFactory.select(auction.id)
+                .from(auction)
                 .where(auction.auctionEndDate.year().eq(now.getYear())
                         .and(auction.auctionEndDate.month().eq(now.getMonthValue()))
                         .and(auction.auctionEndDate.dayOfMonth().eq(now.getDayOfMonth()))

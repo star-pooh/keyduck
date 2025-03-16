@@ -4,11 +4,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.dto.request.AuctionCreateRequestDto;
 import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
@@ -142,43 +140,51 @@ public class AuctionService {
                 keyboardName, auctionTitle, sellerName, auctionStatus, startDate, endDate);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void openAuction(Auction targetAuction) {
-        targetAuction.updateAuctionStatus(AuctionStatus.IN_PROGRESS);
+    @Transactional
+    public void openAuction(Long targetAuctionId) {
+        Auction foundedAuction = auctionRepository.findById(targetAuctionId).orElseThrow(
+                () -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
+                        ErrorMessageParameter.AUCTION));
+
+        foundedAuction.updateAuctionStatus(AuctionStatus.IN_PROGRESS);
 
         log.info("auctionId : {}, auctionTitle : {}, in progress status change success",
-                targetAuction.getId(), targetAuction.getTitle());
+                foundedAuction.getId(), foundedAuction.getTitle());
 
         MemberEmailRequestDto emailRequestDto = new MemberEmailRequestDto(
                 Constants.AUCTION_OPEN_MAIL_TITLE,
                 String.format(Constants.AUCTION_OPEN_MAIL_CONTENTS,
-                        targetAuction.getKeyboard().getMember().getName(),
-                        targetAuction.getKeyboard().getName(), targetAuction.getTitle())
+                        foundedAuction.getKeyboard().getMember().getName(),
+                        foundedAuction.getKeyboard().getName(), foundedAuction.getTitle())
         );
         applicationEventPublisher.publishEvent(
-                new EmailEvent(targetAuction.getKeyboard().getMember().getId(), emailRequestDto));
+                new EmailEvent(foundedAuction.getKeyboard().getMember().getId(), emailRequestDto));
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void closeAuction(Auction targetAuction) {
-        Member winnerMember = biddingRepository.findByMaxPriceAuctionId(targetAuction.getId());
-        targetAuction.updateSuccessBiddingMember(winnerMember);
+    @Transactional
+    public void closeAuction(Long targetAuctionId) {
+        Auction foundedAuction = auctionRepository.findById(targetAuctionId).orElseThrow(
+                () -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
+                        ErrorMessageParameter.AUCTION));
 
-        paymentDepositService.refundPaymentDeposit(targetAuction.getId());
-        saleProfitService.saleProfit(targetAuction.getId());
+        Member winnerMember = biddingRepository.findByMaxPriceAuctionId(foundedAuction.getId());
+        foundedAuction.updateSuccessBiddingMember(winnerMember);
 
-        targetAuction.updateAuctionStatus(AuctionStatus.CLOSED);
+        paymentDepositService.refundPaymentDeposit(foundedAuction.getId());
+        saleProfitService.saleProfit(foundedAuction.getId());
+
+        foundedAuction.updateAuctionStatus(AuctionStatus.CLOSED);
 
         log.info("auctionId : {}, auctionTitle : {}, closed status change success",
-                targetAuction.getId(), targetAuction.getTitle());
+                foundedAuction.getId(), foundedAuction.getTitle());
 
         MemberEmailRequestDto emailRequestDto = new MemberEmailRequestDto(
                 Constants.AUCTION_CLOSE_MAIL_TITLE,
                 String.format(Constants.AUCTION_CLOSE_MAIL_CONTENTS,
-                        targetAuction.getMember().getName(),
-                        targetAuction.getKeyboard().getName(), targetAuction.getTitle())
+                        foundedAuction.getMember().getName(),
+                        foundedAuction.getKeyboard().getName(), foundedAuction.getTitle())
         );
         applicationEventPublisher.publishEvent(
-                new EmailEvent(targetAuction.getMember().getId(), emailRequestDto));
+                new EmailEvent(foundedAuction.getMember().getId(), emailRequestDto));
     }
 }

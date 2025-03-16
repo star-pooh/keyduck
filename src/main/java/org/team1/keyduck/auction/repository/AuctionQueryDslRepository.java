@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.team1.keyduck.auction.dto.response.AuctionSearchResponseDto;
-import org.team1.keyduck.auction.entity.Auction;
 
 public interface AuctionQueryDslRepository {
 
@@ -14,7 +13,7 @@ public interface AuctionQueryDslRepository {
             String auctionTitle, String sellerName, String auctionStatus, String startDate,
             String endDate);
 
-    List<Auction> findOpenTargetAuction(LocalDateTime now);
+    List<Long> findOpenTargetAuction(LocalDateTime now);
 
-    List<Auction> findCloseTargetAuction(LocalDateTime now);
+    List<Long> findCloseTargetAuction(LocalDateTime now);
 }
