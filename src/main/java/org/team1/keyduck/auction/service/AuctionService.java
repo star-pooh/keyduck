@@ -7,7 +7,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.dto.request.AuctionCreateRequestDto;
 import org.team1.keyduck.auction.dto.request.AuctionUpdateRequestDto;
@@ -141,7 +140,7 @@ public class AuctionService {
                 keyboardName, auctionTitle, sellerName, auctionStatus, startDate, endDate);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void openAuction(Long targetAuctionId) {
         Auction foundedAuction = auctionRepository.findById(targetAuctionId).orElseThrow(
                 () -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
@@ -162,7 +161,7 @@ public class AuctionService {
                 new EmailEvent(foundedAuction.getKeyboard().getMember().getId(), emailRequestDto));
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void closeAuction(Long targetAuctionId) {
         Auction foundedAuction = auctionRepository.findById(targetAuctionId).orElseThrow(
                 () -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,

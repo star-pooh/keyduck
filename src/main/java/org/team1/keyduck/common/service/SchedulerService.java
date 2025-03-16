@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.repository.AuctionQueryDslRepository;
 import org.team1.keyduck.auction.service.AuctionService;
 
@@ -26,7 +25,6 @@ public class SchedulerService {
     }
 
     @Scheduled(cron = "0 0 0/1 * * *", zone = "Asia/Seoul")
-    @Transactional
     public void auctionOpen() {
         List<Long> openTargetAuctionIdList =
                 auctionQueryDslRepository.findOpenTargetAuction(LocalDateTime.now());
@@ -47,7 +45,6 @@ public class SchedulerService {
     }
 
     @Scheduled(cron = "0 0 0/1 * * *", zone = "Asia/Seoul")
-    @Transactional
     public void auctionClose() {
         List<Long> closeTargetAuctionIdList =
                 auctionQueryDslRepository.findCloseTargetAuction(LocalDateTime.now());
