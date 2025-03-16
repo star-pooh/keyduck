@@ -125,8 +125,7 @@
 <br>
 
 ---
-## 👍프로젝트 최종 정리👍
-### 🖥 **주요 기능**
+## 🖥 **주요 기능**
 
 <details>
   <summary><strong>✅ 서비스</strong></summary>
@@ -138,7 +137,7 @@
 - 입찰 : C
     - 비정상적인 입찰 방지
         - 하나의 경매에 최대 10회까지만 입찰 가능
-        - 한 번의 입찰에 가능한 입찰 금액은 현재가 + 최소 입찰단위 * 10 제한
+        - 한 번의 입찰에 가능한 입찰 금액은 현재가 + 최소 입찰단위 * 10
 - 경매 포인트 충전 : 토스페이먼츠
 - 이메일 알림 서비스 : 포인트 결제내역 및 경매 낙찰, 경매 시작/종료 시 알림성 이메일 전송
 - 스케줄러 : 경매 시작, 종료 자동 관리
@@ -161,40 +160,11 @@
     
 <br>
 
-## 👏성능 개선👏
-<details>
-  <summary> <Strong>1. ✨블랙 리스트 관리</Strong> </summary>
-
-  
-</details>
-
-<details>
-<summary> <Strong>2. ✨실시간 입찰내역, 현재가 업데이트</Strong> </summary>
-  
-
-  
-</details>
-
-<details>
-<summary> <Strong>3. ✨경매 조회 기능</Strong> </summary>
-  
-
-  
-</details>
-
-<details>
-<summary> <Strong>4. ✨결제 실패 관리</Strong> </summary>
-  
-
-  
-</details>
-
-<br>
 
 
 ## ❓기술적 의사 결정❓
 <details>
-  <summary> <strong>GitHubAction</strong> </summary>
+  <summary> <strong> 🔹 GitHubAction</strong> </summary>
   <br>
 
 [구현한 기능]
@@ -247,7 +217,7 @@ GitHub를 활용한 CI/CD (지속적 통합/지속적 배포) 파이프라인�
 </details>
 
 <details>
-  <summary> <strong>토큰 블랙리스트 등록에 Redis 캐시를 사용한 이유</strong> </summary>
+  <summary> <strong>🔹 토큰 블랙리스트 등록에 Redis 캐시를 사용한 이유</strong> </summary>
   <br>
 
   [구현한 기능]
@@ -262,7 +232,9 @@ GitHub를 활용한 CI/CD (지속적 통합/지속적 배포) 파이프라인�
 - 블랙리스트에 포함된 토큰 → 요청 거부
 - 토큰 만료 시 → 블랙리스트에서 자동 삭제
 
-  <img src="https://github.com/user-attachments/assets/40525a14-0979-421e-924c-189d3d71746c" height=300px>
+  <img src="https://github.com/user-attachments/assets/f1240532-171a-4aa9-bb1a-de06c1d25a65" height=300px>
+
+
 
 
 [배경]
@@ -306,7 +278,7 @@ GitHub를 활용한 CI/CD (지속적 통합/지속적 배포) 파이프라인�
 
 
 <details>
-  <summary> <strong>QueryDSL</strong> </summary>
+  <summary> <strong>🔹 QueryDSL</strong> </summary>
   <br>
 
   [구현한 기능]
@@ -426,7 +398,7 @@ GitHub를 활용한 CI/CD (지속적 통합/지속적 배포) 파이프라인�
 </details>
 
 <details>
-  <summary> <strong>페이지 네이션(offset?? cursor??)</strong> </summary>
+  <summary> <strong>🔹 페이지 네이션(offset / cursor)</strong> </summary>
   <br>
 
   [구현한 기능]
@@ -532,7 +504,7 @@ offset기반 페이징과 cursor기반 페이징을 모두 구현해보면서 �
 </details>
 
 <details>
-  <summary> <strong>Full Text Index</strong> </summary>
+  <summary> <strong>🔹 Full Text Index</strong> </summary>
   <br>
 
   [구현한 기능]
@@ -668,13 +640,15 @@ full text index 적용 후 사용자 정의 함수를 등록하여 응답 속도
 </details>
 
 <details>
-  <summary> <strong>Google SMTP</strong> </summary>
+  <summary> <strong>🔹 Google SMTP</strong> </summary>
   <br>
 
  [구현한 기능]
+ 
 여러가지 알림기능에 활용할 이메일 전송 기능을 구현하였습니다.
 
 [배경]
+
 결제가 완료되거나, 포인트가 일정 금액보다 떨어져 입찰 참여가 어려운 상황이거나, 경매가 끝났을때 낙찰자가 되었거나, 
 
 내가 생성한 경매가 오픈되었거나 하는 상황에서 사용자에게 알림을 보내야 할 필요가 있습니다. 여기서 결제 영수증이나 
@@ -763,10 +737,10 @@ Gmail SMTP를 활용하여 전송하는 방식을 선택했습니다.
 
 - 기술의 장단점
     - 장점
-    - 
-    정말 쉽게 설정이 가능했습니다. 3시간만에 첫 메일을 보내는데에 성공했고, 팀원들에게 간단한 설명만하고 바로 코드만 보여줘도
+      
+    	정말 쉽게 설정이 가능했습니다. 3시간만에 첫 메일을 보내는데에 성공했고, 팀원들에게 간단한 설명만하고 바로 코드만 보여줘도
 
-   다들 금방 이해하고 활용할 수 있었습니다.
+   	다들 금방 이해하고 활용할 수 있었습니다.
   
     - 단점
         
@@ -775,15 +749,17 @@ Gmail SMTP를 활용하여 전송하는 방식을 선택했습니다.
 
 다시 시도한다면?
 
-Gmail을 사용하는 방식은 간단하지만, EC2에서 메일을 전송할 때 일부 계정에서는 Gmail이 이를 이상 로그인으로 판단하여 차단하는 경우가 있었습니다. 
+ - Gmail을 사용하는 방식은 간단하지만, EC2에서 메일을 전송할 때 일부 계정에서는 Gmail이 이를 이상 로그인으로 판단하여 차단하는
+ 
+   경우가 있었습니다. 따라서 배포 시 AWS와의 호환성을 고려한다면, 다음번에는 AWS SES를 활용하는 것을 더 적극적으로
 
-따라서 배포 시 AWS와의 호환성을 고려한다면, 다음번에는 AWS SES를 활용하는 것을 더 적극적으로 고려해볼 수 있을 것 같습니다.
+   고려해볼 수 있을 것 같습니다.
   
     
 </details>
 
 <details>
-  <summary> <strong>토스페이먼츠</strong> </summary>
+  <summary> <strong>🔹 토스페이먼츠</strong> </summary>
   <br>
 
   [구현한 기능]
@@ -855,7 +831,7 @@ Gmail을 사용하는 방식은 간단하지만, EC2에서 메일을 전송할 �
 </details>
 
 <details>
-  <summary> <strong>RabbitMQ</strong> </summary>
+  <summary> <strong>🔹 RabbitMQ</strong> </summary>
   <br>
 
   [구현한 기능]
@@ -942,7 +918,7 @@ Gmail을 사용하는 방식은 간단하지만, EC2에서 메일을 전송할 �
 ## 💥트러블 슈팅💥
 
 <details>
-  <summary> <strong>CI&CD 과정에서 데이터베이스 연결 실패</strong> </summary>
+  <summary> <strong>🔹 CI&CD 과정에서 데이터베이스 연결 실패</strong> </summary>
   <br>
 
   [문제 인식]
@@ -985,7 +961,7 @@ MYSQL_PASSWORD='Qwer12!@#'
 </details>
 
 <details>
-  <summary> <strong>경매 단건 조회에서의 현재가 및 입찰 내역 업데이트 문제</strong> </summary>
+  <summary> <strong>🔹 경매 단건 조회에서의 현재가 및 입찰 내역 업데이트 문제</strong> </summary>
   <br>
 
   [문제 인식]
@@ -1055,7 +1031,7 @@ MYSQL_PASSWORD='Qwer12!@#'
 
 
 <details>
-  <summary> <strong>다중 서버 환경에서의 실시간 데이터 공유 문제</strong> </summary>
+  <summary> <strong>🔹 다중 서버 환경에서의 실시간 데이터 공유 문제</strong> </summary>
 <br>
   [문제 인식]
 
@@ -1104,7 +1080,7 @@ MYSQL_PASSWORD='Qwer12!@#'
 
 
 <details>
-  <summary> <strong>Redis에서 LocalDateTime의 직렬화/역직렬화 문제</strong> </summary>
+  <summary> <strong>🔹 Redis에서 LocalDateTime의 직렬화/역직렬화 문제</strong> </summary>
   <br>
 
   [문제 인식]
@@ -1152,7 +1128,7 @@ dependencies {
   
 </details>
 <details>
-  <summary> <strong>쿼리 횟수, 불 필요한 데이터 조회</strong> </summary>
+  <summary> <strong>🔹 쿼리 횟수, 불 필요한 데이터 조회</strong> </summary>
   <br>
 	
   [문제 인식]
@@ -1188,7 +1164,7 @@ dependencies {
 </details>
 
 <details>
-  <summary> <strong>인덱싱, Full text index</strong> </summary>
+  <summary> <strong>🔹 인덱싱, Full text index</strong> </summary>
   <br>
 
   [문제 인식]
@@ -1266,7 +1242,7 @@ FunctionContributor를 implements하여 구현하는 방식이었습니다.
 </details>
 
 <details>
-  <summary> <strong>CountQuery</strong> </summary>
+  <summary> <strong>🔹 CountQuery</strong> </summary>
   <br>
 
   [문제 인식]
@@ -1373,7 +1349,7 @@ CountQuery에서의 응답 속도를 개선하고자 like연산자를 사용하�
 </details>
 
 <details>
-  <summary> <strong>트랜잭션의 롤백, 매우 긴 응답 시간</strong> </summary>
+  <summary> <strong>🔹 트랜잭션의 롤백, 매우 긴 응답 시간</strong> </summary>
   <br>
   [문제 정의]
 
@@ -1440,7 +1416,7 @@ CountQuery에서의 응답 속도를 개선하고자 like연산자를 사용하�
 
         
     
-   <img src="https://github.com/user-attachments/assets/fe2a53c3-e032-430a-961e-e01c145e151b" height=200px width=650px >
+   <img src="https://github.com/user-attachments/assets/fe2a53c3-e032-430a-961e-e01c145e151b" height=150px width=650px >
 
 
 
@@ -1459,7 +1435,7 @@ CountQuery에서의 응답 속도를 개선하고자 like연산자를 사용하�
 </details>
 
 <details>
-  <summary> <strong>이벤트가 실패했을 때 이메일의 전송</strong> </summary>
+  <summary> <strong>🔹 이벤트가 실패했을 때 이메일의 전송</strong> </summary>
 <br>
 [문제 정의]
 
@@ -1532,14 +1508,14 @@ CountQuery에서의 응답 속도를 개선하고자 like연산자를 사용하�
     
        전송할 수 있도록 보장할 수 있다는 점에서 적용할 가치가 있다고 판단하였습니다.
 
-  <img src="https://github.com/user-attachments/assets/611a9119-446c-4f10-be00-c879e82873cd" height=150px width=700px >
+  <img src="https://github.com/user-attachments/assets/611a9119-446c-4f10-be00-c879e82873cd" height=100px width=700px >
 
-  <img src="https://github.com/user-attachments/assets/3ad61ce9-f4f5-46db-9922-c716c374fc52" height=150px width=700px >
+  <img src="https://github.com/user-attachments/assets/3ad61ce9-f4f5-46db-9922-c716c374fc52" height=100px width=700px >
 
 </details>
 
 <details>
-  <summary> <strong>경매의 현재가가 예상가와 다른 문제</strong> </summary>
+  <summary> <strong>🔹 경매의 현재가가 예상가와 다른 문제</strong> </summary>
   <br>
 
   **[문제 인식]**
@@ -1614,7 +1590,7 @@ CountQuery에서의 응답 속도를 개선하고자 like연산자를 사용하�
 
 
 <details>
-  <summary> <strong>EC2 환경에서 화면 이동이 정상적으로 동작하지 않는 문제</strong> </summary>
+  <summary> <strong>🔹 EC2 환경에서 화면 이동이 정상적으로 동작하지 않는 문제</strong> </summary>
 <br>
 
   [문제 인식]
@@ -1658,7 +1634,7 @@ public String methodA() {
 </details>
 
 <details>
-  <summary> <strong>스케줄러에 등록된 작업의 작업량에 따른 스케줄 지연 문제</strong> </summary>
+  <summary> <strong>🔹 스케줄러에 등록된 작업의 작업량에 따른 스케줄 지연 문제</strong> </summary>
 <br>
 
 [문제 인식]
@@ -1753,10 +1729,15 @@ public class SchedulerConfig implements SchedulingConfigurer {
 
 ## 😊추가로 도전, 개선해 보고싶은 것😊
 
+`인프라 구성 개선`, `동시성 제어 개선`, `이메일 기능 개선(안정성)`, `스케줄링 기능 보완`
+
+`중복 코드 및 동일한 라이브러리로 구현 가능한 기능 리팩토링`, `검색 기능 개선(엘라스틱 서치 or 다른 라이브러리 알아보기`
+
+
 
 <br>
 
-## 😘우리 1조는요!!!😘
+## 😘사탕팔이와 아이들!!!😘
 <img src="https://github.com/user-attachments/assets/7df97370-11c3-4e61-bf2c-b5618063e4fe" height=200px width=250px >
 
 # 
