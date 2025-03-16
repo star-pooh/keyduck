@@ -21,6 +21,7 @@ import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.ErrorCode;
 import org.team1.keyduck.common.exception.OperationNotAllowedException;
+import org.team1.keyduck.common.util.BiddingEventListener;
 import org.team1.keyduck.common.util.Constants;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
 import org.team1.keyduck.member.entity.Member;
@@ -38,13 +39,14 @@ public class BiddingService {
     private final MemberRepository memberRepository;
     private final PaymentDepositService paymentDepositService;
     private final SaleProfitService saleProfitService;
+    private final BiddingEventListener biddingEventListener;
 
     //비딩참여가 가능한 상태인지 검증
     private void validateBiddingAvailability(Auction auction, AuthMember authMember) {
 
         //경매가 진행 중이어야 가능
         if (!auction.getAuctionStatus().equals(AuctionStatus.IN_PROGRESS)) {
-            throw new DataInvalidException(ErrorCode.AUCTION_NOT_IN_PROGRESS, null);
+            throw new OperationNotAllowedException(ErrorCode.AUCTION_NOT_IN_PROGRESS, null);
         }
         //비딩 횟수가 열번째 미만이어야함
         long biddingCount = biddingRepository.countByMember_IdAndAuction_Id(authMember.getId(),
@@ -56,14 +58,14 @@ public class BiddingService {
     }
 
     private void validateBiddingPrice(Long price, Auction auction) {
-        // 입찰가가 최소 입찰 단위 금액의 배수만큼 증가해야함
-        long priceDifference = price - auction.getStartPrice();
 
+        long priceDifference = price - auction.getStartPrice();
+        //비딩 금액이 현재가보다 낮으면 안됨
         if (price.equals(auction.getImmediatePurchasePrice())
                 && price > auction.getCurrentPrice()) {
             return;
         }
-
+        //입찰 금액이 단위의 배수여야함
         if (priceDifference % auction.getBiddingUnit() != 0) {
             throw new DataInvalidException(ErrorCode.INVALID_BIDDING_PRICE_UNIT, null);
         }
@@ -109,7 +111,7 @@ public class BiddingService {
                 .build();
 
         //생성한 입찰내역을 저장
-        biddingRepository.save(newBidding);
+        newBidding = biddingRepository.save(newBidding);
         //경매의 현재가 업데이트
         auction.updateCurrentPrice(price);
 
@@ -124,6 +126,8 @@ public class BiddingService {
             auction.updateAuctionStatus(AuctionStatus.CLOSED);
 
         }
+
+        biddingEventListener.publishBidding(BiddingResponseDto.of(newBidding));
     }
 
 

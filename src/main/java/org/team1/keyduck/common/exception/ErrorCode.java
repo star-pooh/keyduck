@@ -3,10 +3,11 @@ package org.team1.keyduck.common.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import org.team1.keyduck.common.util.BaseEnumCode;
 import org.team1.keyduck.common.util.ErrorMessage;
 
 @Getter
-public enum ErrorCode {
+public enum ErrorCode implements BaseEnumCode {
     // 400 BAD_REQUEST
     // INVALID(유효하지 않은 값)
     INVALID_DATA_VALUE(HttpStatus.BAD_REQUEST, "BAD_INVALID_001", ErrorMessage.INVALID_VALUE),
@@ -24,8 +25,8 @@ public enum ErrorCode {
             ErrorMessage.EXCEED_MAX_BIDDING_PRICE),
     INSUFFICIENT_PAYMENT_DEPOSIT_AMOUNT(HttpStatus.BAD_REQUEST, "BAD_INVALID_009",
             ErrorMessage.INSUFFICIENT_PAYMENT_DEPOSIT_AMOUNT),
-    AUCTION_NOT_MODIFIABLE_AND_DELETEABLE(HttpStatus.BAD_REQUEST, "BAD_INVALID_010",
-            ErrorMessage.NOT_MODIFIABLE_AND_DELETEABLE),
+    AUCTION_NOT_MODIFIABLE_AND_DELETABLE(HttpStatus.BAD_REQUEST, "BAD_INVALID_010",
+            ErrorMessage.NOT_MODIFIABLE_AND_DELETABLE),
     DELETE_FAIL_AUCTION_IN_PROGRESS(HttpStatus.BAD_REQUEST, "BAD_INVALID_011",
             ErrorMessage.DELETE_FAIL_AUCTION_IN_PROGRESS),
     BEFORE_INFO_NOT_AVAILABLE(HttpStatus.BAD_REQUEST, "BAD_INVALID_012",
@@ -33,6 +34,8 @@ public enum ErrorCode {
     EMPTY_REQUEST_BODY(HttpStatus.BAD_REQUEST, "INVALID_013", ErrorMessage.EMPTY_REQUEST_BODY),
     NOT_MODIFIABLE_DELETED_KEYBOARD(HttpStatus.BAD_REQUEST, "BAD_INVALID_014",
             ErrorMessage.NOT_MODIFIABLE_DELETED_KEYBOARD),
+    NOT_DELETABLE_KEYBOARD_DUE_TO_AUCTION(HttpStatus.BAD_REQUEST, "BAD_INVALID_015",
+            ErrorMessage.NOT_DELETABLE_KEYBOARD_DUE_TO_AUCTION),
 
     // DUPLICATE(중복되는 값)
     DUPLICATE_EMAIL(HttpStatus.BAD_REQUEST, "BAD_DUPLICATE_001", ErrorMessage.DUPLICATE_USE),
@@ -47,8 +50,8 @@ public enum ErrorCode {
 
     // 403 FORBIDDEN
     FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, "FORBIDDEN_001", ErrorMessage.FORBIDDEN_ACCESS),
-    FORBIDDEN_PAYMENT_LOGIN_FORM(HttpStatus.FORBIDDEN, "FORBIDDEN_002",
-            ErrorMessage.FORBIDDEN_PAYMENT_LOGIN_FORM),
+    FORBIDDEN_PAYMENT_FROM_SELLER(HttpStatus.FORBIDDEN, "FORBIDDEN_002",
+            ErrorMessage.FORBIDDEN_PAYMENT_FROM_SELLER),
 
     // 404 NOT_FOUND
     NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "NOTFOUND_001", ErrorMessage.NOT_FOUND_VALUE),
@@ -56,10 +59,12 @@ public enum ErrorCode {
     NOT_FOUND_AUCTION(HttpStatus.NOT_FOUND, "NOTFOUND_003", ErrorMessage.NOT_FOUND_VALUE),
     NOT_FOUND_PAYMENT_METHOD(HttpStatus.NOT_FOUND, "NOTFOUND_004", ErrorMessage.NOT_FOUND_VALUE),
     NOT_FOUND_TEMP_PAYMENT(HttpStatus.NOT_FOUND, "NOTFOUND_005", ErrorMessage.NOT_FOUND_VALUE),
+    NOT_FOUND_PAYMENT(HttpStatus.NOT_FOUND, "NOTFOUND_006", ErrorMessage.NOT_FOUND_VALUE),
 
     // 500 INTERNAL_SERVER_ERROR
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_001",
             ErrorMessage.INTERNAL_SERVER_ERROR);
+
 
     private final HttpStatus status;
     private final String code;

@@ -2,8 +2,10 @@ package org.team1.keyduck.auction.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.team1.keyduck.auction.dto.request.AuctionCreateRequestDto;
@@ -14,6 +16,7 @@ import org.team1.keyduck.auction.dto.response.AuctionSearchResponseDto;
 import org.team1.keyduck.auction.dto.response.AuctionUpdateResponseDto;
 import org.team1.keyduck.auction.entity.Auction;
 import org.team1.keyduck.auction.entity.AuctionStatus;
+import org.team1.keyduck.auction.repository.AuctionQueryDslRepository;
 import org.team1.keyduck.auction.repository.AuctionRepository;
 import org.team1.keyduck.bidding.dto.response.BiddingResponseDto;
 import org.team1.keyduck.bidding.repository.BiddingRepository;
@@ -22,7 +25,11 @@ import org.team1.keyduck.common.exception.DataInvalidException;
 import org.team1.keyduck.common.exception.DataNotFoundException;
 import org.team1.keyduck.common.exception.DataUnauthorizedAccessException;
 import org.team1.keyduck.common.exception.ErrorCode;
+import org.team1.keyduck.common.util.Constants;
 import org.team1.keyduck.common.util.ErrorMessageParameter;
+import org.team1.keyduck.email.dto.EmailEvent;
+import org.team1.keyduck.email.dto.MemberEmailRequestDto;
+import org.team1.keyduck.email.service.EmailService;
 import org.team1.keyduck.keyboard.entity.Keyboard;
 import org.team1.keyduck.keyboard.repository.KeyboardRepository;
 import org.team1.keyduck.member.entity.Member;
@@ -31,13 +38,18 @@ import org.team1.keyduck.payment.service.SaleProfitService;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuctionService {
 
     private final AuctionRepository auctionRepository;
     private final KeyboardRepository keyboardRepository;
     private final BiddingRepository biddingRepository;
+    private final EmailService emailService;
+
     private final SaleProfitService saleProfitService;
     private final PaymentDepositService paymentDepositService;
+    private final AuctionQueryDslRepository auctionQueryDslRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public AuctionCreateResponseDto createAuctionService(Long sellerId,
             AuctionCreateRequestDto requestDto) {
@@ -68,6 +80,13 @@ public class AuctionService {
 
         Auction saveAuction = auctionRepository.save(auction);
 
+        MemberEmailRequestDto emailRequestDto = new MemberEmailRequestDto(
+                Constants.AUCTION_CREATED_MAIL_TITLE,
+                String.format(Constants.AUCTION_CREATED_MAIL_CONTENTS,
+                        auction.getKeyboard().getMember().getName(),
+                        auction.getKeyboard().getName(), auction.getTitle())
+        );
+        emailService.sendMemberEmail(auction.getKeyboard().getMember().getId(), emailRequestDto);
         return AuctionCreateResponseDto.of(saveAuction);
 
     }
@@ -102,7 +121,8 @@ public class AuctionService {
                         ErrorMessageParameter.AUCTION));
 
         // 경매 입찰 내역 조회
-        List<BiddingResponseDto> responseDto = biddingRepository.findAllByAuctionId(auctionId)
+        List<BiddingResponseDto> responseDto = biddingRepository.findAllByAuctionIdOrderByCreatedAt(
+                        auctionId)
                 .stream()
                 .map(BiddingResponseDto::of)
                 .toList();
@@ -112,52 +132,59 @@ public class AuctionService {
 
     // 경매 다건 조회
     @Transactional(readOnly = true)
-    public Page<AuctionSearchResponseDto> findAllAuction(Pageable pageable,
-            String keyboardName, String auctionTitle, String sellerName) {
+    public Slice<AuctionSearchResponseDto> findAllAuction(Long lastId, Pageable pageable,
+            String keyboardName, String auctionTitle, String sellerName, String auctionStatus,
+            String startDate, String endDate) {
 
-        return auctionRepository.findAllAuction(pageable,
-                keyboardName, auctionTitle, sellerName);
+        return auctionQueryDslRepository.findAllAuction(lastId, pageable,
+                keyboardName, auctionTitle, sellerName, auctionStatus, startDate, endDate);
     }
 
     @Transactional
-    public void openAuction(Long memberId, Long auctionId) {
-        Auction findAuction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
+    public void openAuction(Long targetAuctionId) {
+        Auction foundedAuction = auctionRepository.findById(targetAuctionId).orElseThrow(
+                () -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
                         ErrorMessageParameter.AUCTION));
 
-        if (!findAuction.getAuctionStatus().equals(AuctionStatus.NOT_STARTED)) {
-            throw new DataInvalidException(ErrorCode.INVALID_STATUS,
-                    ErrorMessageParameter.AUCTION_STATUS);
-        }
+        foundedAuction.updateAuctionStatus(AuctionStatus.IN_PROGRESS);
 
-        if (!findAuction.getKeyboard().getMember().getId().equals(memberId)) {
-            throw new DataUnauthorizedAccessException(ErrorCode.FORBIDDEN_ACCESS, null);
-        }
+        log.info("auctionId : {}, auctionTitle : {}, in progress status change success",
+                foundedAuction.getId(), foundedAuction.getTitle());
 
-        findAuction.updateAuctionStatus(AuctionStatus.IN_PROGRESS);
+        MemberEmailRequestDto emailRequestDto = new MemberEmailRequestDto(
+                Constants.AUCTION_OPEN_MAIL_TITLE,
+                String.format(Constants.AUCTION_OPEN_MAIL_CONTENTS,
+                        foundedAuction.getKeyboard().getMember().getName(),
+                        foundedAuction.getKeyboard().getName(), foundedAuction.getTitle())
+        );
+        applicationEventPublisher.publishEvent(
+                new EmailEvent(foundedAuction.getKeyboard().getMember().getId(), emailRequestDto));
     }
 
     @Transactional
-    public void closeAuction(Long id, Long auctionId) {
-        Auction findAuction = auctionRepository.findById(auctionId)
-                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
+    public void closeAuction(Long targetAuctionId) {
+        Auction foundedAuction = auctionRepository.findById(targetAuctionId).orElseThrow(
+                () -> new DataNotFoundException(ErrorCode.NOT_FOUND_AUCTION,
                         ErrorMessageParameter.AUCTION));
 
-        if (!findAuction.getAuctionStatus().equals(AuctionStatus.IN_PROGRESS)) {
-            throw new DataInvalidException(ErrorCode.INVALID_STATUS,
-                    ErrorMessageParameter.AUCTION_STATUS);
-        }
+        Member winnerMember = biddingRepository.findByMaxPriceAuctionId(foundedAuction.getId());
+        foundedAuction.updateSuccessBiddingMember(winnerMember);
 
-        if (!findAuction.getKeyboard().getMember().getId().equals(id)) {
-            throw new DataUnauthorizedAccessException(ErrorCode.FORBIDDEN_ACCESS, null);
-        }
+        paymentDepositService.refundPaymentDeposit(foundedAuction.getId());
+        saleProfitService.saleProfit(foundedAuction.getId());
 
-        Member winnerMember = biddingRepository.findByMaxPriceAuctionId(auctionId);
-        findAuction.updateSuccessBiddingMember(winnerMember);
+        foundedAuction.updateAuctionStatus(AuctionStatus.CLOSED);
 
-        paymentDepositService.refundPaymentDeposit(auctionId);
-        saleProfitService.saleProfit(auctionId);
+        log.info("auctionId : {}, auctionTitle : {}, closed status change success",
+                foundedAuction.getId(), foundedAuction.getTitle());
 
-        findAuction.updateAuctionStatus(AuctionStatus.CLOSED);
+        MemberEmailRequestDto emailRequestDto = new MemberEmailRequestDto(
+                Constants.AUCTION_CLOSE_MAIL_TITLE,
+                String.format(Constants.AUCTION_CLOSE_MAIL_CONTENTS,
+                        foundedAuction.getMember().getName(),
+                        foundedAuction.getKeyboard().getName(), foundedAuction.getTitle())
+        );
+        applicationEventPublisher.publishEvent(
+                new EmailEvent(foundedAuction.getMember().getId(), emailRequestDto));
     }
 }

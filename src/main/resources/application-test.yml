@@ -11,13 +11,21 @@ spring:
     hibernate:
       ddl-auto: update
 
-  cache:
-    type: caffeine
-    caffeine:
-      spec: expireAfterWrite=6h
-
   config:
     import: optional:file:.env[.properties]
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      repositories:
+        enabled: false
 
 jwt:
   secret:
@@ -27,4 +35,17 @@ payment:
   toss:
     test-client-api-key: ${PAYMENT_CLIENT_API_KEY}
     test-secret-api-key: ${PAYMENT_SECRET_API_KEY}
-    payment-url: ${PAYMENT_URL}
+    payment-confirm-url: ${PAYMENT_CONFIRM_URL}
+    payment-cancel-url: ${PAYMENT_CANCEL_URL}
+
+rabbitmq:
+  queue:
+    name: ${RABBITMQ_QUEUE_NAME}
+    dead-letter-exchange: ${RABBITMQ_DEAD_LETTER_EXCHANGE_NAME}
+    dead-letter-routing-key: ${RABBITMQ_DEAD_LETTER_ROUTING_KEY}
+  exchange:
+    name: ${RABBITMQ_EXCHANGE_NAME}
+  routing:
+    key: ${RABBITMQ_ROUTING_KEY}
+  dlq:
+    name: ${RABBITMQ_DEAD_LETTER_QUEUE_NAME}

@@ -16,6 +16,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.team1.keyduck.common.entity.BaseTime;
 import org.team1.keyduck.member.entity.Member;
+import org.team1.keyduck.payment.util.PaymentMethod;
+import org.team1.keyduck.payment.util.PaymentStatus;
 
 @Entity
 @Getter
@@ -33,6 +35,10 @@ public class Payment extends BaseTime {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    // 결제 키 값
+    @Column(nullable = false, length = 200)
+    private String paymentKey;
+
     // 토스 주문 ID
     @Column(nullable = false, length = 30)
     private String orderId;
@@ -43,7 +49,7 @@ public class Payment extends BaseTime {
 
     // 결제 수단
     @Enumerated(value = EnumType.STRING)
-    @Column(nullable = false)
+    @Column
     private PaymentMethod paymentMethod;
 
     // 간편 결제 타입
@@ -52,28 +58,41 @@ public class Payment extends BaseTime {
 
     // 결제 상태
     @Enumerated(value = EnumType.STRING)
-    @Column(nullable = false)
+    @Column
     private PaymentStatus paymentStatus;
 
+    @Column(length = 64)
+    private String cancelTransactionKey;
+
     // 결제가 일어난 날짜와 시간
-    @Column(nullable = false)
+    @Column
     private LocalDateTime requestedAt;
 
     // 결제 승인이 일어난 날짜와 시간
-    @Column(nullable = false)
+    @Column
     private LocalDateTime approvedAt;
 
     @Builder
-    public Payment(Member member, String orderId, Long amount,
+    public Payment(Member member, String paymentKey, String orderId, Long amount,
             PaymentMethod paymentMethod, String easyPayType, PaymentStatus paymentStatus,
-            LocalDateTime requestedAt, LocalDateTime approvedAt) {
+            String cancelTransactionKey, LocalDateTime requestedAt, LocalDateTime approvedAt) {
         this.member = member;
+        this.paymentKey = paymentKey;
         this.orderId = orderId;
         this.amount = amount;
         this.paymentMethod = paymentMethod;
         this.easyPayType = easyPayType;
         this.paymentStatus = paymentStatus;
+        this.cancelTransactionKey = cancelTransactionKey;
         this.requestedAt = requestedAt;
         this.approvedAt = approvedAt;
+    }
+
+    public void updatePaymentInfo(Payment confirmPaymentData) {
+        this.paymentMethod = confirmPaymentData.paymentMethod;
+        this.easyPayType = confirmPaymentData.easyPayType;
+        this.paymentStatus = confirmPaymentData.paymentStatus;
+        this.requestedAt = confirmPaymentData.requestedAt;
+        this.approvedAt = confirmPaymentData.approvedAt;
     }
 }

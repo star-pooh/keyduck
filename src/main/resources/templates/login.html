@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <link rel="icon" href="/tab_icon.png" sizes="16x16"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>로그인 페이지</title>
+</head>
+
+<body>
+<div class="container d-flex flex-column justify-content-center align-items-center vh-100">
+  <div class="w-100 text-center mb-3" style="max-width: 300px;">
+    <img src="/login.png" alt="로그인 이미지" class="img-fluid" style="max-width: 100%; height: auto;">
+  </div>
+
+  <div class="card p-4 shadow-sm text-center w-100" style="max-width: 500px;">
+    <h3 class="mb-3">로그인</h3>
+    <form id="loginForm">
+      <div class="mb-3">
+        <label for="email" class="form-label d-block text-start">이메일:</label>
+        <input type="text" id="email" name="email" class="form-control w-100" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label d-block text-start">비밀번호:</label>
+        <input type="password" id="password" name="password" class="form-control w-100" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">로그인</button>
+      <button type="button" class="btn btn-secondary w-100 mt-2" id="joinBtn">회원가입</button>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const button = document.getElementById("joinBtn");
+  const form = document.getElementById("loginForm");
+
+  button.addEventListener("click", () => {
+    window.location.href = "/join.html";
+  });
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault(); // 기본 폼 제출 방지
+
+    const requestData = {
+      email: document.getElementById("email").value,
+      password: document.getElementById("password").value
+    };
+
+    fetch("/api/auth/form/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(requestData)
+    })
+    .then(response => {
+      if (!response.ok) {
+        console.log(response);
+
+        return response.json().then(errorData => {
+          console.log(errorData);
+          throw new Error(errorData.message);
+        });
+      }
+
+      const token = response.headers.get("Authorization");
+      sessionStorage.setItem('Authorization', token);
+    })
+    .then(() => {
+      window.location.href = `/api/auctions/main`;
+    })
+    .catch(error => {
+      console.log(error)
+      alert(error.message);
+    });
+  });
+</script>
+</body>
+</html>

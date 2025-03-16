@@ -24,7 +24,8 @@ public interface BiddingRepository extends JpaRepository<Bidding, Long> {
     //경매별 입찰내역
     List<Bidding> findByAuctionIdOrderByPriceDesc(Long auctionId);
 
-    List<Bidding> findAllByAuctionId(Long auctionId);
+    @Query("SELECT b FROM Bidding b WHERE b.auction.id = :auctionId ORDER BY b.createdAt DESC LIMIT 10")
+    List<Bidding> findAllByAuctionIdOrderByCreatedAt(Long auctionId);
 
 
     @Query("SELECT MAX(b.price) FROM Bidding b WHERE b.auction.id = :auctionId AND b.member.id = :memberId")
