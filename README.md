@@ -14,7 +14,8 @@
 
 ### [📚 키덕키덕 Team Notion 보러가기](https://teamsparta.notion.site/1962dc3ef514803fbe6cc16fbabe39e0)
 
-### [🎬 발표 영상 보러가기]()
+### [🎬 발표 영상 보러가기](https://www.notion.so/teamsparta/1962dc3ef514803fbe6cc16fbabe39e0?pvs=4#1b82dc3ef5148048991ac21f92fbf7fd)
+
 
 <br>
 
