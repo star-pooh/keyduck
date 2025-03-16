@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -133,11 +134,12 @@ public class AuctionService {
 
     // 경매 다건 조회
     @Transactional(readOnly = true)
-    public Page<AuctionSearchResponseDto> findAllAuction(Pageable pageable,
-            String keyboardName, String auctionTitle, String sellerName) {
+    public Slice<AuctionSearchResponseDto> findAllAuction(Long lastId, Pageable pageable,
+            String keyboardName, String auctionTitle, String sellerName, String auctionStatus,
+            String startDate, String endDate) {
 
-        return auctionQueryDslRepository.findAllAuction(pageable,
-                keyboardName, auctionTitle, sellerName);
+        return auctionQueryDslRepository.findAllAuction(lastId, pageable,
+                keyboardName, auctionTitle, sellerName, auctionStatus, startDate, endDate);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
