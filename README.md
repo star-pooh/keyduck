@@ -1,8 +1,7 @@
 # 👑키덕키덕👑
-
 ### ⌨키보드를 좋아하거나 나만의 키보드를 원하는 사람들을 위한 커스텀 키보드 ${\textsf{\color{green}경매}}$ 사이트
-
 ### 📆프로젝트 기간 : 2025/02/10 ~ 2025/03/16
+
 
 <br>
 <p align="center">
@@ -16,6 +15,7 @@
 ### [📚 키덕키덕 Team Notion 보러가기](https://teamsparta.notion.site/1962dc3ef514803fbe6cc16fbabe39e0)
 
 ### [🎬 발표 영상 보러가기](https://drive.google.com/file/d/1Cx1TUFN_aMTycDOcj0acnpKfARMw1RZ8/view?usp=drive_link)
+
 
 <br>
 
@@ -58,7 +58,6 @@
 
 
 ---
-
 ## 📃 와이어 프레임
 
 <details>
@@ -78,86 +77,55 @@
 ---
 
 ## 🛠️ 기술 스택
-
 ### 🔹 Back-end
-
-<img src="https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=OpenJDK&logoColor=white">
-&nbsp;
-<img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
-&nbsp;
-<img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white">
-&nbsp;
-<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
-&nbsp;
-<img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white">
-&nbsp;
+<img src="https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=OpenJDK&logoColor=white">&nbsp;
+<img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">&nbsp;
+<img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white">&nbsp;
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white">&nbsp;
+<img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white">&nbsp;
 <img src="https://img.shields.io/badge/QueryDSL-FCC624?style=for-the-badge&logoColor=black">&nbsp;
-<img src="https://img.shields.io/badge/postman-E34F26?style=for-the-badge&logo=postman&logoColor=white">
-&nbsp;
-<img src="https://img.shields.io/badge/jwt-F80000?style=for-the-badge&logo=json web tokens&logoColor=white">
-&nbsp;
+<img src="https://img.shields.io/badge/postman-E34F26?style=for-the-badge&logo=postman&logoColor=white">&nbsp;
+<img src="https://img.shields.io/badge/jwt-F80000?style=for-the-badge&logo=json web tokens&logoColor=white">&nbsp;
 <br>
 <img src="https://img.shields.io/badge/stomp-F7DF1E?style=for-the-badge&logoColor=black">&nbsp;
 <img src="https://img.shields.io/badge/websocket-F80000?style=for-the-badge&logoColor=white">&nbsp;
-<img src="https://img.shields.io/badge/rabbitMQ-47A248?style=for-the-badge&logo=rabbitMQ&logoColor=white">
-&nbsp;
+<img src="https://img.shields.io/badge/rabbitMQ-47A248?style=for-the-badge&logo=rabbitMQ&logoColor=white">&nbsp;
 <img src="https://img.shields.io/badge/h2-7952B3?style=for-the-badge&logo=h2&logoColor=white">&nbsp;
-<img src="https://img.shields.io/badge/spring security-000000?style=for-the-badge&logo=spring security&logoColor=white">
-&nbsp;
-<img src="https://img.shields.io/badge/spring data jpa-092E20?style=for-the-badge&logoColor=white">
-&nbsp;
+<img src="https://img.shields.io/badge/spring security-000000?style=for-the-badge&logo=spring security&logoColor=white">&nbsp;
+<img src="https://img.shields.io/badge/spring data jpa-092E20?style=for-the-badge&logoColor=white">&nbsp;
 <img src="https://img.shields.io/badge/junit5-4053D6?style=for-the-badge&logo=junit5&logoColor=white">
-
 ### 🔹 Front-end
+<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">&nbsp;
+<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">&nbsp;
+<img src="https://img.shields.io/badge/springboot web-6DB33F?style=for-the-badge&logoColor=white">&nbsp;
+<img src="https://img.shields.io/badge/thymeleaf-7952B3?style=for-the-badge&logo=Thymeleaf&logoColor=white">&nbsp;
 
-<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
-&nbsp;
-<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
-&nbsp;
-<img src="https://img.shields.io/badge/springboot web-6DB33F?style=for-the-badge&logoColor=white">
-&nbsp;
-<img src="https://img.shields.io/badge/thymeleaf-7952B3?style=for-the-badge&logo=Thymeleaf&logoColor=white">
-&nbsp;
 
-### 🔹 Infra
-
-<img src="https://img.shields.io/badge/ec2-DC382D?style=for-the-badge&logo=amazonec2&logoColor=white">
-&nbsp;
-<img src="https://img.shields.io/badge/rds-47A248?style=for-the-badge&logo=amazonRDS&logoColor=white">
-&nbsp;
-<img src="https://img.shields.io/badge/github actions-A86454?style=for-the-badge&logo=githubactions&logoColor=white">
-&nbsp;
-<img src="https://img.shields.io/badge/docker-DD0031?style=for-the-badge&logo=docker&logoColor=white">
-&nbsp;
-<img src="https://img.shields.io/badge/load balancing-F7DF1E?style=for-the-badge&logo=awselasticloadbalancing&logoColor=black">
-&nbsp;
-<img src="https://img.shields.io/badge/route 53-4053D6?style=for-the-badge&logo=amazon route 53&logoColor=white">
-&nbsp;
+### 🔹 infra
+<img src="https://img.shields.io/badge/ec2-DC382D?style=for-the-badge&logo=amazonec2&logoColor=white">&nbsp;
+<img src="https://img.shields.io/badge/rds-47A248?style=for-the-badge&logo=amazonRDS&logoColor=white">&nbsp;
+<img src="https://img.shields.io/badge/github actions-A86454?style=for-the-badge&logo=githubactions&logoColor=white">&nbsp;
+<img src="https://img.shields.io/badge/docker-DD0031?style=for-the-badge&logo=docker&logoColor=white">&nbsp;
+<img src="https://img.shields.io/badge/load balancing-F7DF1E?style=for-the-badge&logo=awselasticloadbalancing&logoColor=black">&nbsp;
+<img src="https://img.shields.io/badge/route 53-4053D6?style=for-the-badge&logo=amazon route 53&logoColor=white">&nbsp;
 <br>
 <img src="https://img.shields.io/badge/iam-010101?style=for-the-badge&logoColor=white">&nbsp;
-<img src="https://img.shields.io/badge/google smtp-F80000?style=for-the-badge&logo=google&logoColor=white">
-&nbsp;
+<img src="https://img.shields.io/badge/google smtp-F80000?style=for-the-badge&logo=google&logoColor=white">&nbsp;
+
+
 
 ### 🔹 Collaborative Tool
-
-<img src="https://img.shields.io/badge/IntelliJ IDEA-000000?style=for-the-badge&logo=IntelliJ IDEA&logoColor=white">
-&nbsp;
-<img src="https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=github&logoColor=white">
-&nbsp;
-<img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
-&nbsp;
-<img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white">
-&nbsp;
-<img src="https://img.shields.io/badge/notion-4053D6?style=for-the-badge&logo=notion&logoColor=white">
-&nbsp;
-<img src="https://img.shields.io/badge/figma-339AF0?style=for-the-badge&logo=figma&logoColor=white">
-&nbsp;
+<img src="https://img.shields.io/badge/IntelliJ IDEA-000000?style=for-the-badge&logo=IntelliJ IDEA&logoColor=white">&nbsp;
+<img src="https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=github&logoColor=white">&nbsp;
+<img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">&nbsp;
+<img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white">&nbsp;
+<img src="https://img.shields.io/badge/notion-4053D6?style=for-the-badge&logo=notion&logoColor=white">&nbsp;
+<img src="https://img.shields.io/badge/figma-339AF0?style=for-the-badge&logo=figma&logoColor=white">&nbsp;
 <img src="https://img.shields.io/badge/zep-7952B3?style=for-the-badge&logoColor=white">&nbsp;
 
 <br>
 
 ---
-
 ## 🖥 **주요 기능**
 
 <details>
@@ -193,8 +161,9 @@
 
 <br>
 
-## ❓기술적 의사 결정❓
 
+
+## ❓기술적 의사 결정❓
 <details>
   <summary> <strong> 🔹 GithubAction</strong> </summary>
   <br>
@@ -231,7 +200,7 @@
 [선택지]
 
 - Jenkins
-- Github Actions 🥕
+- Github Actions  🥕
 
 [의사결정/사유]
 
@@ -247,6 +216,7 @@
 
 [회고]
 
+- 단일 서버 환경일때 구현을 해 배포를 해보았으나 시간이 없어 다중 서버 환경일 때 CI&CD 구축을 경험하지 못해 아쉬움이 남습니다.
 - 직접 EC2에 파일을 전송하는 방법을 택했으나 다음에는 S3를 이용하는 방식도 고려해보고 싶습니다.
 
 </details>
@@ -261,7 +231,7 @@
 
   구현했습니다.
 
-[주요 로직]
+[주요 로직] → 흐름도 작성
 
 - 회원 탈퇴 요청 → 사용자 정보 삭제 및 토큰을 블랙리스트에 등록
 - 사용자가 서비스 요청 → 요청의 토큰이 블랙리스트에 포함되어 있는지 검증
@@ -269,6 +239,9 @@
 - 토큰 만료 시 → 블랙리스트에서 자동 삭제
 
   <img src="https://github.com/user-attachments/assets/f1240532-171a-4aa9-bb1a-de06c1d25a65" height=300px>
+
+
+
 
 [배경]
 
@@ -305,7 +278,7 @@
 
 [회고]
 
-- 다중 서버 환경에서 Redis 이외의 다른 캐시 방법을 찾아보고 싶습니다.
+- 다중 서버 환경에서의 Redis 이외의 다른 캐시 방법을 찾아보고 싶습니다.
 
 </details>
 
@@ -326,6 +299,7 @@
 
    오류를 잡아낼 수 있도록 하였습니다.
 
+
 [배경]
 
 - 초기에 구현했던 경매 목록 조회 기능은 별도의 검색 옵션이 없는 전체 목록 조회였습니다.
@@ -344,10 +318,15 @@
        결과 값이 정확히 나오도록 설계해야 한다고 생각했습니다.
 
 2. 유지보수성
-    1. 개발자 측면에서 검색 옵션이 추가/삭제 되어도 변경을 쉽고 빠르게 할 수 있어야 한다고 생각했습니다.
+    1. 개발자 측면에서 검색 옵션이 추가되거나, 삭제되더라도
+
+       변경을 쉽고 빠르게 할 수 있어야 한다고 생각했습니다.
 
 3. 타입 안전성
-    1. 쿼리 작성 시 발생할 수 있는 오류들에 대하여 미리 발견하거나, 대비할 수 있어야 한다고 생각했습니다.
+    1. 쿼리 작성 시 발생할 수 있는 오류들에 대하여 미리 발견하거나,
+
+       대비할 수 있어야 한다고 생각했습니다.
+
 
 [선택지]
 
@@ -398,6 +377,8 @@
 
           버전 관리, 호환성 문제 등이 있을 수 있습니다.
 
+
+
 [의사결정/사유]
 
 - 의사결정 : QueryDSL을 이용한 동적 쿼리 만들기
@@ -406,6 +387,7 @@
   호환성 문제 등에 대한 단점이 있지만, 유지 보수성과 타입 안전성 부분에서
 
   다른 방법들에 비해 우수하다고 생각하여 선택하게 되었습니다.
+
 
 [회고]
 
@@ -425,7 +407,7 @@
 
 - offset기반 페이징과 cursor기반 페이징을 이용하여 모두 구현해 보았으며,
 
-  검색 속도 개선과 문제 해결을 위하여 결과적으로 cursor기반 페이징을 최종 반영 하였습니다.
+  검색 속도 개선과  문제 해결을 위하여 결과적으로 cursor기반 페이징을 최종 반영 하였습니다.
 
 [주요 로직]
 
@@ -450,6 +432,7 @@
 
 2. 빠른 속도
     1. 어떤 방식으로 조회를 하더라도 빠른 속도를 유지하여 사용자에게 불편함이 없어야 한다고 생각합니다.
+
 
 [선택지]
 
@@ -486,6 +469,7 @@
 
           있습니다.
 
+
 [의사결정/사유]
 
 - 의사결정 : offset기반 페이징, cursor기반 페이징
@@ -500,6 +484,8 @@
 
       두 가지 방법 모두 구현을 해본 후 더 적합한 것을 선택하고자 하였습니다.
 
+
+
 [회고]
 
 - offset기반 페이징과 cursor기반 페이징을 모두 구현해보면서 각자 어떤식으로 작동을
@@ -507,6 +493,7 @@
   하는지에 대해 직접 확인해 볼 수 있어서 좋았고, 구현하면서 생긴 문제들에 대해서
 
   조금 더 공부해볼 생각을 하니 기대됩니다.
+
 
 </details>
 
@@ -539,6 +526,8 @@
 
       <img src="https://github.com/user-attachments/assets/172a37e5-b432-423d-a726-dc1ef58db07f" height=350px>
 
+
+
 단순히 눈으로 보이는 1초는 빠르다고 느껴질 수 있으나 응답을 기다릴 때 체감 상 빠르다고 생각이
 
 들지 않았습니다. 해당 기능을 구현한 사람의 입장에서도 다소 답답함이 느껴진다면 사용자의
@@ -556,6 +545,9 @@
     1. 속도가 빠르지만, 검색어에 연관 없는 데이터가 반환 된다면 아무 의미가 없다고
 
        생각 하기 때문에 데이터 정확성이 중요하다고 생각했습니다.
+
+
+
 
 [선택지]
 
@@ -614,6 +606,7 @@
 
           사용자 정의 함수를 이용하여 구현해야 한다는 단점이 있습니다.
 
+
 [의사결정/사유]
 
 - 의사결정 : full text index
@@ -621,6 +614,9 @@
     - 지금 현재 저희 프로젝트에서는 속도나 정확성, 그리고 사용자가 폭 넓은 검색을
 
       할 수 있어야 한다는 점을 생각하여 full text index를 선택하였습니다.
+
+
+
 
 [회고]
 
@@ -631,6 +627,7 @@
   공부하여 구현하다보니 부족한 점이 많아 조금 더 개선해 보고 싶습니다. 그리고 FTS(Full Text Search)에
 
   관해 검색을 하다 보니 엘라스틱서치 라는 기능이 눈에 자주 띄었어서 관련 공부도 해보고 싶습니다.
+
 
 </details>
 
@@ -670,11 +667,12 @@
 
    <img src="https://github.com/user-attachments/assets/adba5ff1-c16f-4362-a916-078e5e1a8212" height=350px>
 
+
 [요구사항]
 
 1. 이메일은 송신 기능만 있어도 됩니다.
 
-    1. 단순 알림성이기 때문에 수신 기능은 필요없다고 생각했습니다.
+    1. 단순 알림이기 때문에 수신 기능은 필요하지 않다고 생각했습니다.
 
 3. 이메일을 구축하는데에 너무 많은 리소스가 사용되면 안됩니다.
 
@@ -750,6 +748,7 @@
 
       불리할 수 있을 것 같습니다.
 
+
 다시 시도한다면?
 
 - Gmail을 사용하는 방식은 간단하지만, EC2에서 메일을 전송할 때 일부 계정에서는 Gmail이 이를 이상 로그인으로
@@ -757,6 +756,7 @@
   판단하여 차단하는 경우가 있었습니다. 따라서 배포 시 AWS와의 호환성을 고려한다면, 다음번에는 AWS SES를
 
   활용하는 것을 더 적극적으로 고려해볼 수 있을 것 같습니다.
+
 
 </details>
 
@@ -775,6 +775,7 @@
     - 결제 정보 전달 시 클라이언트로부터 조작된 데이터인지 검증하는 용도입니다.
 - 토스페이먼츠에 결제 승인 요청을 전송합니다.
 - 결제 승인 응답이 정상적으로 오면 결제 내역 및 경매 포인트 정보를 DB에 저장합니다.
+
 
  <img src="https://github.com/user-attachments/assets/e19c3678-10c1-48f9-9bab-45adf8189e63" height=350px>
 
@@ -830,6 +831,7 @@
         - 결제 창에서는 원하는 결제 방식만 선택할 수 있습니다.
         - 결제 내역 등을 비롯하여 개발자 센터에서 확인할 수 있는 기능들이 존재합니다.
 
+
 </details>
 
 <details>
@@ -845,11 +847,11 @@
 - 결제 승인 요청을 실행합니다.
     - 재시도의 가능성이 있기 때문에 멱등키를 헤더에 포함시켜 동일한 요청이라는 것을 알려줍니다.
 - 결제 승인 요청 실패 시 재시도를 최대 3회 실행합니다.
-- 결제 승인 요청을 모두 (기본 요청 1회 + 재시도 3회) 실패하는 경우, 메시지를 발행합니다.
+- 결제 승인 요청을 모두 (기본 요청 1회  + 재시도 3회) 실패하는 경우, 메시지를 발행합니다.
 - 메시지가 발행되면 결제 취소 요청을 실행합니다.
     - 재시도의 가능성이 있기 때문에 멱등키를 헤더에 포함시켜 동일한 요청이라는 것을 알려줍니다.
 - 결제 취소 요청 실패 시 재시도를 최대 3회 실행합니다.
-- 결제 취소 요청을 모두 (기본 요청 1회 + 재시도 최대 3회) 실패하는 경우, DLQ (Dead Letter Queue)로
+- 결제 취소 요청을 모두 (기본 요청 1회  + 재시도 최대 3회) 실패하는 경우, DLQ (Dead Letter Queue)로
 
   메시지를 이동시킵니다.
 
@@ -920,6 +922,7 @@
     - 또한 현재는 네트워크 에러인 경우에만 재시도 및 메시지 발행이 되고 있는데, 토스페이먼츠의 에러 코드도
 
       분류를 나눠서재시도 및 메시지 발행이 가능하도록 하고 싶습니다.
+
 
 </details>
 
@@ -998,11 +1001,11 @@
 
 - Long Polling
 
-    - 클라이언트가 서버에 요청을 보내면, 서버는 데이터가 변경될 때까지 응답을 지연시킴.
+    - 클라이언트가 서버에 요청을 보내면, 서버는 데이터가 변경될 때까지 응답을 지연시킴. 이후 데이터가
 
-      이후 데이터가 변경되면 응답을 보내고, 클라이언트는 다시 새로운 요청을 보냄
+      변경되면 응답을 보내고, 클라이언트는 다시 새로운 요청을 보냄.
 
-    - 장점: Polling보다 불필요한 요청을 줄일 수 있어 서버 리소스를 절약 가능
+    - 장점: Polling보다 불필요한 요청을 줄일 수 있어 서버 리소스를 절약 가능.
     - 단점: 다수의 사용자가 접속하는 경우 매 요청마다 새로운 HTTP 연결이 필요하므로 서버 부하가
 
       증가할 가능성이 있음
@@ -1043,6 +1046,7 @@
 
   가능해졌습니다.
 
+
 </details>
 
 
@@ -1078,7 +1082,7 @@
 
 - STOMP + Redis Pub/Sub 활용
 
-  STOMP를 사용하여 Web Socket 기반의 메시징을 관리하고, Redis의 Pub/Sub 기능을 활용하여 서버 간 메시지를
+  STOMP를 사용하여 WebSocket 기반의 메시징을 관리하고, Redis의 Pub/Sub 기능을 활용하여 서버 간 메시지를
 
   실시간으로 동기화하도록 아래와 같은 흐름으로설계했습니다.
 
@@ -1139,11 +1143,10 @@ dependencies {
 1. 필드에 @JsonSerialize, @JsonDeserialize을 지정함으로써 직렬화/역직렬화 방식 지정
 
 ```java
-
-@JsonSerialize(using = LocalDateTimeSerializer.class)
-@JsonDeserialize(using = LocalDateTimeDeserializer.class)
-@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-private LocalDateTime createdAt;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
 ```
 
 [해결 결과]
@@ -1176,6 +1179,7 @@ private LocalDateTime createdAt;
 1. 조인을 이용하여 불필요한 쿼리가 발생하지 않도록 수정
 2. 기존에 auction에 대한 모든 컬럼을 조회하도록 되어있던 코드를 필요한 컬럼만 조회하도록 코드 수정
 
+
 [해결 과정]
 
 <img src="https://github.com/user-attachments/assets/ba075bc3-98ff-4253-97ce-2b9bc4e5b8c3" height=350px width=450px>
@@ -1206,6 +1210,7 @@ private LocalDateTime createdAt;
   알게 되었고 적용하던 도중에 아래와 같이 더 이상 지원하지 않는 기능이라는 문제가 생겼습니다.
 
    <img src="https://github.com/user-attachments/assets/23d244eb-0dbc-41da-b5de-f1afb60214e5" height=350px width=600px>
+
 
 [해결 방안]
 
@@ -1248,6 +1253,7 @@ private LocalDateTime createdAt;
     }
     ```
 
+
 [해결 결과]
 
 - 위와 같은 방법으로 사용자 정의 함수를 등록 후 QueryDSL에 적용해 보았고, 검색 했을 때 발생하는 쿼리문에
@@ -1262,6 +1268,7 @@ private LocalDateTime createdAt;
 
   좋은 방법일 것 같습니다.
 
+
 </details>
 
 <details>
@@ -1270,7 +1277,7 @@ private LocalDateTime createdAt;
 
 [문제 인식]
 
-- FTS(Full Text Search)적용 후 응답 속도를 확인하던 도중 오히려 응답 속도가 지연된 것을
+- FTS(Full Text Search)적용 후 응답 속도를  확인하던 도중 오히려 응답 속도가 지연된 것을
 
   확인하게 되었고, 원인을 파악하고자 DB SQL 콘솔창을 이용하여 조회 쿼리와 카운트
 
@@ -1279,6 +1286,8 @@ private LocalDateTime createdAt;
   소모되고 있다는 것을 확인하게 되었습니다.
 
    <img src="https://github.com/user-attachments/assets/2cbbe9d7-74a8-473e-b3e3-1ba2cbc740a7" height=350px width=450px>
+
+
 
 [해결 방안]
 
@@ -1333,11 +1342,13 @@ private LocalDateTime createdAt;
                     .fetchOne()).orElse(0L);
     ```
 
+
 [해결 결과]
 
 - 카운트 쿼리의 응답 속도가 77.09% 개선된 것을 확인 할 수 있었습니다.
 
    <img src="https://github.com/user-attachments/assets/8e4567ca-d3d1-4f79-9b8f-bea7d00e5fbb" height=350px width=450px>
+
 
 [추후 작업 계획]
 
@@ -1351,6 +1362,7 @@ private LocalDateTime createdAt;
     2. 만일 현업이였다면 기획 의도에 따라 필요할 수 있지 않을까
 
   라는 질문을 하게 되었고, 이에 대한 자료들을 조금 더 찾아 보고, 다른 사람들의 의견을 들어볼 예정입니다.
+
 
 </details>
 
@@ -1374,7 +1386,9 @@ private LocalDateTime createdAt;
 
    아닐 수 있으나, 사용자가 무려 4초간 로딩 화면을 봐야한다는 것이므로 UX에 문제가 생긴다고 생각했습니다.
 
+
      <img src="https://github.com/user-attachments/assets/f90b611f-e626-491d-8744-ab7fe75ec7ad" height=350px >
+
 
 [해결 방안]
 
@@ -1382,24 +1396,24 @@ private LocalDateTime createdAt;
 
    결제도 실패한다.
 
-2. 마찬가지로 API의 처리와 이메일 전송이 함께 이루어지고 있기 때문에 이메일이 보내질때까지 API 응답이
+2. 마찬가지로 API의 처리과 이메일 전송이 함께 이루어지고 있기 때문에 이메일이 보내질때까지 API 응답이
 
    이루어지지 않는다.
 
-**∴ 이메일과 이벤트의 저장을 분리하면 해결될 것이다.**
+
+**∴  이메일과 이벤트의 저장을 분리하면 해결될 것이다.**
 
 [해결 과정]
 
 ```java
-
-@Async
-public void sendMemberEmail(Long memberId, MemberEmailRequestDto memberEmailRequestDto) {
-    Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
-                    ErrorMessageParameter.MEMBER));
+ @Async
+    public void sendMemberEmail(Long memberId, MemberEmailRequestDto memberEmailRequestDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER,
+                        ErrorMessageParameter.MEMBER));
 
        ...
-}
+    }
 ```
 
 1. 이메일 보내는것에 실패해도 저장되고, 요청도 정상적으로 나오고 응답시간도 줄어드는 것을 확인했습니다.
@@ -1407,6 +1421,7 @@ public void sendMemberEmail(Long memberId, MemberEmailRequestDto memberEmailRequ
    <img src="https://github.com/user-attachments/assets/09c41cfa-758e-4437-a244-77d023284417" height=350px >
 
    <img src="https://github.com/user-attachments/assets/fe2a53c3-e032-430a-961e-e01c145e151b" height=150px width=650px >
+
 
 [해결 결과]
 
@@ -1443,47 +1458,45 @@ public void sendMemberEmail(Long memberId, MemberEmailRequestDto memberEmailRequ
 
   주 트랜잭션이 롤백되면, 이메일이 전송된 상태가 되면서 데이터 정합성 문제가 발생할 수 있다.
 
-  **∴ 트랜잭션이 끝난 후, 이메일을 전송하도록 보장하면 해결될 것이다.**
+  **∴  트랜잭션이 끝난 후, 이메일을 전송하도록 보장하면 해결될 것이다.**
 
 [해결 과정]
-
 - `@TransactionalEventListener`을 사용하여 이벤트 기반으로 변경하였습니다.
 
 1. 이메일을 전송해야할 이벤트가 발생했을때, `ApplicationEventPublisher`를 사용해
 
    **이메일 전송 이벤트(AuctionCreatedEvent)를 발행**하도록 수정했습니다.
 
-```java
 
+```java
 @Transactional
-public void createPayment(String jsonBody, Long memberId) {
+    public void createPayment(String jsonBody, Long memberId) {
        ...
-    MemberEmailRequestDto emailRequestDto = new MemberEmailRequestDto(
-            Constants.PAYMENT_COMPLETION_EMAIL_TITLE,
-            String.format(Constants.PAYMENT_COMPLETION_EMAIL_CONTENTS, payment.getAmount(),
-                    payment.getPaymentMethod()
-            )
-    );
-    applicationEventPublisher.publishEvent(
-            new EmailEvent(payment.getMember().getId(), emailRequestDto));
-}
+        MemberEmailRequestDto emailRequestDto = new MemberEmailRequestDto(
+                Constants.PAYMENT_COMPLETION_EMAIL_TITLE,
+                String.format(Constants.PAYMENT_COMPLETION_EMAIL_CONTENTS, payment.getAmount(),
+                        payment.getPaymentMethod()
+                )
+        );
+        applicationEventPublisher.publishEvent(
+                new EmailEvent(payment.getMember().getId(), emailRequestDto));
+    }
 ```
 
 2. 이벤트 리스너에서 트랜잭션 종료 후 이메일을 전송하도록 했습니다.
 
 ```java
     public class EmailEventListener {
-
-    private final EmailService emailService;
-
-    @Async
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleEmailEvent(EmailEvent event) {
-        emailService.sendMemberEmail(event.getMemberId(), event.getEmailRequestDto());
+        private final EmailService emailService;
+        @Async
+        @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+        public void handleEmailEvent(EmailEvent event) {
+            emailService.sendMemberEmail(event.getMemberId(), event.getEmailRequestDto());
+        }
     }
-}
-
+    
 ```
+
 
 [해결 완료]
 
@@ -1520,6 +1533,7 @@ public void createPayment(String jsonBody, Long memberId) {
   확인되었습니다.
 
    <img src="https://github.com/user-attachments/assets/53ccee34-c164-4fa6-b254-c1be164eb95d" height=150px width=700px >
+
 
 **[해결 방안]**
 
@@ -1559,9 +1573,9 @@ public void createPayment(String jsonBody, Long memberId) {
 
 ```java
 // AuctionRepository에서 @Lock(LockModeType.PESSIMISTIC_WRITE) 사용하여 경매 객체를 조회할 때 비관적 락 적용
-@Lock(LockModeType.PESSIMISTIC_WRITE)
-@Query("SELECT a FROM Auction a WHERE a.id = :auctionId")
-Optional<Auction> findByIdWithPessimisticLock(@Param("auctionId") Long auctionId);
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT a FROM Auction a WHERE a.id = :auctionId")
+    Optional<Auction> findByIdWithPessimisticLock(@Param("auctionId") Long auctionId);
 ```
 
 **[해결 결과]**
@@ -1590,10 +1604,9 @@ Optional<Auction> findByIdWithPessimisticLock(@Param("auctionId") Long auctionId
   404 에러가 발생했습니다.
 
 ```java
-
 @GetMapping
 public String methodA() {
-    return "/process"; // ec2에서 에러 발생
+	return "/process"; // ec2에서 에러 발생
 }
 ```
 
@@ -1605,8 +1618,7 @@ public String methodA() {
     - ViewResolver를 위한 설정 파일을 만들거나 별도의 설정을 변경한 적이 없기 때문에 원인이 될 수 없습니다.
 
 - SpringBoot의 동작 방식 및 OS의 파일 경로 처리 방식 확인하기
-    - Thymeleaf의 ViewResolver는 `prefix + viewName + suffix` 방식으로 동작하며, 기본적으로 `classpath:/templates/`
-      에서 View를 찾습니다.
+    - Thymeleaf의 ViewResolver는 `prefix + viewName + suffix` 방식으로 동작하며, 기본적으로 `classpath:/templates/` 에서 View를 찾습니다.
 
     - Windows에서는 `C:\projects\myapp\templates\process.html` 같은 경로 구조를 가지지만,
       Linux에서는 `/home/ec2-user/app/templates/process.html` 같은 경로 구조를 가집니다.
@@ -1621,10 +1633,9 @@ public String methodA() {
 - 컨트롤러에서 리턴하는 값을 절대 경로( `/process` )로 설정 하지 않고 상대 경로(`process` )로 설정하였습니다.
 
 ```java
-
 @GetMapping
 public String methodA() {
-    return "process";
+	return "process";
 }
 ```
 
@@ -1671,13 +1682,14 @@ public String methodA() {
 
           [📚 Spring Framework 6.2.3 API](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/concurrent/ThreadPoolTaskScheduler.html)
 
+
+
 [해결 과정]
 
 - config 파일을 작성하여 스케줄러를 위한 스레드 풀을 생성했습니다.
 - 동시에 실행 될 가능성이 있는 작업이 2개뿐이기 때문에 현재 `SCHEDULER_THREAD_POOL_SIZE` 는 2입니다.
 
 ```java
-
 @Configuration
 public class SchedulerConfig implements SchedulingConfigurer {
 
@@ -1721,6 +1733,7 @@ public class SchedulerConfig implements SchedulingConfigurer {
 
   마련할 생각입니다.
 
+
 </details>
 
 
@@ -1741,19 +1754,18 @@ public class SchedulerConfig implements SchedulingConfigurer {
 <br>
 
 ## 😘사탕팔이와 아이들!!!😘
-
 <img src="https://github.com/user-attachments/assets/7df97370-11c3-4e61-bf2c-b5618063e4fe" height=200px width=250px >
 
-#                                    
+# 
 
-| 이름  | 깃허브                                                            |
-|-----|----------------------------------------------------------------|
-| 홍은기 | [star-pooh](https://github.com/star-pooh)                      |
+
+| 이름 | 깃허브 |
+| --- | --- |
+| 홍은기 | [star-pooh](https://github.com/star-pooh) |
 | 임희현 | [HEEHYUN0221](https://github.com/HEEHYUN0221?tab=repositories) |
-| 장지원 | [ijnow](https://github.com/ijnow)                              |
-| 송진솔 | [solaaac](https://github.com/solaaac)                          |
-| 신가을 | [Shin-Gaeul](https://github.com/Shin-Gaeul)                    |
+| 장지원 | [ijnow](https://github.com/ijnow) |
+| 송진솔 | [solaaac](https://github.com/solaaac) |
+| 신가을 | [Shin-Gaeul](https://github.com/Shin-Gaeul) |
 
 <br> <br>
-
 
