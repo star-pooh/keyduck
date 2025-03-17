@@ -107,7 +107,7 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
     }
 
     private BooleanExpression keyboard(String keyboardName) {
-        if (keyboardName == null) {
+        if (keyboardName == null || keyboardName.isBlank()) {
             return null;
         }
 
@@ -119,7 +119,7 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
 
 
     private BooleanExpression auctionTitle(String auctionTitle) {
-        if (auctionTitle == null) {
+        if (auctionTitle == null || auctionTitle.isBlank()) {
             return null;
         }
         return Expressions.numberTemplate(Double.class,
@@ -129,7 +129,7 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
     }
 
     private BooleanExpression sellerName(String sellerName) {
-        if (sellerName == null) {
+        if (sellerName == null || sellerName.isBlank()) {
             return null;
         }
         return Expressions.numberTemplate(Double.class,
@@ -139,7 +139,7 @@ public class AuctionQueryDslRepositoryImpl implements AuctionQueryDslRepository 
     }
 
     private BooleanExpression auctionStatus(String auctionStatus) {
-        if (auctionStatus == null) {
+        if (auctionStatus == null || auctionStatus.isBlank()) {
             return null;
         }
         return auction.auctionStatus.eq(AuctionStatus.valueOf(auctionStatus));
